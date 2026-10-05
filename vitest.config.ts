@@ -6,5 +6,9 @@ export default defineConfig({
   test: {
     include: ["spec/**/*.test.ts"],
     globalSetup: ["./spec/global-setup.ts"],
+    // The product specs share one running app with a fixed number of live
+    // rooms (WORLD-04), so files run one at a time rather than competing.
+    fileParallelism: false,
+    testTimeout: 30_000,
   },
 });
