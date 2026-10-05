@@ -86,6 +86,7 @@ export interface WorkRow {
   physics_config_version: number;
   created_at: number;
   updated_at: number;
+  trashed_at: number | null;
 }
 
 export type Store = ReturnType<typeof createStore>;
@@ -123,7 +124,7 @@ export function createStore(db: DB) {
     removeMember: db.prepare("DELETE FROM memberships WHERE work_id = ? AND user_id = ? AND role = 'editor'"),
     worksForUser: db.prepare<[string], WorkRow & { role: "owner" | "editor" }>(
       `SELECT w.*, m.role FROM works w JOIN memberships m ON m.work_id = w.id
-       WHERE m.user_id = ? ORDER BY w.updated_at DESC`,
+       WHERE m.user_id = ? AND w.trashed_at IS NULL ORDER BY w.updated_at DESC`,
     ),
     ownedCount: db.prepare<[string], { n: number }>("SELECT COUNT(*) AS n FROM works WHERE owner_id = ?"),
     upsertState: db.prepare(

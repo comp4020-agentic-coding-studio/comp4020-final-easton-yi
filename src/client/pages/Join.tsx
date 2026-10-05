@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api.ts";
 import { navigate, signInLink } from "../router.ts";
 import { useSession } from "../session.ts";
+import { AUTHORITY_TEXT } from "../lifecycle.tsx";
 
 export function Join() {
   const { user } = useSession();
@@ -50,6 +51,11 @@ export function Join() {
             <strong>{preview.inviterName}</strong> invited you to build <strong>“{preview.workTitle}”</strong> with them.
           </p>
           <p className="muted small">As an editor you can place sticks, save versions and see the work's history. The link expires {new Date(preview.expiresAt).toLocaleString()}.</p>
+          <div className="notice">
+            <p className="small">
+              <strong>{preview.inviterName} owns this work.</strong> {AUTHORITY_TEXT} What you build stays part of the shared work, so it goes wherever the owner takes it.
+            </p>
+          </div>
           {user ? (
             <p className="actions">
               <button type="button" className="primary" disabled={busy} onClick={() => void accept()}>

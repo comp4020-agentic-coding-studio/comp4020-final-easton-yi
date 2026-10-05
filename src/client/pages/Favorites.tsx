@@ -1,5 +1,5 @@
 // `/favorites/`: a private list of exhibit references (SAVE-07). A withdrawn
-// exhibit shows only that it was withdrawn and can be removed.
+// or deleted exhibit shows only that state and can be removed (SAVE-12).
 import { useEffect, useState } from "react";
 import { api } from "../api.ts";
 import { signInLink } from "../router.ts";
@@ -7,7 +7,7 @@ import { useSession } from "../session.ts";
 import { formatDate } from "./Gallery.tsx";
 
 type Fav =
-  | { exhibitId: string; withdrawn: true; savedAt: number }
+  | { exhibitId: string; withdrawn: true; removed?: true; savedAt: number }
   | { exhibitId: string; withdrawn: false; savedAt: number; title: string; height: number; attribution: string[] };
 
 export function Favorites() {
@@ -73,8 +73,10 @@ export function Favorites() {
           {favs.map((f) =>
             f.withdrawn ? (
               <li key={f.exhibitId} className="card withdrawn">
-                <span className="card-title">Withdrawn</span>
-                <span className="card-meta">Its owner withdrew this exhibit. Saved {formatDate(f.savedAt)}.</span>
+                <span className="card-title">{f.removed ? "No longer available" : "Withdrawn"}</span>
+                <span className="card-meta">
+                  {f.removed ? "Its owner deleted this work permanently." : "Its owner withdrew this exhibit."} Saved {formatDate(f.savedAt)}.
+                </span>
                 <button type="button" onClick={() => void remove(f.exhibitId)}>
                   Remove from favorites
                 </button>

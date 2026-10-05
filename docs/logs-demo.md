@@ -60,3 +60,34 @@ and who pushed (`version.create`, `push.*`), and why a room paused
 (`room.overload`, `world.save` with `outcome: failed`, `room.fault`). Logs
 show activity, not whether people enjoyed it; that needs the human sessions
 in `acceptance-report.md`.
+
+## Trash, restore and permanent deletion (added 2026-10-06)
+
+Lifecycle events carry IDs and counts only: no titles, invite tokens or
+snapshots. Real lines, IDs shortened to 8 characters. The first four come from
+the lifecycle contract specs (`spec/lifecycle.test.ts`) against a local
+production-mode server on 2026-10-06. The failure lines come from a disposable
+server with the test-only write-failure hook (`ENABLE_TEST_HOOKS=1`, refused in
+production). None of them are from Fly.
+
+```json
+{"event":"work.trash","actorId":"a9b48c5d","workId":"a63ffea3","outcome":"accepted","exhibitsWithdrawn":2,"invitesRevoked":1,"notified":2,"wasLive":true,"moving":true}
+{"event":"work.untrash","actorId":"a9b48c5d","workId":"d43ac056","outcome":"accepted","archived":false}
+{"event":"member.leave","actorId":"1adffb70","workId":"fb4ec70b","outcome":"accepted"}
+{"event":"work.purge","actorId":"a9b48c5d","workId":"e42ca695","outcome":"accepted","versions":1,"exhibits":1,"members":2}
+{"level":"error","event":"work.trash","actorId":"5a1235b4","workId":"ba4bbb66","outcome":"failed","error":"Error: injected write failure"}
+{"level":"error","event":"work.purge","actorId":"5a1235b4","workId":"ba4bbb66","outcome":"failed","error":"Error: injected write failure"}
+```
+
+Reading them: the owner moved a shared work to the trash while its structure
+was still moving; two windows were told, two exhibits withdrawn and one invite
+revoked. Another work came back from the trash to its previous, unarchived
+state. An editor left a collaboration (here, one in the trash). A trashed work
+was deleted permanently with one version, one exhibit and two memberships. A
+`failed` line means nothing changed: the work stayed active (trash) or stayed
+in the trash (purge). Repeating a permanent delete logs nothing new and
+answers `alreadyDeleted`.
+
+```sh
+flyctl logs -a comp4020-final-easton-yi | grep -o '{.*}' | jq -c 'select(.event | test("^work\\.(trash|untrash|purge)$|^member\\.leave$"))'
+```

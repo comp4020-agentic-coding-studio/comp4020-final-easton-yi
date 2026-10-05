@@ -128,6 +128,7 @@ export function Workshop({ workId }: { workId: string }) {
   const lastTick = useRef(0);
   const [loadError, setLoadError] = useState<{ code: string; message: string } | null>(null);
   const [ended, setEnded] = useState<string | null>(null);
+  const [endedReason, setEndedReason] = useState<string | null>(null);
 
   // placement state machine
   const [phase, setPhaseState] = useState<Phase>("idle");
@@ -358,12 +359,36 @@ export function Workshop({ workId }: { workId: string }) {
         toast("The owner restored a saved version. Everyone now sees the restored structure.");
         return;
       case "access.ended": {
-        const why = { LOGGED_OUT: "You signed out.", SESSION_EXPIRED: "Your session ended. Sign in again to keep building.", REMOVED: "The owner removed you from this work.", LEFT: "You left this work.", ARCHIVED: "This work was archived." }[m.reason];
+        const why =
+          m.message ??
+          { LOGGED_OUT: "You signed out.", SESSION_EXPIRED: "Your session ended. Sign in again to keep building.", REMOVED: "The owner removed you from this work.", LEFT: "You left this work.", ARCHIVED: "This work was archived.", TRASHED: "This work was moved to the trash." }[m.reason];
         if (m.reason === "ARCHIVED") {
           toast(why);
           return;
         }
+        if (m.reason === "TRASHED" && !roomRef.current) {
+          // opened while already in the trash: there's no workshop to show
+          setLoadError({ code: "TRASHED", message: why });
+          conn.current?.close();
+          return;
+        }
+        if (m.reason === "TRASHED") {
+          // the work is gone from ordinary use: drop the local draft and any unresolved submission
+          viewport.current?.cancelDrag();
+          if (pending.current) clearTimeout(pending.current.timer);
+          pending.current = null;
+          setDraft(null);
+          setPhase("idle");
+          setPlaceMessage(null);
+          setPanel("none");
+          if (roomRef.current) {
+            const next = { ...roomRef.current, presence: [], lease: null };
+            roomRef.current = next;
+            setRoom(next);
+          }
+        }
         setEnded(why);
+        setEndedReason(m.reason);
         remoteDrafts.current.clear();
         syncRemote();
         if (m.reason !== "LOGGED_OUT") {
@@ -717,14 +742,14 @@ export function Workshop({ workId }: { workId: string }) {
       <div className="ws-top">
         <h1 className="ws-title">{room?.title ?? "…"}</h1>
         <div className="ws-status" role="status" aria-live="polite">
-          <span className={`save save-${room?.save ?? "loading"}`}>{saveText(room)}</span>
+          <span className={`save save-${endedReason === "TRASHED" ? "closed" : (room?.save ?? "loading")}`}>{endedReason === "TRASHED" ? "In the trash" : saveText(room)}</span>
           <span className="height">
             Stable structure height <span className="num">{room ? room.stableHeight.toFixed(1) : "–"}</span> u{room?.measuring && " · Measuring…"}
           </span>
           <span className="best muted">
             best <span className="num">{room ? room.bestHeight.toFixed(1) : "–"}</span> u
           </span>
-          <span className={`conn conn-${connStatus}`}>{connStatus === "open" ? "Connected" : connStatus === "reconnecting" ? "Reconnecting…" : connStatus === "closed" ? "Disconnected" : "Connecting…"}</span>
+          <span className={`conn conn-${ended ? "closed" : connStatus}`}>{ended ? "Not connected" : connStatus === "open" ? "Connected" : connStatus === "reconnecting" ? "Reconnecting…" : connStatus === "closed" ? "Disconnected" : "Connecting…"}</span>
         </div>
         <ul className="presence" aria-label="People here">
           {presence.map((p) => (
@@ -787,11 +812,16 @@ export function Workshop({ workId }: { workId: string }) {
                 Edit in this window instead
               </button>
             )}
-            {ended && (
-              <a className="button" href={signInLink("login")}>
-                Sign in again
-              </a>
-            )}
+            {ended &&
+              (endedReason === "LOGGED_OUT" || endedReason === "SESSION_EXPIRED" ? (
+                <a className="button" href={signInLink("login")}>
+                  Sign in again
+                </a>
+              ) : (
+                <a className="button" href={endedReason === "TRASHED" && room?.role === "owner" ? "/works/?view=trash" : "/works/"}>
+                  {endedReason === "TRASHED" && room?.role === "owner" ? "Go to Trash" : "Back to my works"}
+                </a>
+              ))}
           </div>
         )}
         {parallelHint && (

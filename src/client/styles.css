@@ -873,3 +873,19 @@ dialog.confirm::backdrop {
     animation: none !important;
   }
 }
+.view-switch {
+  display: flex;
+  gap: 6px;
+  margin: 16px 0 4px;
+}
+.view-switch button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+dialog.confirm ul {
+  padding-left: 1.2em;
+}
+dialog.confirm input {
+  width: 100%;
+}

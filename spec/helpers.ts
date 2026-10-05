@@ -4,15 +4,37 @@
 // wipes or seeds the database directly.
 import { inject } from "vitest";
 import { randomUUID } from "node:crypto";
+import { appendFileSync, readFileSync } from "node:fs";
+import { AUTH } from "../src/shared/config.ts";
 
 // spec/ gets the running app from global-setup; tests/ pass their own server's URL.
 let injected: string | undefined;
+let ledger: string | undefined;
 try {
   injected = inject("baseUrl");
+  ledger = inject("signupLedger");
 } catch {
   injected = undefined;
 }
 export const baseUrl = injected ?? "http://localhost:8080";
+
+/**
+ * Registration attempts (successful or refused) allowed in one spec run. The
+ * server allows a burst of registerPerIp[0] per address; staying at two thirds
+ * of the burst, with no credit for refill, keeps the run below the limit
+ * however fast or slow it goes. Over budget, the test fails here, before
+ * sending, instead of getting a 429 from the server.
+ */
+export const SIGNUP_BUDGET = Math.floor((AUTH.rate.registerPerIp![0] * 2) / 3);
+
+const countSignup = (): void => {
+  if (!ledger) return;
+  appendFileSync(ledger, "r\n");
+  const used = readFileSync(ledger, "utf8").length / 2;
+  if (used > SIGNUP_BUDGET) {
+    throw new Error(`spec run exceeded its signup budget (${used} > ${SIGNUP_BUDGET}); reuse an account with shared() where the test allows`);
+  }
+};
 
 export const uniqueHandle = (prefix = "t"): string =>
   `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 16)}`.slice(0, 24);
@@ -33,6 +55,7 @@ export class Client {
   recoveryCode = "";
 
   async req<T = any>(method: string, path: string, body?: unknown, headers: Record<string, string> = {}): Promise<Res<T>> {
+    if (method === "POST" && path === "/api/auth/register") countSignup();
     const h: Record<string, string> = { ...headers };
     if (this.cookie) h.cookie = this.cookie;
     if (method !== "GET") {
@@ -101,6 +124,32 @@ export class Client {
       payload,
     });
   }
+}
+
+export const PASSWORD = "correct horse battery";
+
+const sharedAccounts = new Map<string, Promise<Client>>();
+/**
+ * One account per display name per spec file (each file has its own module
+ * instance), registered on first use. Use it only where the test doesn't depend
+ * on account-wide state other tests in the file change (works list, favorites,
+ * trash), and never log it out; use sessionOf() for that.
+ */
+export const shared = (name: string): Promise<Client> => {
+  let c = sharedAccounts.get(name);
+  if (!c) {
+    c = new Client().register(name);
+    sharedAccounts.set(name, c);
+  }
+  return c;
+};
+
+/** A separate session for an existing account: logging it out leaves the original working. */
+export async function sessionOf(c: Client): Promise<Client> {
+  const s = new Client(c.base);
+  const r = await s.login(c.user!.handle, PASSWORD);
+  if (r.status !== 200) throw new Error(`login failed ${r.status} ${JSON.stringify(r.body)}`);
+  return s;
 }
 
 export const FLAT: [number, number, number, number] = [0, 0, 0, 1];

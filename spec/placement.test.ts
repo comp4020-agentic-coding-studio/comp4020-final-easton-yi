@@ -3,7 +3,7 @@
 // by command ID, and refused for anyone without editing authority.
 import { randomUUID } from "node:crypto";
 import { afterEach, describe, expect, it } from "vitest";
-import { Client, FLAT, VERTICAL, Window, sleep } from "./helpers.ts";
+import { Client, FLAT, VERTICAL, Window, shared, sleep } from "./helpers.ts";
 
 const open: Window[] = [];
 afterEach(() => {
@@ -15,6 +15,9 @@ const win = async (c: Client, workId: string): Promise<Window> => {
   return w;
 };
 
+// Accounts are shared within this file, except that each test spending several
+// placements gets its own: the per-user command limit (2/s, burst 4) would
+// otherwise couple unrelated tests.
 describe("placement", () => {
   it("a new user creates a work, places sticks, and finds them after logging back in", async () => {
     const c = await new Client().register("Builder");
@@ -37,7 +40,7 @@ describe("placement", () => {
   });
 
   it("rejects an intersecting placement and keeps nothing of it", async () => {
-    const c = await new Client().register();
+    const c = await shared("Placer");
     const workId = await c.createWork();
     const w = await win(c, workId);
     const first = w.command("place", { pose: { p: [0, 0.505, 0], q: FLAT } });
@@ -50,7 +53,7 @@ describe("placement", () => {
   });
 
   it("an unsupported placement is accepted and falls", async () => {
-    const c = await new Client().register();
+    const c = await shared("Faller");
     const workId = await c.createWork();
     const w = await win(c, workId);
     const id = w.command("place", { pose: { p: [0, 20, 0], q: FLAT } });
@@ -61,7 +64,7 @@ describe("placement", () => {
   });
 
   it("rejects out-of-bounds and non-finite poses", async () => {
-    const c = await new Client().register();
+    const c = await shared("Bounds");
     const workId = await c.createWork();
     const w = await win(c, workId);
     const far = await w.result(w.command("place", { pose: { p: [30, 1, 0], q: FLAT } }));
@@ -71,7 +74,7 @@ describe("placement", () => {
   });
 
   it("replaying the same command ID returns the original result without a duplicate", async () => {
-    const c = await new Client().register();
+    const c = await shared("Replayer");
     const workId = await c.createWork();
     const w = await win(c, workId);
     const commandId = randomUUID();
@@ -91,13 +94,13 @@ describe("placement", () => {
   });
 
   it("an unknown command ID is reported as unknown, not as success", async () => {
-    const c = await new Client().register();
+    const c = await shared("Placer");
     const r = await c.req("GET", `/api/commands/${randomUUID()}`);
     expect(r.body.outcome).toBe("unknown");
   });
 
   it("HTTP submission uses the same handler and lease", async () => {
-    const c = await new Client().register();
+    const c = await shared("HTTP placer");
     const workId = await c.createWork();
     const w = await win(c, workId);
     const noLease = await c.command(workId, "place", { pose: { p: [0, 0.505, -4], q: FLAT } });
@@ -110,9 +113,9 @@ describe("placement", () => {
 
 describe("authority", () => {
   it("non-members can't read or modify a private work", async () => {
-    const owner = await new Client().register();
+    const owner = await shared("Placer");
     const workId = await owner.createWork("Private");
-    const stranger = await new Client().register();
+    const stranger = await shared("Stranger");
     expect((await stranger.req("GET", `/api/works/${workId}`)).status).toBe(404);
     expect((await stranger.state(workId)).status).toBe(404);
     const r = await stranger.req("POST", "/api/commands", {
@@ -130,7 +133,7 @@ describe("authority", () => {
   });
 
   it("anonymous requests get 401 and private pages carry no data", async () => {
-    const owner = await new Client().register();
+    const owner = await shared("Placer");
     const workId = await owner.createWork("Private");
     const anon = new Client();
     expect((await anon.state(workId)).status).toBe(401);
@@ -145,7 +148,7 @@ describe("authority", () => {
   });
 
   it("stale epochs and stale views are rejected and the draft is the client's to keep", async () => {
-    const c = await new Client().register();
+    const c = await shared("Placer");
     const workId = await c.createWork();
     const w = await win(c, workId);
     const s = w.snapshot;

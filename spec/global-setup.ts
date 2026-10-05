@@ -1,8 +1,12 @@
 import type { TestProject } from "vitest/node";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 declare module "vitest" {
   export interface ProvidedContext {
     baseUrl: string;
+    signupLedger: string;
   }
 }
 
@@ -11,7 +15,7 @@ declare module "vitest" {
 // at it, so what passes there is what deploys. Locally, start your app however
 // you run it, then `pnpm check`; APP_URL says where it's listening. It waits
 // up to a minute, since some stacks take a while to boot or migrate.
-export default async function setup(project: TestProject): Promise<void> {
+export default async function setup(project: TestProject): Promise<() => void> {
   const baseUrl = process.env.APP_URL ?? "http://localhost:8080";
 
   for (let attempt = 0; ; attempt++) {
@@ -30,4 +34,12 @@ export default async function setup(project: TestProject): Promise<void> {
   }
 
   project.provide("baseUrl", baseUrl);
+
+  // Every registration attempt in the run is appended here, across all spec
+  // files, so helpers.ts can hold the run under the server's signup limit.
+  const dir = mkdtempSync(join(tmpdir(), "stillwood-signups-"));
+  const ledger = join(dir, "ledger");
+  writeFileSync(ledger, "");
+  project.provide("signupLedger", ledger);
+  return () => rmSync(dir, { recursive: true, force: true });
 }

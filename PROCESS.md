@@ -111,11 +111,27 @@ test computed free fall wrongly; another expected the wrong error code. One
 check depended on timing that shared rooms didn't guarantee, and one test
 client didn't send heartbeats.
 
+## A change after P6: owner-controlled deletion
+
+On 2026-10-06 the author gave a new directive
+([`docs/OWNER_WORK_DELETION_PROMPT.md`](docs/OWNER_WORK_DELETION_PROMPT.md))
+reversing the brief's exclusion of permanent work deletion, for whole works
+only. The agent added owner-only trash, restore and permanent deletion, then
+corrected the brief and directive in place (brief DOC-05 lists every rule
+touched). Two things were caught on the way: the brief already used SAVE-09,
+so the new rules became SAVE-10 to SAVE-12; and the first version of the new
+spec created so many accounts that a single `pnpm check` run would have hit the
+registration rate limit, so it now shares accounts across tests. Before
+shipping, the author asked for four gaps to be closed; that also corrected the
+exhibit limit to count withdrawn exhibits, as the brief's storage limit
+intends. Individual stick deletion stays out of scope.
+
 ## What's verified and what isn't
 
 The app is deployed to `comp4020-final-easton-yi.fly.dev` and serves its
-pages and assets. Against a local production build: 56 unit and restart
-tests, 39 HTTP and WebSocket checks (`pnpm check`) and 8 browser tests pass.
+pages and assets; that deployment predates the deletion change. Against a
+local production build: 65 unit and restart tests, 49 HTTP and WebSocket
+checks (`pnpm check`) and 9 browser tests pass.
 Not yet done: re-running the latency and capacity measurements on the Fly
 machine, and any session with people who didn't build it. The protocol for
 those sessions is in [`acceptance-report.md`](docs/acceptance-report.md). The

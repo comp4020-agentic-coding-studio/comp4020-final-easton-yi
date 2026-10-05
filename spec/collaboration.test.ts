@@ -1,7 +1,7 @@
 // SYNC-01..07, AUTH-02..04, AT-05, AT-06: two real authenticated sessions.
 import { randomUUID } from "node:crypto";
 import { afterEach, describe, expect, it } from "vitest";
-import { Client, FLAT, Window, sleep } from "./helpers.ts";
+import { Client, FLAT, Window, sessionOf, shared, sleep } from "./helpers.ts";
 
 const open: Window[] = [];
 afterEach(() => {
@@ -13,13 +13,13 @@ const win = async (c: Client, workId: string): Promise<Window> => {
   return w;
 };
 
-/** Owner + invited editor on one work. */
+/** Owner + invited editor on a new work (the accounts are shared; the work is not). */
 async function pair(): Promise<{ owner: Client; editor: Client; workId: string }> {
-  const owner = await new Client().register("Owner");
+  const owner = await shared("Owner");
   const workId = await owner.createWork("Shared");
   const inv = await owner.req("POST", `/api/works/${workId}/invite`);
   const token = inv.body.path.split("token=")[1];
-  const editor = await new Client().register("Editor");
+  const editor = await shared("Editor");
   const acc = await editor.req("POST", "/api/invites/accept", { token });
   expect(acc.status).toBe(200);
   return { owner, editor, workId };
@@ -27,12 +27,12 @@ async function pair(): Promise<{ owner: Client; editor: Client; workId: string }
 
 describe("invitations", () => {
   it("keeps the secret out of the path, previews without granting access, and accepts idempotently", async () => {
-    const owner = await new Client().register("Owner");
+    const owner = await shared("Owner");
     const workId = await owner.createWork("Invite test");
     const inv = await owner.req("POST", `/api/works/${workId}/invite`);
     expect(inv.body.path).toMatch(/^\/join\/#token=/);
     const token = inv.body.path.split("token=")[1];
-    const guest = await new Client().register("Guest");
+    const guest = await shared("Guest");
     const preview = await guest.req("POST", "/api/invites/preview", { token });
     expect(preview.body.workTitle).toBe("Invite test");
     expect((await guest.state(workId)).status).toBe(404); // preview isn't membership
@@ -44,14 +44,15 @@ describe("invitations", () => {
   });
 
   it("allows at most three distinct accounts", async () => {
-    const owner = await new Client().register("Owner");
+    const owner = await shared("Owner");
     const workId = await owner.createWork();
     const token = (await owner.req("POST", `/api/works/${workId}/invite`)).body.path.split("token=")[1];
-    for (let i = 0; i < 3; i++) {
-      const g = await new Client().register(`G${i}`);
+    // four accounts that aren't members of this new work
+    for (const name of ["Guest", "Late", "Editor"]) {
+      const g = await shared(name);
       expect((await g.req("POST", "/api/invites/accept", { token })).status).toBe(200);
     }
-    const fourth = await new Client().register("G4");
+    const fourth = await shared("Fourth");
     const r = await fourth.req("POST", "/api/invites/accept", { token });
     expect(r.status).toBe(409);
     expect(r.body.error.code).toBe("INVITE_FULL");
@@ -61,7 +62,7 @@ describe("invitations", () => {
     const { owner, editor, workId } = await pair();
     const first = (await owner.req("POST", `/api/works/${workId}/invite`)).body.path.split("token=")[1];
     await owner.req("POST", `/api/works/${workId}/invite`);
-    const late = await new Client().register("Late");
+    const late = await shared("Late");
     expect((await late.req("POST", "/api/invites/accept", { token: first })).body.error.code).toBe("INVITE_INVALID");
     expect((await editor.state(workId)).status).toBe(200);
     expect((await editor.req("POST", `/api/works/${workId}/invite`)).status).toBe(403);
@@ -132,7 +133,7 @@ describe("simultaneous building", () => {
 
 describe("leases and presence", () => {
   it("a second window of the same account observes until it explicitly takes over", async () => {
-    const c = await new Client().register();
+    const c = await shared("Owner");
     const workId = await c.createWork();
     const first = await win(c, workId);
     const second = await win(c, workId);
@@ -184,7 +185,7 @@ describe("losing authority", () => {
   });
 
   it("logging out ends the socket's authority", async () => {
-    const c = await new Client().register();
+    const c = await sessionOf(await shared("Owner"));
     const workId = await c.createWork();
     const w = await win(c, workId);
     await c.req("POST", "/api/auth/logout");

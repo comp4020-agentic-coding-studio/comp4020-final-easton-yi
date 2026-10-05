@@ -1,6 +1,6 @@
 // SAVE-01, SAVE-04..08, PUSH-01..03, HEIGHT-02, AUTH-04/05, AT-10, AT-11.
 import { afterEach, describe, expect, it } from "vitest";
-import { Client, FLAT, VERTICAL, Window } from "./helpers.ts";
+import { Client, FLAT, VERTICAL, Window, shared } from "./helpers.ts";
 
 const open: Window[] = [];
 afterEach(() => {
@@ -30,7 +30,7 @@ const anon = new Client();
 
 describe("versions", () => {
   it("needs a settled structure; can wait for it; the wait can be cancelled", async () => {
-    const c = await new Client().register();
+    const c = await shared("Owner");
     const workId = await c.createWork();
     const w = await win(c, workId);
     expect((await w.result(w.command("place", { pose: { p: [0, 20, 0], q: FLAT } }))).outcome).toBe("accepted");
@@ -57,13 +57,13 @@ describe("versions", () => {
   });
 
   it("is readable only by members, including after removal", async () => {
-    const owner = await new Client().register("Owner");
+    const owner = await shared("Owner");
     const workId = await owner.createWork();
     const w = await win(owner, workId);
     await placeAndSettle(w, { p: [0, 0.505, 0], q: FLAT });
     const sid = await saveVersion(w, "Private version");
     const token = (await owner.req("POST", `/api/works/${workId}/invite`)).body.path.split("token=")[1];
-    const ed = await new Client().register("Ed");
+    const ed = await shared("Ed");
     await ed.req("POST", "/api/invites/accept", { token });
     expect((await ed.req("GET", `/api/works/${workId}/versions/${sid}/geometry`)).status).toBe(200);
     await owner.req("DELETE", `/api/works/${workId}/members/${ed.user!.id}`);
@@ -75,7 +75,7 @@ describe("versions", () => {
 
 describe("exhibits and favorites", () => {
   it("a frozen exhibit doesn't change when the work collapses; withdrawal blocks public access", async () => {
-    const owner = await new Client().register("Exhibitor");
+    const owner = await shared("Exhibitor");
     const workId = await owner.createWork("Gallery piece");
     const w = await win(owner, workId);
     const pillar = await placeAndSettle(w, { p: [0, 4.005, 0], q: VERTICAL });
@@ -115,11 +115,11 @@ describe("exhibits and favorites", () => {
     expect((await w.result(w.command("push.keep", {}))).outcome).toBe("accepted");
 
     // favorites: private, idempotent, and a withdrawn placeholder
-    const fan = await new Client().register("Fan");
+    const fan = await shared("Fan");
     expect((await fan.req("PUT", `/api/favorites/${exhibitId}`)).body.favorite).toBe(true);
     expect((await fan.req("PUT", `/api/favorites/${exhibitId}`)).body.favorite).toBe(true);
     expect((await fan.req("GET", "/api/favorites")).body.favorites).toHaveLength(1);
-    const other = await new Client().register("Other");
+    const other = await shared("Other");
     expect((await other.req("GET", "/api/favorites")).body.favorites).toHaveLength(0);
 
     // not the owner: refused without revealing whose it is
@@ -142,13 +142,13 @@ describe("exhibits and favorites", () => {
   });
 
   it("only settled named versions can be exhibited, and only by the owner", async () => {
-    const owner = await new Client().register();
+    const owner = await shared("Owner");
     const workId = await owner.createWork();
     const w = await win(owner, workId);
     await placeAndSettle(w, { p: [0, 0.505, 0], q: FLAT });
     const sid = await saveVersion(w, "v");
     const token = (await owner.req("POST", `/api/works/${workId}/invite`)).body.path.split("token=")[1];
-    const ed = await new Client().register();
+    const ed = await shared("Ed");
     await ed.req("POST", "/api/invites/accept", { token });
     const framing = { yaw: 0, pitch: 1, distance: 40, targetY: 2 };
     expect((await ed.req("POST", `/api/works/${workId}/exhibits`, { snapshotId: sid, title: "x", framing })).status).toBe(403);
@@ -165,10 +165,10 @@ describe("exhibits and favorites", () => {
 
 describe("restore", () => {
   it("saves a recovery point first, bumps the epoch, matches the version, keeps best height and members, and fails stale requests", async () => {
-    const owner = await new Client().register("Owner");
+    const owner = await shared("Owner");
     const workId = await owner.createWork();
     const token = (await owner.req("POST", `/api/works/${workId}/invite`)).body.path.split("token=")[1];
-    const ed = await new Client().register("Ed");
+    const ed = await shared("Ed");
     await ed.req("POST", "/api/invites/accept", { token });
     const w = await win(owner, workId);
     const e = await win(ed, workId);
@@ -208,10 +208,10 @@ describe("restore", () => {
 
 describe("push mode", () => {
   it("blocks placement for everyone, and an owner who disconnects can't leave it locked", async () => {
-    const owner = await new Client().register("Owner");
+    const owner = await shared("Owner");
     const workId = await owner.createWork();
     const token = (await owner.req("POST", `/api/works/${workId}/invite`)).body.path.split("token=")[1];
-    const ed = await new Client().register("Ed");
+    const ed = await shared("Ed");
     await ed.req("POST", "/api/invites/accept", { token });
     const w = await win(owner, workId);
     const e = await win(ed, workId);
@@ -227,7 +227,7 @@ describe("push mode", () => {
   });
 
   it("refuses to start while the structure is moving and validates the contact point", async () => {
-    const owner = await new Client().register();
+    const owner = await shared("Owner");
     const workId = await owner.createWork();
     const w = await win(owner, workId);
     const id = (await w.result(w.command("place", { pose: { p: [0, 15, 0], q: FLAT } }))).stickId;
@@ -243,7 +243,7 @@ describe("push mode", () => {
 
 describe("archive", () => {
   it("ends live editing, hides nothing it shouldn't, keeps exhibits public, and can be undone", async () => {
-    const owner = await new Client().register();
+    const owner = await shared("Owner");
     const workId = await owner.createWork("To archive");
     const w = await win(owner, workId);
     await placeAndSettle(w, { p: [0, 0.505, 0], q: FLAT });

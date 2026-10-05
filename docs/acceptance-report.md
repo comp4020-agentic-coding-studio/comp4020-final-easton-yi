@@ -7,9 +7,9 @@ judgement that hasn't happened. All automated and browser evidence ran against
 a **local** production-mode server (`NODE_ENV=production node
 dist/server/main.js`), **not** the Fly deployment. See "Not yet verified".
 
-Latest full run: `pnpm typecheck` clean · `pnpm test:unit` 56 passed ·
-`APP_URL=… pnpm check` 39 passed (2 shipped invariants + 37 product specs) ·
-`pnpm test:e2e` 8 passed.
+Latest full run (2026-10-06, fresh local production-mode instance): `pnpm typecheck` clean · `pnpm test:unit` 65 passed ·
+`APP_URL=… pnpm check` 49 passed (2 shipped invariants + 47 product specs) ·
+`pnpm test:e2e` 9 passed.
 
 | Scenario | A | B | H | Evidence |
 | --- | --- | --- | --- | --- |
@@ -29,6 +29,10 @@ Latest full run: `pnpm typecheck` clean · `pnpm test:unit` 56 passed ·
 | AT-14 Wood quality: detail, contact, sound, animation | — | screenshots only | **pending** | `docs/evidence/*.png` (agent inspection is not H) |
 | AT-15 Shipped checks + evidence checks pass; README at `/readme/` | **partial** | — | — | `pnpm check` passes; `pnpm check:evidence` **fails** until `PROCESS.md` and a reflection exist (student-authored) |
 | AT-16 Logs alone explain activity across sessions | pass (local) | — | **pending** | `docs/logs-demo.md`, `docs/evidence/demo-server-log.jsonl` |
+| AT-17 Move to trash while collaborating (added 2026-10-06) | pass | pass | — | `spec/lifecycle.test.ts` (two connected members, moving structure, late WS/HTTP commands, invites, exhibits/thumbnails/favorites, racing command), `tests/lifecycle-restart.test.ts` failed write, `tests/e2e/lifecycle.spec.ts`, `docs/evidence/lifecycle-editor-trashed.png` |
+| AT-18 Trash and restore (added 2026-10-06) | pass | pass | — | `spec/lifecycle.test.ts` (owner-only, editor leaves a trashed work from their own list, known-ID reads, restore keeps sticks/members, exhibits withdrawn, fresh stream/epoch), `tests/lifecycle-restart.test.ts` SIGKILL, `tests/e2e/lifecycle.spec.ts`, `docs/evidence/lifecycle-trash.png` |
+| AT-19 Permanent deletion (added 2026-10-06) | pass | pass | — | `spec/lifecycle.test.ts` (refusals, success keeps accounts/unrelated work, repeats, stale command), `tests/lifecycle-restart.test.ts` (failed transaction, direct SQLite read, restart), `tests/e2e/lifecycle.spec.ts` |
+| AT-20 Exhibit limit counts withdrawn exhibits; republish uses no slot (added 2026-10-06) | pass | — | — | `spec/lifecycle.test.ts` "exhibit limit" (boundary, 3 concurrent publishes, concurrent republish), `tests/lifecycle-restart.test.ts` (over the limit from older data: republish keeps ID and geometry; creating another is refused) |
 
 ## Not yet verified
 

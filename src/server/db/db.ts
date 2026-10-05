@@ -149,6 +149,43 @@ const MIGRATIONS: string[] = [
     PRIMARY KEY (user_id, exhibit_id)
   );
   `,
+  // 2026-10-06 owner-controlled work deletion (BRIEF SAVE-10..SAVE-12).
+  // trashed_at is separate from archived, so restoring returns the work to its
+  // previous active/archived state. Favorites lose their FK to exhibits on
+  // purpose: a favorite of a permanently deleted exhibit stays as an id-only
+  // "no longer available" row the user can remove. favorites is a leaf table,
+  // so rebuilding it needs no change to foreign_keys.
+  `
+  ALTER TABLE works ADD COLUMN trashed_at INTEGER;
+  CREATE INDEX works_owner_trashed ON works(owner_id, trashed_at);
+  CREATE TABLE work_tombstones (
+    work_id TEXT PRIMARY KEY,
+    owner_id TEXT NOT NULL REFERENCES users(id),
+    deleted_at INTEGER NOT NULL
+  );
+  CREATE TABLE favorites_v2 (
+    user_id TEXT NOT NULL REFERENCES users(id),
+    exhibit_id TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    PRIMARY KEY (user_id, exhibit_id)
+  );
+  INSERT INTO favorites_v2 (user_id, exhibit_id, created_at) SELECT user_id, exhibit_id, created_at FROM favorites;
+  DROP TABLE favorites;
+  ALTER TABLE favorites_v2 RENAME TO favorites;
+  -- Durable guard: no late checkpoint, version or exhibit can mutate a trashed work.
+  CREATE TRIGGER work_states_guard_insert BEFORE INSERT ON work_states
+    WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
+    BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
+  CREATE TRIGGER work_states_guard_update BEFORE UPDATE ON work_states
+    WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
+    BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
+  CREATE TRIGGER snapshots_guard_insert BEFORE INSERT ON snapshots
+    WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
+    BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
+  CREATE TRIGGER exhibits_guard_insert BEFORE INSERT ON exhibits
+    WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
+    BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
+  `,
 ];
 
 export type DB = Database.Database;

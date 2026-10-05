@@ -342,6 +342,16 @@ app.post("/api/works/:id/archive", async (req) => {
   await rpc("works.archive", s.userId, id(req), parse(z.boolean(), (req.body as { archived?: unknown })?.archived));
   return { ok: true };
 });
+app.get("/api/collaborations/unavailable", async (req) => ({ works: await rpc("works.unavailable", (await session(req)).userId) }));
+app.get("/api/trash", async (req) => ({ works: await rpc("works.trashList", (await session(req)).userId) }));
+app.post("/api/works/:id/trash", async (req) => rpc("works.trash", (await session(req)).userId, id(req)));
+app.post("/api/works/:id/trash/restore", async (req) => rpc("works.untrash", (await session(req)).userId, id(req)));
+// Exact title, no trimming: typing it is the owner's confirmation (SAVE-12).
+const PurgeBody = z.object({ title: z.string().max(200) });
+app.post("/api/works/:id/delete-permanently", async (req) => {
+  const s = await session(req);
+  return rpc("works.purge", s.userId, id(req), parse(PurgeBody, req.body).title);
+});
 app.get("/api/works/:id/state", async (req, reply) => {
   reply.header("Cache-Control", "no-store");
   return rpc("works.state", (await session(req)).userId, id(req));

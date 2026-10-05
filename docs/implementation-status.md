@@ -5,7 +5,7 @@ The resume record for implementing `docs/BRIEF.md` (product rules) under
 Nothing here is a grade claim. Human-judgement items stay **pending** until a
 real person has tried the app.
 
-- **Current stage:** P6 (audit and handoff). P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers).
+- **Current stage:** P7 (owner-controlled work deletion, user-directed change of 2026-10-06) passes locally on top of P6 (audit and handoff). P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers). The P7 change is **not committed or deployed** yet.
 - **Next action:** deploy to Fly, then re-run `pnpm check`, `scripts/measure/visibility.ts` and `scripts/measure/capacity.ts` against the live URL; run the human sessions in `acceptance-report.md`.
 
 ## Baseline (P0, 2026-10-05)
@@ -41,15 +41,17 @@ real person has tried the app.
 | P3 | p95 ≤ 1000 ms visibility over ≥30 changes | **pass locally, Fly unverified** | M-003 (40 changes, p95 12.3 ms), M-006 (600 changes under load, p95 25.4 ms); loopback, not Fly |
 | P4 | Exhibit unchanged by collapse; withdrawal blocks API; restore invalidates stale requests; owner disconnect can't lock; restored geometry matches, members/best height kept | **pass** | `spec/versions.test.ts`, `tests/e2e/exhibit.spec.ts` |
 | P5 | AT-01..16 have evidence/status; keyboard/mobile paths; core under declared load | **pass locally, with caveats** | `docs/acceptance-report.md`; M-004..M-006; peak RSS 87% in the burst; H items pending |
+| P7b | Pre-ship follow-up: editor leave entry for trashed works; exhibit limit counts retained exhibits when creating them (boundary, concurrent); republish uses no slot, also over the limit from older data; direct trigger-guard test; deterministic spec sign-up budget | **pass locally** | `spec/lifecycle.test.ts` (10), `tests/trash-guard.test.ts` (5), `tests/lifecycle-restart.test.ts` (4, incl. over-limit stored rows), `tests/e2e/lifecycle.spec.ts` (leave + Help), spec run: 25 accounts + 3 refused attempts against budget 40 |
+| P7 | Owner-only trash/restore/permanent delete; trash with two connected members; late commands rejected; exhibits/thumbnails/favorites withdrawn; restore keeps scene and permitted members, needs fresh room; delete refused outside trash/wrong title/non-owner; dependent rows gone, accounts and unrelated work kept; repeats, race and failed writes safe; restart | **pass locally** | `spec/lifecycle.test.ts` (8), `tests/lifecycle-restart.test.ts` (3, SIGKILL + direct SQLite reads + fail-writes), `tests/e2e/lifecycle.spec.ts` (two accounts), migration run on a copy of the dev DB (60 works kept, `foreign_key_check` empty) |
 
 ## Commands and results (latest run)
 
 | Command | Result |
 | --- | --- |
 | `pnpm typecheck` | clean |
-| `pnpm test:unit` | 56 passed (physics/rim 18, placement 19, placement maths 14, restart 6) |
-| `APP_URL=http://localhost:8080 pnpm check` against `NODE_ENV=production node --max-old-space-size=64 --max-semi-space-size=2 dist/server/main.js` | 39 passed (2 shipped invariants + 37 contract specs) |
-| `APP_URL=http://localhost:8080 pnpm test:e2e` (same server) | 8 passed |
+| `pnpm test:unit` (2026-10-06, after P7b) | 65 passed (physics/rim 18, placement 19, placement maths 14, restart 6, lifecycle restart 4, trash guard 5) |
+| `APP_URL=http://localhost:8090 pnpm check` against a fresh `NODE_ENV=production COOKIE_SECURE=0 DATA_DIR=/tmp/… node dist/server/main.js` (2026-10-06, after P7b) | 49 passed (2 shipped invariants + 47 contract specs, 10 of them lifecycle). One run makes 28 registration attempts (25 accounts, 3 deliberately refused); the test client refuses to exceed 40, two thirds of the per-IP burst of 60, with no credit for refill |
+| `APP_URL=http://localhost:8090 pnpm test:e2e` (fresh instance, 2026-10-06) | 9 passed (lifecycle walkthrough re-run alone after P7b: passed) |
 | `pnpm check:evidence` | **fails**: `PROCESS.md` still the template; no `reflections/crit-*.md` (student-authored) |
 
 ## Rule coverage
@@ -64,6 +66,7 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | DOC-02 | Initial parameters in `src/shared/config.ts`; every change logged with before/after in `docs/measurements.md` | Measurement log | M-001..M-006 | verified automatically | Feel parameters (friction, snap reach) untuned without people |
 | DOC-03 | Core concept kept; design decisions attributed in ADRs | — | `docs/adr/` | in progress | — |
 | DOC-04 | Intermediate builds not presented as complete | This table | — | in progress | — |
+| DOC-05 | Dated change record in the brief; directive v1.1 note; contradicted rules corrected in place | Document audit | `docs/BRIEF.md` DOC-05, `docs/INITIAL_PROMPT.md` header and §4.5 | verified automatically | — |
 | GOOD-01 | Product framing in UI and README | — | — | in progress | README is a draft for the student |
 | GOOD-02 | Promises map to PLACE/SYNC/PHYS/SAVE rules below; ADRs 0002–0006 | — | `docs/adr/` | implemented / unverified | Whether they hold for people is H |
 | GOOD-03 | Automated checks for permissions/persistence; human protocol pending | — | — | in progress | Needs ≥2 uninvolved people; **not done** |
@@ -75,7 +78,7 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | WORLD-01 | Y-up, u units, L=8, 1×1, uniform mass | fixtures | `config.ts`, `physics.ts` | verified automatically | — |
 | WORLD-02 | Table collider = visible table (v2: cylinder + flush 128-gon trimesh ring, drawn as the same 128-gon); creation bounds | fixtures | `placement.test.ts`, `physics.test.ts` rim | verified automatically | — |
 | WORLD-03 | Cleanup below −20 u / beyond r=60, saved; receipts keep history | fixture | `physics.test.ts` "cleanup" | verified automatically | — |
-| WORLD-04 | 200 sticks, 4 leases, 3 rooms; offline last-saved view; idle-room eviction; owned/fav/exhibit limits | capacity profile + specs | M-006, `capacity-local.json` | verified automatically (local) | **Not measured on Fly**; burst RSS 87% locally |
+| WORLD-04 | 200 sticks, 4 leases, 3 rooms; offline last-saved view; idle-room eviction; owned/fav limits; exhibit limit counts retained exhibits, checked when creating one inside the write transaction; republish reuses its row | capacity profile + specs | M-006, `capacity-local.json` | verified automatically (local) | **Not measured on Fly**; burst RSS 87% locally |
 | WORLD-05 | No stretching/breaking; visual bevel 0.03 u; seed is visual only | — | `viewport.ts`, `wood.ts` | implemented / unverified | — |
 | CAM-01 | Camera only moved by local input | 2-browser e2e | `together.spec.ts` | verified in browser | — |
 | CAM-02 | Orbit, zoom, target height, focus stick, fit all | e2e | `access.spec.ts` (orbit, focus from list) | verified in browser | — |
@@ -105,19 +108,22 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | SYNC-06 | One lease per account; takeover; heartbeat keeps ghost; 15 s stale removal | spec | `collaboration.test.ts` | verified automatically | — |
 | SYNC-07 | Logout/removal/expiry end socket authority; background return re-joins | spec | `collaboration.test.ts` | verified automatically | Background-return path not browser-tested |
 | AUTH-01 | Handle/display name/password; one-use rotating recovery code | specs | `accounts.test.ts` | verified automatically | — |
-| AUTH-02 | Owner/editor/visitor; every mutation re-checked in the coordinator | specs | `collaboration.test.ts` editors can't do owner things | verified automatically | — |
-| AUTH-03 | Invites: hashed, 7 days, 3 users, fragment token, one active, idempotent accept | specs + e2e | `collaboration.test.ts` invitations | verified automatically | 7-day expiry not time-travel tested |
+| AUTH-02 | Owner/editor/visitor; every mutation re-checked in the coordinator; owner-only trash/restore/delete (`requireOwner(…, {allowTrashed})`) | specs | `collaboration.test.ts` editors can't do owner things; `lifecycle.test.ts` authority | verified automatically | — |
+| AUTH-03 | Invites: hashed, 7 days, 3 users, fragment token, one active, idempotent accept; join page and Work panel state the owner's publication/deletion authority | specs + e2e | `collaboration.test.ts` invitations; `tests/e2e/lifecycle.spec.ts` | verified in browser | 7-day expiry not time-travel tested |
 | AUTH-04 | Per-stick author kept after removal; exhibit attribution frozen at publish | specs | `collaboration.test.ts`, `versions.test.ts` | verified automatically | — |
-| AUTH-05 | Private works 404 for non-members; public projection allowlisted (no IDs, members, blobs); leave | specs | `versions.test.ts` | verified automatically | — |
+| AUTH-05 | Private works 404 for non-members; trashed works 410 `TRASHED` for members (no data), 404 for strangers; public projection allowlisted (no IDs, members, blobs); leave, also while trashed | specs | `versions.test.ts`, `lifecycle.test.ts` | verified automatically | — |
 | SAVE-01 | Current state / immutable snapshots / exhibits referencing snapshots; favorites reference exhibits | specs | `versions.test.ts` | verified automatically | — |
 | SAVE-02 | Full snapshot + receipt in one transaction before success | restart + failed-write tests | `restart.test.ts` | verified automatically | — |
 | SAVE-03 | 500 ms checkpoints; "Placement saved; structure moving" vs "Structure saved"; SIGTERM saves | restart test | `restart.test.ts` | verified automatically | — |
 | SAVE-04 | Stable-only versions; "Save when settled" pending, queryable, cancellable | specs | `versions.test.ts` | verified automatically | Worker-restart "interrupted" path untested |
 | SAVE-05 | Owner restore with protection point, epoch++, full resync, stale requests fail | specs | `versions.test.ts` restore | verified automatically | — |
-| SAVE-06 | Exhibits from stable named versions; text-only description; 3D read-only viewer | specs + e2e | `versions.test.ts`, `exhibit.spec.ts` | verified in browser | — |
-| SAVE-07 | Newest-first gallery, name search; private favorites; withdrawal placeholder; revalidated caching | specs + e2e | `versions.test.ts`, `exhibit.spec.ts` | verified in browser | — |
-| SAVE-08 | Archive/unarchive (exhibits stay); 30 named, 10 recovery ring; referenced versions protected | specs | `versions.test.ts` | verified automatically | Limits at 30/10 not exercised to the boundary |
+| SAVE-06 | Exhibits from stable named versions; text-only description; 3D read-only viewer; republish same snapshot; stays withdrawn after restore from trash | specs + e2e | `versions.test.ts`, `exhibit.spec.ts`, `lifecycle.test.ts` | verified in browser | — |
+| SAVE-07 | Newest-first gallery, name search; private favorites; withdrawal placeholder; "No longer available" id-only placeholder after permanent deletion; revalidated caching | specs + e2e | `versions.test.ts`, `exhibit.spec.ts`, `lifecycle.test.ts`, `tests/e2e/lifecycle.spec.ts` | verified in browser | — |
+| SAVE-08 | Archive/unarchive (exhibits stay); 30 named, 10 recovery ring; referenced versions protected; distinct from trash/delete | specs | `versions.test.ts`, `lifecycle.test.ts` (archived work returns to archive) | verified automatically | Limits at 30/10 not exercised to the boundary |
 | SAVE-09 | Empty room settles ≤10 s then suspends with velocities; resumes on return | indirect | `restart.test.ts` resume; idle unload in logs | implemented / unverified | No direct test of the 10 s moving-suspend path |
+| SAVE-10 | `works.trash`: one transaction saves the live envelope, withdraws exhibits, revokes invites, sets `trashed_at`, bumps epoch; then closes the room and sends `access.ended TRASHED`; SQLite triggers block late writes; real counts in the dialog | specs + restart + direct DB + e2e | `lifecycle.test.ts` (two connected members, moving, race), `lifecycle-restart.test.ts` fail-writes, `trash-guard.test.ts`, `tests/e2e/lifecycle.spec.ts` | verified in browser | — |
+| SAVE-11 | `/works/?view=trash` owner-only list; editor's "Unavailable collaborations" (title + status, Leave) via `GET /api/collaborations/unavailable`; `works.untrash` clears `trashed_at` only; previous archived state kept; no room reopened | specs + restart + e2e | `lifecycle.test.ts`, `lifecycle-restart.test.ts` SIGKILL, `tests/e2e/lifecycle.spec.ts` | verified in browser | — |
+| SAVE-12 | `works.purge`: trashed + owner + exact title; one transaction over all work-scoped tables; tombstone for idempotency; favorites kept as id-only rows | specs + datastore + e2e | `lifecycle.test.ts`, `lifecycle-restart.test.ts` (direct SQLite read, `foreign_key_check`), `tests/e2e/lifecycle.spec.ts` | verified in browser | Removes active data only; Fly volume snapshots/backups and logs are not affected |
 | PUSH-01 | Owner, stable scene, protection snapshot, placement blocked for all | specs | `versions.test.ts` push mode | verified automatically | — |
 | PUSH-02 | One bounded impulse at a validated surface point; horizontal only | specs | `versions.test.ts` | verified automatically | Browser push flow not e2e-tested |
 | PUSH-03 | Keep/restore; 10 s owner-away lock clear; restart clears locks | specs | `versions.test.ts` | verified automatically | — |
@@ -131,7 +137,7 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | ACCESS-03 | 1920×1080 and 390×844, visible focus, dialogs restore focus, WebGL fallback with readable info | e2e | `access.spec.ts` | verified in browser | WebGL-off fallback not browser-tested |
 | OPS-01 | Distinct failure states; DB failure pauses room; NaN pauses | restart test | failed-write test | verified automatically | NaN path not injected |
 | OPS-02 | Shadows → pixel ratio degradation | — | `adaptQuality` | implemented / unverified | — |
-| OPS-03 | Structured JSON semantic logs; actor names, no secrets | log audit (920 lines, 0 secret matches) | `logs-demo.md` | verified automatically | — |
+| OPS-03 | Structured JSON semantic logs; actor names, no secrets; `work.trash`/`work.untrash`/`work.purge` with IDs and counts only | log audit (920 lines, 0 secret matches) | `logs-demo.md` | verified automatically | Lifecycle events not yet in `logs-demo.md` |
 | OPS-04 | Live `flyctl logs` tail; log-only demo | local demo | `logs-demo.md`, `demo-server-log.jsonl` | implemented / unverified | Needs a Fly run |
 
 ## Acceptance scenarios

@@ -1,6 +1,8 @@
 # Implementation directive — Stillwood
 
-Version 1.0 · 2026-10-05. Companion product contract: `brief.md`.
+Version 1.1 · 2026-10-06. Companion product contract: `brief.md`.
+
+> **Change of 2026-10-06 (user-directed).** `OWNER_WORK_DELETION_PROMPT.md` reversed this directive's rule “Do not permanently delete works” for whole works only. It adds owner-only trash, restore and permanent deletion (brief SAVE-10..SAVE-12, AT-17..AT-19); §4.2, §4.4, §4.5, §5.1, §5.2, §5.4, §7, §8 (P7) and §9.1 are corrected to match the implementation. Stick deletion, per-person undo and voting remain out of scope. A same-day follow-up made the exhibit limit count retained exhibits (§5.4) and added the editor's leave entry (§4.5, §5.1). Sections below that describe P0–P6 are kept as the original plan.
 
 You are implementing a deployed COMP4020 final project in the user's existing course repository. This is an execution directive, not a request to produce another proposal. Read this entire file and `brief.md` before changing code. Implement, run, inspect and correct the application in gated increments. Product-facing language is English. Keep the original wood-building concept intact.
 
@@ -155,7 +157,7 @@ Create tables only when the stage needs them. Use foreign keys, unique constrain
 | --- | --- |
 | users | id, canonical unique handle, display name, password salt/hash/parameters, recovery digest, created time |
 | sessions | token digest, user id, CSRF secret/digest, expiry, last-seen, revoked time |
-| works | id, owner id, title, archived flag, world epoch, command sequence, best height, creation/update time |
+| works | id, owner id, title, archived flag, **trashed time (null unless in the trash; independent of archived, so restore returns to the previous state)**, world epoch, command sequence, best height, creation/update time |
 | memberships | work id + user id unique, owner/editor role, joined time; owner membership protected |
 | invites / invite_acceptances | token digest, work, issuer, expiry, revoked time, maximum uses; unique invite+user acceptance |
 | work_states | work id, native world blob, app metadata JSON, tick, engine/config/schema versions, checksum, saved time |
@@ -163,7 +165,8 @@ Create tables only when the stage needs them. Use foreign keys, unique constrain
 | command_receipts | actor id + command id unique, work id, request digest, outcome, seq/epoch, response JSON, committed time |
 | snapshots | id, work, creator, kind, immutable world envelope, title, height, source epoch/seq, stable flag, creation time |
 | exhibits | id, work, snapshot id, title/description, server-generated public geometry, framing, attribution, published/withdrawn time |
-| favorites | user id + exhibit id unique, creation time |
+| favorites | user id + exhibit id unique, creation time. **No foreign key to exhibits** (migration 2): a favorite of a permanently deleted exhibit stays as an id-only row rendered “No longer available”; adding a favorite still checks the exhibit is public |
+| work_tombstones | work id, owner id, deletion time only; makes a repeated permanent delete idempotent for the owner and a 404 for everyone else. No title, geometry or membership |
 
 Store the <=200 stick records (IDs, authors, created command, texture seed and native handle association) inside the same world envelope as the native snapshot. This prevents a per-frame SQL row per transform and prevents mixed-time metadata. Persist removed-stick contribution/audit facts in command receipts; do not accidentally put 60 Hz frames in an append-only event table. Snapshot blobs and public geometry are distinct representations.
 
@@ -202,11 +205,22 @@ Restore is one coordinator transaction: check owner, expected current epoch and 
 
 Push preparation is owner-only and serialized after earlier submitted commands. Revalidate stability, store the protected version, then enter `push-selecting`. Placement is blocked with a reason; cameras stay independent. `push-confirm` accepts one body ID, validated surface contact and normalized horizontal direction, and applies the fixed impulse with wake-up. Use `push-running`, then `push-review`, followed by keep or restore. Allow cancel before impulse. Give `push-selecting` a 60 s idle timeout. Any owner disconnect starts the brief's 10 s recovery policy, which clears the lock and keeps current state/checkpoint. Restart clears transient push locks and announces recovery. Mark motion originating from an interrupted push in the persisted envelope so best-height updates remain suppressed until that motion settles, even after a restart.
 
-Archive serializes with room operations, captures current state, marks read-only and closes editor leases. Unarchive is owner-only. Do not permanently delete works. Unpublishing immediately removes public geometry access, invalidates cached thumbnail responses and turns favorites into withdrawn placeholders. A withdrawn exhibit may be republished by the owner under the same unchanged snapshot, but title/text changes must not rewrite the frozen geometry.
+Archive serializes with room operations, captures current state, marks read-only and closes editor leases. Unarchive is owner-only. Archive never deletes anything; whole-work deletion goes through the trash (§4.5). Unpublishing immediately removes public geometry access, invalidates cached thumbnail responses and turns favorites into withdrawn placeholders. A withdrawn exhibit may be republished by the owner under the same unchanged snapshot; it reuses its row and uses no additional slot (§5.4). Title/text changes must not rewrite the frozen geometry.
 
 Archiving does not withdraw existing exhibits; make that explicit in the confirmation UI. Published attribution is a frozen public projection, not a live query that exposes new private members. Changing a display name later does not change the historic exhibit attribution automatically.
 
 Cap snapshots as specified by the brief. Protect references with foreign keys; automatic cleanup cannot delete published or active recovery targets. Unreferenced manual versions may be explicitly deleted by owner after confirmation. Use a bounded recovery ring for automatically created protection states. Avoid duplicating hundreds of checkpoints as named snapshots.
+
+### 4.5 Trash, restore and permanent deletion (added 2026-10-06)
+
+All three run as one coordinator call each, so no room command, tick or checkpoint interleaves. Authority: `requireOwner(..., { allowTrashed: true })`; editors get `NOT_OWNER` (403), non-members `NOT_FOUND` (404), anonymous `UNAUTHENTICATED` (401). Every other member path treats a trashed work as `TRASHED` (410, with an explanation and no data) for members and `NOT_FOUND` for strangers; only `members.leave` also accepts a trashed work.
+
+- **Trash** (`works.trash`). In one `durable()` transaction: write the live room's current envelope if the room isn't paused (a paused room's memory isn't trusted; the last durable state already holds every acknowledged placement), set `withdrawn_at` on every public exhibit, revoke active invites, set `trashed_at` and increment `world_epoch`. On failure: `SAVE_FAILED`, nothing changed, room still live. After commit: cancel waiting saves, send `access.ended {reason: "TRASHED", message}` to every window in the room and every read-only window viewing the work, drop leases and drafts, free the world and remove the room without another save. Already trashed: success with `alreadyTrashed`. Works in any room mode, including `push-running` and moving.
+- **Durable guard.** SQLite triggers (migration 2) abort any insert/update of `work_states`, or insert of `snapshots` or `exhibits`, for a trashed work, so no late writer can revive or change it. `activate()` refuses trashed works; the epoch increment makes pre-trash commands `STALE_WORLD` after a restore.
+- **Editor's view** (`works.unavailable`, `GET /api/collaborations/unavailable`). For the signed-in editor only: `{id, title, status: "trashed-by-owner"}` for each trashed work they still belong to, so My works can offer “Leave this collaboration” (`members.leave`). No scene, versions, members or trash access.
+- **Restore** (`works.untrash`). Clear `trashed_at` only. Memberships, revoked invites and withdrawn exhibits stay as they are; no room opens; the next join activates a fresh stream from the durable state. Already active: success with `alreadyRestored`.
+- **Permanent delete** (`works.purge`). Tombstone first (owner: `alreadyDeleted`, others: 404); then owner, `trashed_at` set (`NOT_TRASHED` 409) and exact stored title (`TITLE_MISMATCH` 422). One transaction deletes invite acceptances, invites, exhibits, snapshots, command receipts, previous and current work state, memberships and the work row, and inserts the tombstone. Foreign keys stay on throughout. Users, other works and favorites rows are untouched. A failed write deletes nothing.
+- **Logs.** `work.trash` (exhibits withdrawn, invites revoked, windows notified, live/moving), `work.untrash`, `work.purge` (counts of versions, exhibits, members). IDs and counts only.
 
 ## 5. HTTP, WebSocket and reconnect contracts
 
@@ -217,7 +231,7 @@ Use `/api/` for JSON and the brief's paths for pages. Implement these capabiliti
 | Group | Endpoints / purpose |
 | --- | --- |
 | Session | register, login, logout, current session+CSRF token, password recovery and recovery-code rotation |
-| Works | list mine, create, read member metadata/state, rename, archive/unarchive |
+| Works | list mine (trashed excluded), create, read member metadata/state, rename, archive/unarchive; owner-only `GET /api/trash`, `POST /api/works/:id/trash`, `POST /api/works/:id/trash/restore`, `POST /api/works/:id/delete-permanently {title}` (§4.5); editor-only `GET /api/collaborations/unavailable` |
 | Members | list, invite creation/revocation, accept invitation, remove editor, leave collaboration |
 | Commands | submit placement/push/restore using the same coordinator handler as WS; query own command result |
 | Versions | list/create/delete unreferenced versions; save-when-stable uses the command lifecycle |
@@ -226,7 +240,7 @@ Use `/api/` for JSON and the brief's paths for pages. Implement these capabiliti
 | Health | lightweight liveness; readiness includes coordinator and usable DB |
 | README | server-rendered full Markdown content, ordered headings in initial HTML |
 
-No mutation through GET. Private pages may deliver a generic shell, but private data endpoints must authenticate; unauthenticated requests never receive embedded private geometry. Use coherent 401/403/404/409/422/429/503 responses and stable error codes such as `STALE_WORLD`, `COLLISION`, `ROOM_FULL`, `NOT_EDITOR`, `SAVE_FAILED`. Avoid revealing whether another user's private work exists through detailed 403 messages.
+No mutation through GET. Private pages may deliver a generic shell, but private data endpoints must authenticate; unauthenticated requests never receive embedded private geometry. Use coherent 401/403/404/409/410/422/429/503 responses and stable error codes such as `STALE_WORLD`, `COLLISION`, `ROOM_FULL`, `NOT_EDITOR`, `SAVE_FAILED`, `TRASHED`, `NOT_TRASHED`, `TITLE_MISMATCH`. Avoid revealing whether another user's private work exists through detailed 403 messages.
 
 The public exhibit response is an allowlisted projection, not serialization of a DB row or raw native snapshot. Cache immutable geometry only while still public: responses must require revalidation so withdrawal cannot be bypassed by a long-lived fresh cache. Do not use a service worker that serves private/public geometry indefinitely without checking permissions.
 
@@ -253,7 +267,7 @@ type Command = {
 // Actor identity is derived from the authenticated socket/session, not this payload.
 ```
 
-Client messages: authenticated `room.join`, `lease.takeover`, `draft.start`, `draft.pose`, `draft.end`, command, `command.query`, heartbeat and allowlisted semantic interaction-end telemetry. Server messages: `room.snapshot`, `presence`, `draft.pose`, `draft.removed`, `world.frame`, `command.result`, `save.status`, `lease.changed`, `room.mode`, `room.reset`, `error` and heartbeat response.
+Client messages: authenticated `room.join`, `lease.takeover`, `draft.start`, `draft.pose`, `draft.end`, command, `command.query`, heartbeat and allowlisted semantic interaction-end telemetry. Server messages: `room.snapshot`, `presence`, `draft.pose`, `draft.removed`, `world.frame`, `command.result`, `save.status`, `lease.changed`, `room.mode`, `room.reset`, `access.ended` (logout, expiry, removal, leaving, archive, and `TRASHED` with an explanatory message), `error` and heartbeat response.
 
 `room.snapshot` includes work/world IDs, role, lease status, active mode, current full public-to-member geometry/poses, relevant metadata, current heights, last persisted tick and server timestamps. It never includes secrets or native blobs. `world.frame` includes stream, epoch, command sequence, tick, server monotonic timestamp, full bounded poses/sleep state and compact authoritative collision events. Using full frames makes intentional dropping of obsolete frames safe. Stable rooms send no repeated 20 Hz full frames; they still send heartbeat/presence and immediate changes.
 
@@ -275,7 +289,7 @@ Reconnect backoff: 0.5, 1, 2, 4, then max 8 s, with jitter; stop on deliberate l
 
 Use per-user command limit initially 2 world mutations/s with burst 4, one pending placement per draft; cap each room's queued world commands at 16. Reject overload before taking an unbounded queue. Rate-limit code returns a retry time without losing drafts.
 
-Bound ordinary storage admission too: initially 20 owned works/account, 30 published exhibits/work, 100 favorites/account and at most one active invite/work (creating another revokes the prior token). These are transparent initial resource limits, not a billing system; surface limits before the user loses input. Match the brief's 30 named versions and 10 unreferenced recovery points, and keep referenced versions protected. Monitor the actual volume capacity; when the free-space reserve is reached, reject new durable mutations with a clear storage-full state while preserving readable data. Do not delete existing works automatically to make space. Record any adjusted limits consistently in user help, server config and tests.
+Bound ordinary storage admission too: initially 20 owned works/account, 30 retained exhibits/work (public or withdrawn; withdrawing frees no slot; creating an exhibit is checked inside its write transaction, so concurrent publishes can't overshoot; republish reuses the existing row and is not limited, even when older data exceeds 30), 100 favorites/account and at most one active invite/work (creating another revokes the prior token). These are transparent initial resource limits, not a billing system; surface limits before the user loses input. Match the brief's 30 named versions and 10 unreferenced recovery points, and keep referenced versions protected. Monitor the actual volume capacity; when the free-space reserve is reached, reject new durable mutations with a clear storage-full state while preserving readable data. Do not delete existing works automatically to make space. Archived and trashed works count toward the owned-works limit; only an owner's permanent deletion frees a slot. Record any adjusted limits consistently in user help, server config and tests.
 
 Per socket, coalesce obsolete full frames and previews above 256 KiB buffered output. Do not silently discard command outcomes; if the client remains above 1 MiB, close with a reconnect/resync reason. Persisted outcomes remain queryable. Set an inbound message cap (initially 16 KiB), validate before forwarding to the worker, and disable unnecessary compression until memory/CPU are measured.
 
@@ -308,7 +322,7 @@ Use structured JSON to stdout, with a common schema:
 {"time":"ISO8601","level":"info","event":"stick.place","actorId":"opaque-id","workId":"opaque-id","commandId":"uuid","epoch":2,"seq":14,"outcome":"accepted","durationMs":18}
 ```
 
-Log application events, not credentials or full request bodies. Include rejection reason codes, reconnects, member changes, snapshot/restore/publish/withdraw/favorite events, archive, physics/save faults, overload and mode transitions. Include IDs that let the student follow each room. Server-confirmed mutations and client-reported local interactions must be distinguishable: mark camera/adjustment summaries as `source: client-reported` with authenticated actor identity. At most one semantic summary per completed gesture, coalesced/rate-limited; no per-pixel tracking.
+Log application events, not credentials or full request bodies. Include rejection reason codes, reconnects, member changes, snapshot/restore/publish/withdraw/favorite events, archive, trash/untrash/purge (IDs and counts, never titles, tokens or snapshots), physics/save faults, overload and mode transitions. Include IDs that let the student follow each room. Server-confirmed mutations and client-reported local interactions must be distinguishable: mark camera/adjustment summaries as `source: client-reported` with authenticated actor identity. At most one semantic summary per completed gesture, coalesced/rate-limited; no per-pixel tracking.
 
 A real `flyctl logs` tail is sufficient for Crit 10. Provide a short log-only demo script and known event examples produced by actual test actions; do not invent log evidence. Preserve logging beyond that crit. No external tracking SDK. Avoid verbose geometry, IP addresses, auth URLs or secrets in normal app logs. Keep metric labels bounded; do not use every user/work ID as a long-lived histogram label.
 
@@ -368,13 +382,19 @@ Run the complete required gates once the app is ready. Audit every brief ID, not
 
 Do not claim HD, full marks, real user satisfaction or future crit completion. State what is implemented, what was actually observed, and what remains outside available access or requires the student's authorship.
 
+### P7 — Owner-controlled work deletion (change of 2026-10-06)
+
+Inspect the current archive, withdrawal and ownership code first; implement §4.5 within the existing coordinator, schema migrations and UI; then reconcile the brief.
+
+Gate: the AT-17..AT-19 cases in §9.1 pass over HTTP/WebSocket; trash survives SIGKILL; a failed write leaves the work active (trash) or intact in the trash (delete); a direct read of the datastore after deletion finds no work-scoped rows and both accounts intact; a two-account browser walkthrough covers build, publish, trash while connected, gallery/favorites, restore, trash and permanent delete. Existing suites still pass.
+
 ## 9. Verification strategy and concrete fixtures
 
 ### 9.1 Product contracts over running HTTP
 
 Keep the provided harness mechanics intact. Where shared code unit tests are valuable, run them in addition to—not instead of—real HTTP checks. Create isolated test accounts/works with unique names. Never wipe the production DB to get clean tests.
 
-Required HTTP cases: authentication/session lifecycle; work privacy; invite expiry/reuse/revocation; contributor versus role; mutation without editor rights; idempotency replay and payload conflict; finite/bounded transform validation; snapshot immutability; exhibit/favorite withdrawal; archive; stale epoch; server-rendered README completeness. Course invariants must not be edited.
+Required HTTP cases: authentication/session lifecycle; work privacy; invite expiry/reuse/revocation; contributor versus role; mutation without editor rights; idempotency replay and payload conflict; finite/bounded transform validation; snapshot immutability; exhibit/favorite withdrawal; archive; stale epoch; server-rendered README completeness. Since 2026-10-06 also: trash, restore and permanent delete refused for editors, strangers and anonymous callers; trash with two connected members closes the room, revokes invites, rejects late commands and withdraws every exhibit; trashed works unreadable by known ID; restore keeps acknowledged sticks and permitted members, keeps exhibits withdrawn and requires a fresh stream; permanent delete refused outside the trash or with a wrong title; successful deletion keeps both accounts and unrelated work; repeated requests and a racing command are safe; an editor can list and leave a trashed collaboration without private data and isn't re-added by restore; the exhibit limit at its boundary, with withdrawn exhibits counted and concurrent publishes; republish allowed with the same ID and geometry, including over the limit from older data. A direct database test covers the trash-guard triggers (`tests/trash-guard.test.ts`). Contract specs keep sign-up attempts under two thirds of the per-IP burst by reusing accounts within a file (`shared()` in `spec/helpers.ts`), and the test client refuses to exceed that budget; production limits are unchanged. Failed-transaction and restart cases use disposable data directories (`tests/lifecycle-restart.test.ts`). Course invariants must not be edited.
 
 ### 9.2 Physics fixtures
 

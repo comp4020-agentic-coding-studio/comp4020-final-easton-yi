@@ -29,6 +29,9 @@ export const ErrorCodes = [
   "ROOM_LIMIT",
   "ROOM_PAUSED",
   "ARCHIVED",
+  "TRASHED",
+  "NOT_TRASHED",
+  "TITLE_MISMATCH",
   "MODE",
   "NOT_STABLE",
   "SAVE_FAILED",
@@ -221,6 +224,6 @@ export type ServerMessage =
   | { type: "lease.changed"; lease: { leaseId: string } | null; reason?: string }
   | { type: "room.mode"; mode: RoomMode; actorName?: string; pushOwnerAway?: boolean; message?: string }
   | { type: "room.reset"; reason: "restore" | "recovery" }
-  | { type: "access.ended"; reason: "LOGGED_OUT" | "SESSION_EXPIRED" | "REMOVED" | "LEFT" | "ARCHIVED" }
+  | { type: "access.ended"; reason: "LOGGED_OUT" | "SESSION_EXPIRED" | "REMOVED" | "LEFT" | "ARCHIVED" | "TRASHED"; message?: string }
   | { type: "error"; code: ErrorCode; message: string }
   | { type: "heartbeat.ok"; serverTime: number };

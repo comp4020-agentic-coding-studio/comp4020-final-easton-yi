@@ -96,18 +96,41 @@ const durable = <T>(f: () => T): T => {
 
 const membership = (workId: string, userId: string) => store.q.member.get(workId, userId) ?? null;
 
-const requireMember = (workId: string, userId: string): { work: WorkRow; role: "owner" | "editor" } => {
+const trashedMessage = (role: "owner" | "editor"): string =>
+  role === "owner"
+    ? "This work is in your trash. Restore it from My works → Trash to use it again."
+    : "The owner has moved this work to the trash, so it isn't available. Only the owner can restore it; you can leave it from My works.";
+
+const requireMember = (workId: string, userId: string, opts: { allowTrashed?: boolean } = {}): { work: WorkRow; role: "owner" | "editor" } => {
   const work = store.q.work.get(workId);
   const m = work && membership(workId, userId);
   // One answer for "missing" and "not yours", so private works don't leak.
   if (!work || !m) throw new AppError("NOT_FOUND", "That work doesn't exist or you don't have access to it.");
+  // Members already know the work exists, so they get an explanation, never data.
+  if (work.trashed_at != null && !opts.allowTrashed) throw new AppError("TRASHED", trashedMessage(m.role));
   return { work, role: m.role };
 };
 
-const requireOwner = (workId: string, userId: string): WorkRow => {
-  const { work, role } = requireMember(workId, userId);
+const requireOwner = (workId: string, userId: string, opts: { allowTrashed?: boolean } = {}): WorkRow => {
+  const { work, role } = requireMember(workId, userId, opts);
   if (role !== "owner") throw new AppError("NOT_OWNER", "Only the owner can do that.");
   return work;
+};
+
+/**
+ * WORLD-04 storage bound on creating exhibits: every retained exhibit counts,
+ * public or withdrawn, since a withdrawn one keeps its frozen geometry.
+ * Republishing reuses its row (same ID, same geometry) and is never checked.
+ * Call inside the write transaction: the coordinator serializes requests.
+ */
+const requireExhibitSlot = (workId: string): void => {
+  const n = store.db.prepare<[string], { n: number }>("SELECT COUNT(*) AS n FROM exhibits WHERE work_id = ?").get(workId)!.n;
+  if (n >= LIMITS.exhibitsPerWork) {
+    throw new AppError(
+      "LIMIT",
+      `This work has ${n} exhibits, counting withdrawn ones; the limit is ${LIMITS.exhibitsPerWork}. Withdrawing doesn't free a slot, but you can republish a withdrawn exhibit.`,
+    );
+  }
 };
 
 const displayName = (userId: string): string => store.q.userById.get(userId)?.display_name ?? "Former member";
@@ -136,6 +159,7 @@ const activate = (workId: string): Room => {
   if (existing) return existing;
   const row = store.q.work.get(workId);
   if (!row) throw new AppError("NOT_FOUND", "That work doesn't exist or you don't have access to it.");
+  if (row.trashed_at != null) throw new AppError("TRASHED", "This work is in the trash.");
   if (row.archived) throw new AppError("ARCHIVED", "This work is archived. The owner can unarchive it to continue.");
   if (rooms.size >= LIMITS.activeRooms) {
     // A settled room nobody is in is already saved and isn't stepped; its slot
@@ -275,12 +299,25 @@ const endAccess = (conn: Conn, reason: "LOGGED_OUT" | "SESSION_EXPIRED" | "REMOV
 
 const joinRoom = (conn: Conn, workId: string): void => {
   if (conn.workId) leaveRoom(conn, "switch");
-  const { work, role } = requireMember(workId, conn.userId);
+  let access: ReturnType<typeof requireMember>;
+  try {
+    access = requireMember(workId, conn.userId);
+  } catch (e) {
+    if (isAppError(e) && e.code === "TRASHED") {
+      send([conn.connId], { type: "access.ended", reason: "TRASHED", message: e.message });
+      return;
+    }
+    throw e;
+  }
+  const { work, role } = access;
   let room: Room;
   try {
     room = activate(workId);
   } catch (e) {
     if (isAppError(e) && (e.code === "ROOM_LIMIT" || e.code === "ARCHIVED")) {
+      // remembered so a later trash can tell this read-only window too
+      conn.workId = workId;
+      conn.role = role;
       send([conn.connId], offlineSnapshot(work, role, e.code));
       log({ event: "room.join", actorId: conn.userId, workId, outcome: "offline", code: e.code });
       return;
@@ -360,7 +397,12 @@ function submitCommand(actor: Actor, cmd: Command): CommandResultMsg {
   // currently authorised actor.
   const prior = store.q.receipt.get(actor.userId, cmd.commandId);
   if (prior) {
-    requireMember(prior.work_id, actor.userId);
+    try {
+      requireMember(prior.work_id, actor.userId);
+    } catch (e) {
+      if (isAppError(e)) return reject(cmd, e.code, e.message);
+      throw e;
+    }
     if (prior.digest !== digest) return reject(cmd, "IDEMPOTENCY_CONFLICT", "This request ID was already used for a different action.");
     return resultFromReceipt(prior);
   }
@@ -935,6 +977,13 @@ const workSummary = (w: WorkRow & { role?: string }) => ({
   createdAt: w.created_at,
   updatedAt: w.updated_at,
   live: rooms.has(w.id),
+  ...(w.role === "owner" ? lifecycleCounts(w.id) : {}),
+});
+
+/** Real numbers for the trash confirmation: never invented presence (SAVE-10). */
+const lifecycleCounts = (workId: string): { editorCount: number; publicExhibits: number } => ({
+  editorCount: store.db.prepare<[string], { n: number }>("SELECT COUNT(*) AS n FROM memberships WHERE work_id = ? AND role = 'editor'").get(workId)!.n,
+  publicExhibits: store.db.prepare<[string], { n: number }>("SELECT COUNT(*) AS n FROM exhibits WHERE work_id = ? AND withdrawn_at IS NULL").get(workId)!.n,
 });
 
 const exhibitPublic = (e: { id: string; title: string; description: string; framing: string; attribution: string; height: number; published_at: number; work_id?: string }) => ({
@@ -1013,7 +1062,7 @@ const methods: Record<string, (...args: any[]) => unknown> = {
   "works.list": (userId: string) => store.q.worksForUser.all(userId).map(workSummary),
   "works.create": (userId: string, title: string) => {
     if (store.q.ownedCount.get(userId)!.n >= LIMITS.ownedWorksPerAccount) {
-      throw new AppError("LIMIT", `You own ${LIMITS.ownedWorksPerAccount} works, the current limit. Archive doesn't free a slot; works are never deleted automatically.`);
+      throw new AppError("LIMIT", `You own ${LIMITS.ownedWorksPerAccount} works, the current limit. Archived works and works in your trash still count; only deleting a work permanently frees a slot. Nothing is deleted automatically.`);
     }
     const cfg = currentPhysicsConfig();
     const id = randomUUID();
@@ -1034,7 +1083,7 @@ const methods: Record<string, (...args: any[]) => unknown> = {
   "works.get": (userId: string, workId: string) => {
     const { work, role } = requireMember(workId, userId);
     const members = store.q.members.all(workId).map((m) => ({ userId: m.user_id, displayName: m.display_name, role: m.role, joinedAt: m.joined_at }));
-    return { ...workSummary({ ...work, role }), members, ownerId: work.owner_id };
+    return { ...workSummary({ ...work, role }), ...lifecycleCounts(workId), members, ownerId: work.owner_id };
   },
   "works.rename": (userId: string, workId: string, title: string) => {
     requireOwner(workId, userId);
@@ -1068,6 +1117,132 @@ const methods: Record<string, (...args: any[]) => unknown> = {
     }
     log({ event: archived ? "work.archive" : "work.unarchive", actorId: userId, workId, outcome: "accepted" });
   },
+  // --- trash and permanent deletion (owner only; SAVE-10..SAVE-12). Each runs
+  // whole inside the coordinator, so no room command or tick interleaves.
+  "works.trash": (userId: string, workId: string) => {
+    const work = requireOwner(workId, userId, { allowTrashed: true });
+    if (work.trashed_at != null) return { trashedAt: work.trashed_at, alreadyTrashed: true };
+    const room = rooms.get(workId);
+    const t = now();
+    let exhibitsWithdrawn = 0;
+    let invitesRevoked = 0;
+    try {
+      durable(() => {
+        // Checkpoint the live world (moving or not) in the same transaction as
+        // the transition. A paused room's memory isn't trusted; its last
+        // durable state already holds every acknowledged placement.
+        if (room && !room.paused) room.writeState(store, t);
+        exhibitsWithdrawn = store.db.prepare("UPDATE exhibits SET withdrawn_at = ? WHERE work_id = ? AND withdrawn_at IS NULL").run(t, workId).changes;
+        invitesRevoked = store.db.prepare("UPDATE invites SET revoked_at = ? WHERE work_id = ? AND revoked_at IS NULL").run(t, workId).changes;
+        // A new epoch makes every pre-trash draft and command stale for good.
+        store.db.prepare("UPDATE works SET trashed_at = ?, world_epoch = world_epoch + 1, updated_at = ? WHERE id = ?").run(t, t, workId);
+      });
+    } catch (e) {
+      log({ event: "work.trash", level: "error", actorId: userId, workId, outcome: "failed", error: String(e) });
+      if (isAppError(e)) throw e;
+      throw new AppError("SAVE_FAILED", "The work couldn't be moved to the trash because saving failed. Nothing changed; try again.");
+    }
+    let notified = 0;
+    const tell = (c: Conn): void => {
+      notified++;
+      send([c.connId], {
+        type: "access.ended",
+        reason: "TRASHED",
+        message: c.userId === userId ? "You moved this work to the trash. Live building has stopped." : "The owner moved this work to the trash. Live building has stopped and your unplaced stick was discarded.",
+      });
+      leaveRoom(c, "TRASHED");
+    };
+    if (room) {
+      for (const p of [...room.pendingSaves.keys()]) cancelPendingSave(room, p, "cancelled");
+      for (const c of [...room.conns.values()]) tell(c);
+      room.pw.free();
+      overloadEvents += room.overloads;
+      rooms.delete(workId);
+    }
+    for (const c of conns.values()) if (c.workId === workId) tell(c);
+    log({ event: "work.trash", actorId: userId, workId, outcome: "accepted", exhibitsWithdrawn, invitesRevoked, notified, wasLive: !!room, moving: room ? room.moving : false });
+    return { trashedAt: t, alreadyTrashed: false, exhibitsWithdrawn };
+  },
+  "works.untrash": (userId: string, workId: string) => {
+    const work = requireOwner(workId, userId, { allowTrashed: true });
+    if (work.trashed_at == null) return { archived: !!work.archived, alreadyRestored: true };
+    // Membership, invites and exhibits are left as they are now: removed or
+    // departed editors stay gone, revoked links stay revoked, exhibits stay
+    // withdrawn. No room is opened; the next join loads fresh durable state.
+    durable(() => store.db.prepare("UPDATE works SET trashed_at = NULL, updated_at = ? WHERE id = ?").run(now(), workId));
+    log({ event: "work.untrash", actorId: userId, workId, outcome: "accepted", archived: !!work.archived });
+    return { archived: !!work.archived, alreadyRestored: false };
+  },
+  "works.purge": (userId: string, workId: string, confirmTitle: string) => {
+    const tomb = store.db.prepare<[string], { owner_id: string }>("SELECT owner_id FROM work_tombstones WHERE work_id = ?").get(workId);
+    if (tomb) {
+      if (tomb.owner_id !== userId) throw new AppError("NOT_FOUND", "That work doesn't exist or you don't have access to it.");
+      return { alreadyDeleted: true };
+    }
+    const work = requireOwner(workId, userId, { allowTrashed: true });
+    if (work.trashed_at == null) throw new AppError("NOT_TRASHED", "Only a work in the trash can be deleted permanently. Move it to the trash first.");
+    if (confirmTitle !== work.title) throw new AppError("TITLE_MISMATCH", "The title you typed doesn't match this work's title exactly.");
+    if (rooms.has(workId)) throw new AppError("BUSY", "This work is still closing. Try again in a moment.");
+    const count = (sql: string): number => store.db.prepare<[string], { n: number }>(sql).get(workId)!.n;
+    const removed = {
+      versions: count("SELECT COUNT(*) AS n FROM snapshots WHERE work_id = ?"),
+      exhibits: count("SELECT COUNT(*) AS n FROM exhibits WHERE work_id = ?"),
+      members: count("SELECT COUNT(*) AS n FROM memberships WHERE work_id = ?"),
+    };
+    try {
+      durable(() => {
+        const del = (sql: string): void => void store.db.prepare(sql).run(workId);
+        del("DELETE FROM invite_acceptances WHERE invite_id IN (SELECT id FROM invites WHERE work_id = ?)");
+        del("DELETE FROM invites WHERE work_id = ?");
+        // favorites keep an id-only row and render as "no longer available"
+        del("DELETE FROM exhibits WHERE work_id = ?");
+        del("DELETE FROM snapshots WHERE work_id = ?");
+        del("DELETE FROM command_receipts WHERE work_id = ?");
+        del("DELETE FROM previous_work_states WHERE work_id = ?");
+        del("DELETE FROM work_states WHERE work_id = ?");
+        del("DELETE FROM memberships WHERE work_id = ?");
+        del("DELETE FROM works WHERE id = ?");
+        store.db.prepare("INSERT INTO work_tombstones (work_id, owner_id, deleted_at) VALUES (?, ?, ?)").run(workId, userId, now());
+      });
+    } catch (e) {
+      log({ event: "work.purge", level: "error", actorId: userId, workId, outcome: "failed", error: String(e) });
+      if (isAppError(e)) throw e;
+      throw new AppError("SAVE_FAILED", "The work couldn't be deleted because the database write failed. Nothing was removed; it's still in your trash.");
+    }
+    log({ event: "work.purge", actorId: userId, workId, outcome: "accepted", ...removed });
+    return { alreadyDeleted: false };
+  },
+  // An editor's own view of collaborations the owner has trashed: just enough
+  // to recognise and leave one. No scene, versions, members or trash access.
+  "works.unavailable": (userId: string) =>
+    store.db
+      .prepare<[string], { id: string; title: string }>(
+        `SELECT w.id, w.title FROM works w JOIN memberships m ON m.work_id = w.id
+         WHERE m.user_id = ? AND m.role = 'editor' AND w.trashed_at IS NOT NULL ORDER BY w.trashed_at DESC`,
+      )
+      .all(userId)
+      .map((w) => ({ id: w.id, title: w.title, status: "trashed-by-owner" as const })),
+  "works.trashList": (userId: string) =>
+    store.db
+      .prepare<[string], WorkRow & { editors: number; exhibits: number; versions: number }>(
+        `SELECT w.*,
+           (SELECT COUNT(*) FROM memberships m WHERE m.work_id = w.id AND m.role = 'editor') AS editors,
+           (SELECT COUNT(*) FROM exhibits e WHERE e.work_id = w.id) AS exhibits,
+           (SELECT COUNT(*) FROM snapshots s WHERE s.work_id = w.id) AS versions
+         FROM works w WHERE w.owner_id = ? AND w.trashed_at IS NOT NULL ORDER BY w.trashed_at DESC`,
+      )
+      .all(userId)
+      .map((w) => ({
+        id: w.id,
+        title: w.title,
+        archived: !!w.archived,
+        stickCount: w.stick_count,
+        editorCount: w.editors,
+        exhibitCount: w.exhibits,
+        versionCount: w.versions,
+        trashedAt: w.trashed_at,
+      })),
+
   "works.state": (userId: string, workId: string) => {
     const { work, role } = requireMember(workId, userId);
     let room = rooms.get(workId);
@@ -1155,7 +1330,8 @@ const methods: Record<string, (...args: any[]) => unknown> = {
     log({ event: "member.remove", actorId: userId, workId, memberId, outcome: "accepted" });
   },
   "members.leave": (userId: string, workId: string) => {
-    const { role } = requireMember(workId, userId);
+    // an editor may still leave while the owner has the work in the trash
+    const { role } = requireMember(workId, userId, { allowTrashed: true });
     if (role === "owner") throw new AppError("BAD_REQUEST", "The owner can't leave their own work; archive it instead.");
     durable(() => store.q.removeMember.run(workId, userId));
     notifyRemoved(workId, userId, "LEFT");
@@ -1218,8 +1394,7 @@ const methods: Record<string, (...args: any[]) => unknown> = {
       .get(snapshotId, workId);
     if (!s) throw new AppError("NOT_FOUND", "That version doesn't exist.");
     if (s.kind !== "named" || !s.stable) throw new AppError("BAD_REQUEST", "Only settled, named versions can be exhibited. Recovery points can't be published.");
-    const count = store.db.prepare<[string], { n: number }>("SELECT COUNT(*) AS n FROM exhibits WHERE work_id = ? AND withdrawn_at IS NULL").get(workId)!.n;
-    if (count >= LIMITS.exhibitsPerWork) throw new AppError("LIMIT", `This work already has ${LIMITS.exhibitsPerWork} public exhibits. Withdraw one first.`);
+    requireExhibitSlot(workId); // early, readable refusal; rechecked in the transaction
     const geometry = JSON.parse(s.geometry) as { sticks: { authorId: string; p: number[]; q: number[]; seed: number }[]; stick: unknown; table: unknown };
     // Frozen public projection: names at publication, no account IDs (AUTH-05).
     const authors: string[] = [];
@@ -1232,18 +1407,20 @@ const methods: Record<string, (...args: any[]) => unknown> = {
     }
     const pub = { v: 1, stick: geometry.stick, table: geometry.table, sticks: geometry.sticks.map((st) => ({ p: st.p, q: st.q, seed: st.seed, a: index.get(st.authorId)! })) };
     const id = randomUUID();
-    durable(() =>
+    durable(() => {
+      requireExhibitSlot(workId);
       store.db
         .prepare("INSERT INTO exhibits (id, work_id, snapshot_id, title, description, framing, attribution, geometry, height, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .run(id, workId, snapshotId, title, description, JSON.stringify(framing), JSON.stringify(authors), JSON.stringify(pub), s.height, now()),
-    );
+        .run(id, workId, snapshotId, title, description, JSON.stringify(framing), JSON.stringify(authors), JSON.stringify(pub), s.height, now());
+    });
     log({ event: "exhibit.publish", actorId: userId, workId, exhibitId: id, snapshotId, outcome: "accepted" });
     return { id };
   },
   "exhibits.setWithdrawn": (userId: string, exhibitId: string, withdrawn: boolean) => {
-    const e = store.db.prepare<[string], { work_id: string }>("SELECT work_id FROM exhibits WHERE id = ?").get(exhibitId);
+    const e = store.db.prepare<[string], { work_id: string; withdrawn_at: number | null }>("SELECT work_id, withdrawn_at FROM exhibits WHERE id = ?").get(exhibitId);
     if (!e) throw new AppError("NOT_FOUND", "That exhibit doesn't exist.");
     requireOwner(e.work_id, userId);
+    // only withdrawn_at changes: the ID, snapshot and frozen geometry stay as published
     durable(() => store.db.prepare("UPDATE exhibits SET withdrawn_at = ? WHERE id = ?").run(withdrawn ? now() : null, exhibitId));
     log({ event: withdrawn ? "exhibit.withdraw" : "exhibit.republish", actorId: userId, workId: e.work_id, exhibitId, outcome: "accepted" });
   },
@@ -1280,13 +1457,15 @@ const methods: Record<string, (...args: any[]) => unknown> = {
   // --- favorites
   "favorites.list": (userId: string) =>
     store.db
-      .prepare<[string], { exhibit_id: string; created_at: number; title: string; withdrawn_at: number | null; height: number; attribution: string }>(
-        `SELECT f.exhibit_id, f.created_at, e.title, e.withdrawn_at, e.height, e.attribution FROM favorites f
-         JOIN exhibits e ON e.id = f.exhibit_id WHERE f.user_id = ? ORDER BY f.created_at DESC`,
+      .prepare<[string], { exhibit_id: string; created_at: number; present: number | null; title: string; withdrawn_at: number | null; height: number; attribution: string }>(
+        `SELECT f.exhibit_id, f.created_at, e.rowid AS present, e.title, e.withdrawn_at, e.height, e.attribution FROM favorites f
+         LEFT JOIN exhibits e ON e.id = f.exhibit_id WHERE f.user_id = ? ORDER BY f.created_at DESC`,
       )
       .all(userId)
       .map((f) =>
-        f.withdrawn_at
+        f.present == null
+          ? { exhibitId: f.exhibit_id, withdrawn: true, removed: true, savedAt: f.created_at }
+          : f.withdrawn_at
           ? { exhibitId: f.exhibit_id, withdrawn: true, savedAt: f.created_at }
           : { exhibitId: f.exhibit_id, withdrawn: false, savedAt: f.created_at, title: f.title, height: f.height, attribution: JSON.parse(f.attribution) },
       ),

@@ -59,6 +59,32 @@ To restore: stop the app (`flyctl scale count 0`), put the file back as
 scale back to 1. Try it on a copy first; the backup script reports
 `integrity_check` and the work count.
 
+### Before deploying a schema migration
+
+Checked read-only on 2026-10-06: production is at schema `user_version` 1, with
+the database at `/data/stillwood.db` (WAL mode, plus `-wal` and `-shm` files)
+on volume `vol_v3g56pxy0l6qp7l4` (1 GB, encrypted, `syd`). It held 1 user, 1
+work and 0 exhibits. Fly takes daily volume snapshots with 5-day retention.
+The deletion change adds migration 2, which runs once at startup, inside a
+transaction, before the server reports ready.
+
+1. Wake the machine: `curl https://comp4020-final-easton-yi.fly.dev/healthz`.
+2. Take an on-demand volume snapshot: `flyctl volumes snapshots create vol_v3g56pxy0l6qp7l4 -a comp4020-final-easton-yi`, then confirm it in `flyctl volumes snapshots list vol_v3g56pxy0l6qp7l4 -a comp4020-final-easton-yi`.
+3. Take a consistent SQLite backup and copy it off the machine:
+   `flyctl ssh console -a comp4020-final-easton-yi -C "node /app/scripts/backup.ts /data /data/pre-migration-2.db"` (prints `integrity_check` and the work count), then
+   `flyctl ssh sftp get /data/pre-migration-2.db ./pre-migration-2.db -a comp4020-final-easton-yi`.
+4. Rehearse locally: copy the downloaded file into an empty directory as `stillwood.db`, start `DATA_DIR=<dir> PORT=8095 node dist/server/main.js`, check `/readyz`, then confirm `user_version` is 2 and `PRAGMA foreign_key_check` is empty.
+5. Deploy. Afterwards check `/readyz` and read `user_version` read-only (expect 2).
+
+Rollback if the new version misbehaves: redeploy the previous image
+(`flyctl releases -a comp4020-final-easton-yi`, then `flyctl deploy --image <previous image>`). The old code still starts on a version-2 database
+(it skips migrations it doesn't know). But it doesn't know about the trash: it
+would show trashed works as active, and the triggers would refuse their saves.
+If any work has been trashed, also restore the pre-migration file as described
+above (stop, replace `stillwood.db`, remove `-wal` and `-shm`, start). Alternatively, restore
+a whole volume from the snapshot with `flyctl volumes create data --snapshot-id <id> -a comp4020-final-easton-yi` and attach it. Either way, anything written after the backup is lost. Never delete the
+existing volume until the restored one has been verified.
+
 ## Shutdown and recovery
 
 - SIGINT/SIGTERM: the server marks itself unready, closes sockets (clients

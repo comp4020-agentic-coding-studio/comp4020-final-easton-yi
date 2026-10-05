@@ -9,10 +9,11 @@ import { LIMITS } from "../../shared/config.ts";
 import type { CommandKind, CommandResultMsg, PresenceEntry, StickInfo } from "../../shared/protocol.ts";
 import type { RoomView, Toast } from "./Workshop.tsx";
 import { formatDate } from "../pages/Gallery.tsx";
+import { AUTHORITY_TEXT, TrashDialog } from "../lifecycle.tsx";
 
 type ToastFn = (t: string, k?: Toast["kind"]) => void;
 
-export function Confirm({ title, children, confirmLabel, onConfirm, onCancel, danger }: { title: string; children: React.ReactNode; confirmLabel: string; onConfirm: () => void; onCancel: () => void; danger?: boolean }) {
+export function Confirm({ title, children, confirmLabel, onConfirm, onCancel, danger, confirmDisabled }: { title: string; children: React.ReactNode; confirmLabel: string; onConfirm: () => void; onCancel: () => void; danger?: boolean; confirmDisabled?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   const opener = useRef<Element | null>(null);
   useEffect(() => {
@@ -28,7 +29,7 @@ export function Confirm({ title, children, confirmLabel, onConfirm, onCancel, da
         <button type="button" onClick={onCancel} autoFocus>
           Cancel
         </button>
-        <button type="button" className={danger ? "danger" : "primary"} onClick={onConfirm}>
+        <button type="button" className={danger ? "danger" : "primary"} onClick={onConfirm} disabled={confirmDisabled}>
           {confirmLabel}
         </button>
       </p>
@@ -358,6 +359,11 @@ export function VersionsPanel({ workId, room, isOwner, sendCommand, viewport, to
       )}
 
       <h3>Exhibits</h3>
+      {exhibits.length > 0 && (
+        <p className="muted small">
+          {exhibits.length} of {LIMITS.exhibitsPerWork} exhibits used, counting withdrawn ones. Withdrawing doesn't free a slot.
+        </p>
+      )}
       {exhibits.length === 0 && <p className="muted small">Nothing exhibited from this work yet. Exhibits are frozen copies of a saved version; building on doesn't change them.</p>}
       <ul className="versions">
         {exhibits.map((x) => (
@@ -367,8 +373,12 @@ export function VersionsPanel({ workId, room, isOwner, sendCommand, viewport, to
               <button
                 type="button"
                 onClick={async () => {
-                  await api("POST", `/api/exhibits/${x.id}/withdraw`, { withdrawn: !x.withdrawn }).catch((e) => setError(e.message));
-                  toast(x.withdrawn ? "Exhibit is public again." : "Exhibit withdrawn. It's no longer public; copies people already downloaded can't be recalled.");
+                  try {
+                    await api("POST", `/api/exhibits/${x.id}/withdraw`, { withdrawn: !x.withdrawn });
+                    toast(x.withdrawn ? "Exhibit is public again." : "Exhibit withdrawn. It's no longer public; copies people already downloaded can't be recalled.");
+                  } catch (e) {
+                    setError((e as Error).message);
+                  }
                   void load();
                 }}
               >
@@ -507,20 +517,34 @@ export function SettingsPanel({ workId, room, isOwner, toast, onLeft }: { workId
   const [title, setTitle] = useState(room.title);
   const [error, setError] = useState<string | null>(null);
   const [archiving, setArchiving] = useState(false);
+  const [trashInfo, setTrashInfo] = useState<{ editorCount: number; publicExhibits: number } | null>(null);
   const archived = room.mode === "archived" || room.liveReason === "ARCHIVED";
   if (!isOwner) {
     return (
       <div>
         <h2>Work</h2>
         <p>{room.title}</p>
-        <p className="muted small">The owner manages the title, members, publishing and archiving.</p>
+        <h3>Who decides what</h3>
+        <p className="small">{AUTHORITY_TEXT}</p>
+        <p className="muted small">To leave this collaboration, use People → Leave this work.</p>
       </div>
     );
   }
+  const openTrash = async (): Promise<void> => {
+    setError(null);
+    try {
+      // real counts from the server, not who happens to be present
+      const w = await api<{ editorCount: number; publicExhibits: number }>("GET", `/api/works/${workId}`);
+      setTrashInfo({ editorCount: w.editorCount, publicExhibits: w.publicExhibits });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
   return (
     <div>
       <h2>Work</h2>
       {error && <p className="error-text" role="alert">{error}</p>}
+      <p className="small muted">{AUTHORITY_TEXT}</p>
       <form
         className="stack"
         onSubmit={async (e) => {
@@ -574,6 +598,22 @@ export function SettingsPanel({ workId, room, isOwner, toast, onLeft }: { workId
             <strong>Archiving doesn't withdraw its exhibits.</strong> Public exhibits stay public until you withdraw them under Versions.
           </p>
         </Confirm>
+      )}
+      <h3>Trash</h3>
+      <p className="small">Moving to the trash closes the work for everyone and withdraws all its exhibits. You can restore it from My works → Trash, or delete it permanently from there.</p>
+      <button type="button" onClick={() => void openTrash()}>
+        Move to trash…
+      </button>
+      {trashInfo && (
+        <TrashDialog
+          work={{ id: workId, title: room.title, ...trashInfo }}
+          onCancel={() => setTrashInfo(null)}
+          // the server's access.ended notice updates this window; then go to Trash
+          onDone={() => {
+            setTrashInfo(null);
+            toast("Moved to the trash.", "ok");
+          }}
+        />
       )}
     </div>
   );

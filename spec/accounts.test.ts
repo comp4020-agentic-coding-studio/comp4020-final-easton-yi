@@ -1,7 +1,7 @@
 // AUTH-01, SYNC-07, AT-06: accounts, sessions and same-origin protection,
 // checked against the running app.
 import { describe, expect, it } from "vitest";
-import { Client, uniqueHandle } from "./helpers.ts";
+import { Client, sessionOf, shared, uniqueHandle } from "./helpers.ts";
 
 describe("accounts and sessions", () => {
   it("registers, reports the session, logs out and logs back in", async () => {
@@ -22,7 +22,7 @@ describe("accounts and sessions", () => {
   });
 
   it("an old session cookie stops working after logout", async () => {
-    const c = await new Client().register();
+    const c = await sessionOf(await shared("Session holder"));
     const stolen = c.cookie;
     await c.req("POST", "/api/auth/logout");
     const replay = new Client();
@@ -31,7 +31,7 @@ describe("accounts and sessions", () => {
   });
 
   it("rejects duplicate handles, short passwords and bad handles", async () => {
-    const a = await new Client().register();
+    const a = await shared("Session holder");
     const dup = await new Client().req("POST", "/api/auth/register", { handle: a.user!.handle, displayName: "X", password: "another long password" });
     expect(dup.status).toBe(409);
     const short = await new Client().req("POST", "/api/auth/register", { handle: uniqueHandle(), displayName: "X", password: "short" });
@@ -59,7 +59,7 @@ describe("accounts and sessions", () => {
   });
 
   it("requires same-origin and the CSRF token for mutations", async () => {
-    const c = await new Client().register();
+    const c = await shared("Session holder");
     const noOrigin = await c.req("POST", "/api/works", { title: "x" }, { origin: "https://evil.example" });
     expect(noOrigin.status).toBe(403);
     const noCsrf = await c.req("POST", "/api/works", { title: "x" }, { "x-csrf-token": "nope" });
@@ -69,7 +69,7 @@ describe("accounts and sessions", () => {
   });
 
   it("never returns credentials or recovery digests", async () => {
-    const c = await new Client().register();
+    const c = await shared("Session holder");
     const id = await c.createWork();
     const w = await c.req("GET", `/api/works/${id}`);
     const text = JSON.stringify(w.body);
