@@ -30,6 +30,7 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY package.json README.md ./
 COPY docs ./docs
+COPY scripts/backup.ts ./scripts/backup.ts
 # Fails at startup if /data isn't a writable mount; never falls back to /tmp.
 # Heap caps keep the main thread and the worker (48/8 MB, set in main.ts)
 # inside the 256 MB machine (docs/measurements.md M-004).

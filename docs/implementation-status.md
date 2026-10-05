@@ -5,8 +5,8 @@ The resume record for implementing `docs/BRIEF.md` (product rules) under
 Nothing here is a grade claim. Human-judgement items stay **pending** until a
 real person has tried the app.
 
-- **Current stage:** P2 (Crit 8 deployable slice). P0 and P1 gates passed locally; see the gate log.
-- **Next action:** README first draft; deploy to Fly (needs network access the sandbox blocks; see Blockers).
+- **Current stage:** P6 (audit and handoff). P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers).
+- **Next action:** deploy to Fly, then re-run `pnpm check`, `scripts/measure/visibility.ts` and `scripts/measure/capacity.ts` against the live URL; run the human sessions in `acceptance-report.md`.
 
 ## Baseline (P0, 2026-10-05)
 
@@ -16,7 +16,8 @@ real person has tried the app.
 | Runtime pins | `mise.toml`: Node 24.21.0, pnpm 11.9.0 (both installed and matching) |
 | Fly shape (`fly.toml`, unchanged) | shared-cpu-1x, **256 MB**, one volume at `/data`, `PORT=8080`, `internal_port=8080`, auto stop/start, `syd` |
 | Deploy | `flyctl deploy --remote-only --ha=false -a comp4020-final-easton-yi` by hand while private; CI deploys after the repo goes public |
-| Marking viewports | Not stated in the repo. Course pages not reachable from this sandbox; tested 1440×900, 1920×1080, 390×844 (see ACCESS-03) |
+| Marking viewports | Course assessment page (fetched 2026-10-05): latest Chrome at **1920×1080** and **390×844** (DevTools iPhone preset); markers also use the keyboard, resize mid-use and a slow connection |
+| Deadline | Final: noon Mon 9 Nov 2026 (15 min grace). Crit cutoffs not re-checked here |
 | Tooling available | Node, pnpm, flyctl 0.4.108, Playwright Chromium 153 (headless WebGL2 via SwiftShader) |
 | Tooling **not** available | Docker (not installed); network to `api.fly.io` and `api.github.com` is blocked in this sandbox (DNS fails); npm registry works |
 | Baseline checks | Placeholder not run (no Docker). Shipped invariants pass against the new app (below) |
@@ -34,16 +35,22 @@ real person has tried the app.
 | P1 | Stranger creates work, places, refresh, re-login | **pass (browser)** | `tests/e2e/solo.spec.ts` |
 | P1 | Accepted commands survive process kill | **pass** | `tests/restart.test.ts`: kill before commit / after commit / after reply, mid-fall SIGKILL, SIGTERM, failed write |
 | P1 | Real Docker HTTP checks | **blocked** | As above; production-mode bundle passes `pnpm check` |
-| P1 | Camera changes are local | implemented / unverified | Viewport never moves the camera on network messages; two-browser check is in P3 |
+| P1 | Camera changes are local | **pass (browser)** | `tests/e2e/together.spec.ts`: B's framing unchanged while A places |
+| P2 | Crit 8 slice on Fly | **blocked** | Not deployed: sandbox can't reach Fly. README draft, `/readme/` server-rendered, onboarding, empty/error states all done locally |
+| P3 | Concurrent release converges; overlap rejection keeps draft; no camera stealing; old epochs/leases fail; unknown never duplicates | **pass** | `spec/collaboration.test.ts`, `tests/e2e/together.spec.ts`, `spec/versions.test.ts` restore |
+| P3 | p95 ≤ 1000 ms visibility over ≥30 changes | **pass locally, Fly unverified** | M-003 (40 changes, p95 12.3 ms), M-006 (600 changes under load, p95 25.4 ms); loopback, not Fly |
+| P4 | Exhibit unchanged by collapse; withdrawal blocks API; restore invalidates stale requests; owner disconnect can't lock; restored geometry matches, members/best height kept | **pass** | `spec/versions.test.ts`, `tests/e2e/exhibit.spec.ts` |
+| P5 | AT-01..16 have evidence/status; keyboard/mobile paths; core under declared load | **pass locally, with caveats** | `docs/acceptance-report.md`; M-004..M-006; peak RSS 87% in the burst; H items pending |
 
 ## Commands and results (latest run)
 
 | Command | Result |
 | --- | --- |
 | `pnpm typecheck` | clean |
-| `pnpm test:unit` | 53 passed (physics 14, placement 19, placement maths 14, restart 6) |
-| `APP_URL=http://localhost:8080 pnpm check` against `NODE_ENV=production node dist/server/main.js` | 19 passed (2 shipped invariants + 17 contract specs) |
-| `pnpm test:e2e` | 1 passed (solo flow) |
+| `pnpm test:unit` | 56 passed (physics/rim 18, placement 19, placement maths 14, restart 6) |
+| `APP_URL=http://localhost:8080 pnpm check` against `NODE_ENV=production node --max-old-space-size=64 --max-semi-space-size=2 dist/server/main.js` | 39 passed (2 shipped invariants + 37 contract specs) |
+| `APP_URL=http://localhost:8080 pnpm test:e2e` (same server) | 8 passed |
+| `pnpm check:evidence` | **fails**: `PROCESS.md` still the template; no `reflections/crit-*.md` (student-authored) |
 
 ## Rule coverage
 
@@ -54,102 +61,106 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | Rule | Implementation | Verification | Evidence | Status | Remaining limitation |
 | --- | --- | --- | --- | --- | --- |
 | DOC-01 | Brief and directive kept as given in `docs/` | Read in full before work | this file | verified automatically | — |
-| DOC-02 | Initial parameters in `src/shared/config.ts`; changes logged in `docs/measurements.md` | Measurement log | M-001, M-002 | in progress | Tuning evidence still needed for feel parameters |
+| DOC-02 | Initial parameters in `src/shared/config.ts`; every change logged with before/after in `docs/measurements.md` | Measurement log | M-001..M-006 | verified automatically | Feel parameters (friction, snap reach) untuned without people |
 | DOC-03 | Core concept kept; design decisions attributed in ADRs | — | `docs/adr/` | in progress | — |
 | DOC-04 | Intermediate builds not presented as complete | This table | — | in progress | — |
 | GOOD-01 | Product framing in UI and README | — | — | in progress | README is a draft for the student |
-| GOOD-02 | Promises map to PLACE/SYNC/PHYS/SAVE rules below | — | — | in progress | — |
+| GOOD-02 | Promises map to PLACE/SYNC/PHYS/SAVE rules below; ADRs 0002–0006 | — | `docs/adr/` | implemented / unverified | Whether they hold for people is H |
 | GOOD-03 | Automated checks for permissions/persistence; human protocol pending | — | — | in progress | Needs ≥2 uninvolved people; **not done** |
 | GOOD-04 | No leaderboards, chat, shop, feeds | Absent by construction | — | implemented / unverified | — |
 | NAV-01 | `/`, `/works/`, `/works/:id/`, `/exhibits/:id/`, `/favorites/`, `/readme/`; account, join, 404 | e2e + HTTP | `src/client/main.tsx`, `src/server/main.ts` | implemented / unverified | Access-denied page is the shared "doesn't exist or private" view |
-| NAV-02 | Public gallery without login; "Create an account to save and come back"; `?next=` return | e2e solo | `solo.spec.ts` | in progress | Invite → register → return path untested in browser |
-| NAV-03 | Skippable intro ticking off real actions; Help reopens | e2e (skip) | `Intro.tsx` | implemented / unverified | — |
-| NAV-04 | Empty states with next steps; retry on load failure; no fake activity | — | pages | implemented / unverified | No labelled example scenes yet |
+| NAV-02 | Public gallery without login; "Create an account to save and come back"; `?next=` return | e2e | `solo.spec.ts`, `together.spec.ts` (invite → register → return → confirm) | verified in browser | — |
+| NAV-03 | Skippable intro ticking off real actions; Help reopens | e2e (skip, keyboard) | `Intro.tsx`, `access.spec.ts` | verified in browser | Whether it helps is H |
+| NAV-04 | Empty states with next steps; retry on load failure; no fake activity | e2e (empty favorites) | pages | verified in browser | No example scenes are offered (none are required) |
 | WORLD-01 | Y-up, u units, L=8, 1×1, uniform mass | fixtures | `config.ts`, `physics.ts` | verified automatically | — |
-| WORLD-02 | Cylinder table collider = visible table; creation bounds | placement fixtures | `tests/placement.test.ts` | verified automatically | — |
+| WORLD-02 | Table collider = visible table (v2: cylinder + flush 128-gon trimesh ring, drawn as the same 128-gon); creation bounds | fixtures | `placement.test.ts`, `physics.test.ts` rim | verified automatically | — |
 | WORLD-03 | Cleanup below −20 u / beyond r=60, saved; receipts keep history | fixture | `physics.test.ts` "cleanup" | verified automatically | — |
-| WORLD-04 | 200 sticks, 4 leases, 3 rooms; offline last-saved view; idle-room eviction; owned/fav/exhibit limits | specs (room limit exercised) | `coordinator.ts` | implemented / unverified | **Not measured on Fly**; 256 MB headroom unproven |
+| WORLD-04 | 200 sticks, 4 leases, 3 rooms; offline last-saved view; idle-room eviction; owned/fav/exhibit limits | capacity profile + specs | M-006, `capacity-local.json` | verified automatically (local) | **Not measured on Fly**; burst RSS 87% locally |
 | WORLD-05 | No stretching/breaking; visual bevel 0.03 u; seed is visual only | — | `viewport.ts`, `wood.ts` | implemented / unverified | — |
-| CAM-01 | Camera only moved by local input | — | `viewport.ts` | implemented / unverified | Two-session browser check in P3 |
-| CAM-02 | Orbit, zoom, target height, focus stick, fit all | — | `ViewControls` | implemented / unverified | — |
+| CAM-01 | Camera only moved by local input | 2-browser e2e | `together.spec.ts` | verified in browser | — |
+| CAM-02 | Orbit, zoom, target height, focus stick, fit all | e2e | `access.spec.ts` (orbit, focus from list) | verified in browser | — |
 | CAM-03 | Polar [0.025, 1.5], zoom bounds, camera pushed out of sticks; top/side/default | — | `protectCamera()` | implemented / unverified | — |
-| CAM-04 | Resize keeps target/draft; reduced motion disables easing | — | `resize()` | implemented / unverified | Browser resize test in P5 |
+| CAM-04 | Resize keeps target/draft; reduced motion disables easing | e2e | `access.spec.ts` 1920×1080 | verified in browser | Phone rotation on a real device pending |
 | PLACE-01 | One ghost via "+"; legal spot search; explains if none | maths test | `spawnDraft` | verified automatically | — |
 | PLACE-02 | Centre drag on locked plane with grab offset; height handle | maths test | `centerDrag` | verified automatically (maths) | Pointer feel needs a human |
 | PLACE-03 | Endpoint yaw/pitch about the fixed end; length kept; last yaw near vertical | maths test | `endpointYaw/Pitch` | verified automatically (maths) | Multi-angle browser drag in P5 |
-| PLACE-04 | Horizontal/Vertical presets about centre or end; steppers; roll; fine toggle; Shift fine keys | e2e uses presets | `AdjustPanel` | implemented / unverified | — |
-| PLACE-05 | Handle > draft > stick > background; pointer capture; blur/cancel restore; wheel zooms; no right-click | — | `viewport.ts` | implemented / unverified | Real touchpad check pending (human) |
+| PLACE-04 | Horizontal/Vertical presets about centre or end; steppers; roll; fine toggle; Shift fine keys | maths + e2e | `access.spec.ts`, `solo.spec.ts` | verified in browser | — |
+| PLACE-05 | Handle > draft > stick > background; pointer capture; blur/cancel restore; wheel zooms; no right-click | e2e mouse drag | `access.spec.ts` pointer | verified in browser | Real touchpad check pending (human) |
 | PLACE-06 | Bounded screen-space fallback below |dir.y| 0.08 + top-view hint | maths test | `centerDrag` | verified automatically (maths) | — |
 | PLACE-07 | Angle snap 3°/5°; drop guide; snap-to-support sweep ≤0.2 u, first contact; toggle | maths test | `snapDown` | verified automatically | 0.2 u reach may be too short; needs human observation |
-| PLACE-08 | Ready / Unsupported / Intersecting / Out of bounds / Waiting, with icons and text | maths + e2e | `validate`, `validityText` | verified in browser (out-of-bounds, ready) | — |
+| PLACE-08 | Ready (with short drop) / Unsupported / Intersecting / Out of bounds (below, above, far) / Waiting, with icons and text | maths + e2e | `validate`, `access.spec.ts` slow connection | verified in browser | — |
 | PLACE-09 | Zero-velocity server placement; pending blocks re-click; unknown → query same ID | specs | `placement.test.ts` | verified automatically | — |
-| PLACE-10 | Placed sticks select/focus/inspect only; no delete/undo | — | `StickList` | implemented / unverified | — |
+| PLACE-10 | Placed sticks select/focus/inspect author only; no delete/undo | e2e | `StickList`, `access.spec.ts` | verified in browser | — |
 | PHYS-01 | One server world per active work | specs | `room.ts` | verified automatically | — |
 | PHYS-02 | Upright pillar stands with no constraints | fixture | `physics.test.ts` | verified automatically | — |
 | PHYS-03 | Bridge settles, overhang topples, cascades | fixtures | `physics.test.ts` | verified automatically | — |
 | PHYS-04 | Engine sleeping only; removal wakes; falling never frozen | fixtures | `physics.test.ts` | verified automatically | — |
 | PHYS-05 | Low restitution, CCD, high-drop no tunnelling | fixture | `physics.test.ts` | verified automatically | "Feels like wood" is a human judgement |
 | PHYS-06 | Pillar, bridge, progressive load, cascade, support removal, restored continuation | fixtures + restart test | both | verified automatically | — |
-| SYNC-01 | Remote ghosts translucent + personal colour outline + name + shape; throttled 15 Hz | — | `viewport.ts` | implemented / unverified | P3 |
-| SYNC-02 | No locks/turns; coordinator orders commands; collisions reject later | — | `coordinator.ts` | implemented / unverified | P3 concurrent test |
+| SYNC-01 | Remote ghosts translucent + personal colour outline + name + shape; throttled 15 Hz; no collision | spec + e2e | `collaboration.test.ts`, `together.spec.ts`, `p3-partner-ghost.png` | verified in browser | Legibility is H |
+| SYNC-02 | No locks/turns; coordinator orders commands; collisions reject later | spec + e2e | `collaboration.test.ts` | verified automatically | — |
 | SYNC-03 | Epoch/stream exact, tick freshness only while moving | spec | `placement.test.ts` stale test | verified automatically | — |
-| SYNC-04 | ≤1 s visibility | — | — | not started | P3 measurement |
-| SYNC-05 | Offline draft kept; placing disabled; query by original ID | partial | restart test | in progress | Browser disconnect test in P3 |
-| SYNC-06 | One lease per account; takeover; heartbeat keeps ghost | — | `coordinator.ts` | implemented / unverified | P3 |
-| SYNC-07 | Logout/removal/expiry end socket authority; background return re-joins | — | `coordinator.ts`, `connection.ts` | implemented / unverified | P3 |
+| SYNC-04 | ≤1 s visibility | measurement | M-003, M-006 | verified automatically (local) | **Fly measurement pending** |
+| SYNC-05 | Offline draft kept; placing disabled; query by original ID; offline/silent-link detection | e2e + restart | `together.spec.ts`, `restart.test.ts` | verified in browser | — |
+| SYNC-06 | One lease per account; takeover; heartbeat keeps ghost; 15 s stale removal | spec | `collaboration.test.ts` | verified automatically | — |
+| SYNC-07 | Logout/removal/expiry end socket authority; background return re-joins | spec | `collaboration.test.ts` | verified automatically | Background-return path not browser-tested |
 | AUTH-01 | Handle/display name/password; one-use rotating recovery code | specs | `accounts.test.ts` | verified automatically | — |
-| AUTH-02 | Owner/editor/visitor; every mutation re-checked in the coordinator | specs (non-member) | `placement.test.ts` | in progress | Removed-member test in P3 |
-| AUTH-03 | Invites: hashed, 7 days, 3 users, fragment token, one active, idempotent accept | — | `coordinator.ts` | implemented / unverified | P3 spec |
-| AUTH-04 | Per-stick author; exhibit attribution frozen at publish | — | — | implemented / unverified | P4 |
-| AUTH-05 | Private works 404 for non-members; public projection allowlisted | spec | `placement.test.ts` | in progress | P4 exhibit privacy spec |
-| SAVE-01 | Current state / immutable snapshots / exhibits referencing snapshots | — | schema | implemented / unverified | P4 |
+| AUTH-02 | Owner/editor/visitor; every mutation re-checked in the coordinator | specs | `collaboration.test.ts` editors can't do owner things | verified automatically | — |
+| AUTH-03 | Invites: hashed, 7 days, 3 users, fragment token, one active, idempotent accept | specs + e2e | `collaboration.test.ts` invitations | verified automatically | 7-day expiry not time-travel tested |
+| AUTH-04 | Per-stick author kept after removal; exhibit attribution frozen at publish | specs | `collaboration.test.ts`, `versions.test.ts` | verified automatically | — |
+| AUTH-05 | Private works 404 for non-members; public projection allowlisted (no IDs, members, blobs); leave | specs | `versions.test.ts` | verified automatically | — |
+| SAVE-01 | Current state / immutable snapshots / exhibits referencing snapshots; favorites reference exhibits | specs | `versions.test.ts` | verified automatically | — |
 | SAVE-02 | Full snapshot + receipt in one transaction before success | restart + failed-write tests | `restart.test.ts` | verified automatically | — |
 | SAVE-03 | 500 ms checkpoints; "Placement saved; structure moving" vs "Structure saved"; SIGTERM saves | restart test | `restart.test.ts` | verified automatically | — |
-| SAVE-04 | Stable-only versions; "Save when settled" pending task, cancellable | — | `coordinator.ts` | implemented / unverified | P4 |
-| SAVE-05 | Owner restore with protection point, epoch++, full resync | — | `restore()` | implemented / unverified | P4 |
-| SAVE-06 | Exhibits from stable named versions; text-only description | — | — | implemented / unverified | P4 |
-| SAVE-07 | Newest-first gallery, name search; private favorites; withdrawal | — | — | implemented / unverified | P4 |
-| SAVE-08 | Archive/unarchive; 30 named, 10 recovery ring; referenced versions protected | — | — | implemented / unverified | P4 |
-| SAVE-09 | Empty room settles ≤10 s then suspends with velocities | restart mid-fall test covers resume | — | in progress | Direct test pending |
-| PUSH-01 | Owner, stable scene, protection snapshot, placement blocked | — | `pushCommand` | implemented / unverified | P4 |
-| PUSH-02 | One bounded impulse at a validated surface point | fixture (impulse) | `physics.test.ts` cascade | in progress | P4 end-to-end |
-| PUSH-03 | Keep/restore; 10 s owner-away lock clear; restart clears locks | — | `pushTimers` | implemented / unverified | P4 |
+| SAVE-04 | Stable-only versions; "Save when settled" pending, queryable, cancellable | specs | `versions.test.ts` | verified automatically | Worker-restart "interrupted" path untested |
+| SAVE-05 | Owner restore with protection point, epoch++, full resync, stale requests fail | specs | `versions.test.ts` restore | verified automatically | — |
+| SAVE-06 | Exhibits from stable named versions; text-only description; 3D read-only viewer | specs + e2e | `versions.test.ts`, `exhibit.spec.ts` | verified in browser | — |
+| SAVE-07 | Newest-first gallery, name search; private favorites; withdrawal placeholder; revalidated caching | specs + e2e | `versions.test.ts`, `exhibit.spec.ts` | verified in browser | — |
+| SAVE-08 | Archive/unarchive (exhibits stay); 30 named, 10 recovery ring; referenced versions protected | specs | `versions.test.ts` | verified automatically | Limits at 30/10 not exercised to the boundary |
+| SAVE-09 | Empty room settles ≤10 s then suspends with velocities; resumes on return | indirect | `restart.test.ts` resume; idle unload in logs | implemented / unverified | No direct test of the 10 s moving-suspend path |
+| PUSH-01 | Owner, stable scene, protection snapshot, placement blocked for all | specs | `versions.test.ts` push mode | verified automatically | — |
+| PUSH-02 | One bounded impulse at a validated surface point; horizontal only | specs | `versions.test.ts` | verified automatically | Browser push flow not e2e-tested |
+| PUSH-03 | Keep/restore; 10 s owner-away lock clear; restart clears locks | specs | `versions.test.ts` | verified automatically | — |
 | HEIGHT-01 | Support graph from upward contacts, flood from table | fixtures | `physics.test.ts` | verified automatically | Game estimate only |
-| HEIGHT-02 | 1.5 s stable confirmation; "Measuring…" with previous value; best never decreases | — | `room.ts` | implemented / unverified | P4 restore-keeps-best spec |
+| HEIGHT-02 | 1.5 s stable confirmation; "Measuring…" with previous value; best never decreases on restore | spec | `versions.test.ts` restore | verified automatically | — |
 | LOOK-01 | Procedural longitudinal grain, distinct end grain, bevel, soft shadows | screenshot | `p1-two-sticks.png` | in progress | Human judgement pending |
-| LOOK-02 | Table first; right rail; ≤280 px adjust panel; restrained status; no debug UI | screenshot | — | in progress | — |
+| LOOK-02 | Table first; right rail; ≤280 px adjust panel; restrained status; no debug UI | screenshots at both viewports | `p5-*.png` | verified in browser | Taste is H |
 | LOOK-03 | Strength-scaled knocks, 6 voices, gesture-unlocked, mute; no shake | — | `audio.ts` | implemented / unverified | Not heard by a person |
-| ACCESS-01 | DOM controls for every action; shortcuts skip text inputs; searchable stick list | e2e uses DOM controls | `Controls.tsx` | in progress | Full keyboard-only run in P5 |
-| ACCESS-02 | Observe/Adjust toggle on coarse pointers; 44 px targets; capped handle regions | — | — | implemented / unverified | P5 touch emulation; real device pending |
-| ACCESS-03 | Viewports, focus, dialogs, WebGL fallback | — | — | in progress | Course viewports unknown here |
-| OPS-01 | Distinct failure states; DB failure pauses room; NaN pauses | restart test | failed-write test | in progress | — |
+| ACCESS-01 | DOM controls for every action; shortcuts skip text inputs; searchable stick list | e2e keyboard-only | `access.spec.ts` | verified in browser | — |
+| ACCESS-02 | Observe/Adjust toggle on coarse pointers; 44 px targets; capped handle regions | e2e 390×844 touch | `access.spec.ts` | verified in browser (emulated) | Real phone pending |
+| ACCESS-03 | 1920×1080 and 390×844, visible focus, dialogs restore focus, WebGL fallback with readable info | e2e | `access.spec.ts` | verified in browser | WebGL-off fallback not browser-tested |
+| OPS-01 | Distinct failure states; DB failure pauses room; NaN pauses | restart test | failed-write test | verified automatically | NaN path not injected |
 | OPS-02 | Shadows → pixel ratio degradation | — | `adaptQuality` | implemented / unverified | — |
-| OPS-03 | Structured JSON semantic logs; no secrets | — | `log.ts` | implemented / unverified | P3/P6 log audit |
-| OPS-04 | Live `flyctl logs` tail | — | — | not started | Needs deployment |
+| OPS-03 | Structured JSON semantic logs; actor names, no secrets | log audit (920 lines, 0 secret matches) | `logs-demo.md` | verified automatically | — |
+| OPS-04 | Live `flyctl logs` tail; log-only demo | local demo | `logs-demo.md`, `demo-server-log.jsonl` | implemented / unverified | Needs a Fly run |
 
 ## Acceptance scenarios
 
-| Scenario | Status | Evidence |
-| --- | --- | --- |
-| AT-01 | A+B pass | `spec/placement.test.ts`, `tests/e2e/solo.spec.ts` |
-| AT-02 | A partial (bridge fixture) | `physics.test.ts`; H pending |
-| AT-03 | not started | — |
-| AT-04 | A pass (fixtures) | B/H pending |
-| AT-05 | not started | P3 |
-| AT-06 | A partial (non-member, anonymous) | removed member/expired session in P3 |
-| AT-07 | A pass (restart + idempotency) | browser part P3 |
-| AT-08 | A pass | `tests/restart.test.ts` |
-| AT-09 | blocked | Needs Fly deploy |
-| AT-10–AT-16 | not started / partial | see rules above |
+See [`acceptance-report.md`](acceptance-report.md).
 
 ## Blockers
 
 1. **Docker unavailable locally.** The image can't be built or run here. It
    builds on Fly's remote builder during deploy. Impact: the P0/P1 "inside the
    actual image" checks are unverified until a deploy (or CI, once public) runs.
+   The Dockerfile is multi-stage on `node:24.21.0-bookworm-slim` with a C
+   toolchain in case better-sqlite3 has no prebuilt binary.
 2. **Network to Fly and GitHub is blocked in this sandbox** (DNS for
    `api.fly.io`/`api.github.com` fails). Deploying needs either the sandbox
    lifted for `flyctl` or the student running the deploy command.
+
+3. **CI won't deploy yet.** `checks.yml` runs `pnpm check:evidence` before
+   deploying; it fails until `PROCESS.md` and a reflection are written.
+
+## Known limitations
+
+- Capacity numbers are from the development machine; Fly may differ (CPU quota, memory).
+- Peak RSS reached 87% of 256 MB in the drop-plus-login burst locally (M-006).
+- Per-room queue cap (16) isn't separately enforced: commands run synchronously in the coordinator, so no queue builds up; per-user rate limits (2/s, burst 4) apply.
+- Storage-full admission (`STORAGE_FULL`) is implemented but untested.
+- The 0.2 u Snap-to-support reach is the directive's starting value, unvalidated with people.
+- The client advisory overlap check (SAT, sampled table) can differ from the server's Rapier result near tolerance; the server decides.
+- No example scenes; no email recovery (by design).
 
 ## Student-only tasks (not done by the agent)
 

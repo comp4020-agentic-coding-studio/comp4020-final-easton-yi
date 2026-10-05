@@ -818,6 +818,23 @@ dialog.confirm::backdrop {
   }
   .ws-tools {
     margin-left: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .ws-tools button {
+    flex: none;
+  }
+  .site-header.compact {
+    flex-wrap: nowrap;
+  }
+  .site-header.compact nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .ws-top {
+    gap: 2px 10px;
   }
   .adjust,
   .adjust.collapsed {

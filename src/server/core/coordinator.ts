@@ -300,7 +300,7 @@ const joinRoom = (conn: Conn, workId: string): void => {
   }
   send([conn.connId], room.snapshotFor(conn));
   send(room.connIds(conn.connId), { type: "presence", presence: room.presence() });
-  log({ event: "room.join", actorId: conn.userId, workId, outcome: conn.leaseId ? "editor" : "observer", streamId: room.streamId });
+  log({ event: "room.join", actorId: conn.userId, actorName: conn.displayName, workId, outcome: conn.leaseId ? "editor" : "observer", streamId: room.streamId });
 };
 
 // ---------------------------------------------------------------- commands
@@ -975,7 +975,7 @@ const methods: Record<string, (...args: any[]) => unknown> = {
     if (store.q.userByHandle.get(handle)) throw new AppError("HANDLE_TAKEN", "That handle is taken.");
     const id = randomUUID();
     durable(() => store.q.insertUser.run(id, handle, name, pwHash, recoveryDigest, now()));
-    log({ event: "account.create", actorId: id, outcome: "accepted" });
+    log({ event: "account.create", actorId: id, actorName: name, outcome: "accepted" });
     return { id };
   },
   "user.byHandle": (handle: string) => {
@@ -984,7 +984,7 @@ const methods: Record<string, (...args: any[]) => unknown> = {
   },
   "session.create": (userId: string, digest: string, csrf: string) => {
     durable(() => store.q.insertSession.run(digest, userId, csrf, now(), now() + AUTH.sessionAbsoluteMs, now()));
-    log({ event: "session.login", actorId: userId, outcome: "accepted" });
+    log({ event: "session.login", actorId: userId, actorName: displayName(userId), outcome: "accepted" });
   },
   "session.get": (digest: string) => sessionRow(digest),
   "session.revoke": (digest: string) => {
@@ -1321,7 +1321,7 @@ const methods: Record<string, (...args: any[]) => unknown> = {
       draftSeq: -1,
     });
     send([connId], { type: "hello.ok", userId });
-    log({ event: "ws.connect", actorId: userId, connId });
+    log({ event: "ws.connect", actorId: userId, actorName: displayName(userId), connId });
   },
   "conn.message": (connId: string, msg: unknown) => onMessage(connId, msg),
   "conn.close": (connId: string) => {
