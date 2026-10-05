@@ -1,0 +1,75 @@
+{
+ "base": "http://localhost:8080",
+ "rooms": 3,
+ "sessionsPerRoom": 4,
+ "sticksAtEnd": 576,
+ "commandAckMs": {
+  "mat": {
+   "n": 450,
+   "p50": 12.7,
+   "p95": 21.9,
+   "max": 34.1
+  },
+  "rain": {
+   "n": 150,
+   "p50": 15,
+   "p95": 39.9,
+   "max": 72.6
+  }
+ },
+ "visibleToOtherSessionMs": {
+  "n": 600,
+  "p50": 13.3,
+  "p95": 25.4,
+  "max": 72.9
+ },
+ "rejected": {},
+ "loginMs": {
+  "n": 9,
+  "p50": 662.3,
+  "p95": 1170.2,
+  "max": 1170.2
+ },
+ "loginBusy": 0,
+ "settleAfterRainMs": 11331,
+ "snapshotAckMs": {
+  "n": 3,
+  "p50": 10.9,
+  "p95": 14.1,
+  "max": 14.1
+ },
+ "server": {
+  "mat": {
+   "samples": 36,
+   "rssMaxMiB": 189,
+   "heapsMaxMiB": 42,
+   "workerHeapTotalMaxMiB": 29,
+   "arrayBuffersMaxMiB": 13,
+   "passP95MaxMs": 4.6205,
+   "passMaxMs": 18.498,
+   "loopP99MaxMs": 10.96
+  },
+  "rain": {
+   "samples": 12,
+   "rssMaxMiB": 222,
+   "heapsMaxMiB": 44,
+   "workerHeapTotalMaxMiB": 31,
+   "arrayBuffersMaxMiB": 13,
+   "passP95MaxMs": 8.5482,
+   "passMaxMs": 27.9785,
+   "loopP99MaxMs": 10.96
+  },
+  "settle": {
+   "samples": 22,
+   "rssMaxMiB": 182,
+   "heapsMaxMiB": 44,
+   "workerHeapTotalMaxMiB": 29,
+   "arrayBuffersMaxMiB": 1,
+   "passP95MaxMs": 10.7192,
+   "passMaxMs": 29.2436,
+   "loopP99MaxMs": 10.96
+  },
+  "overloadEvents": 0
+ },
+ "rssMaxOverallMiB": 222
+}

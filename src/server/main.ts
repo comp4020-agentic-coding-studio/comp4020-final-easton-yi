@@ -10,6 +10,7 @@ import { accessSync, constants, existsSync, readFileSync, statSync } from "node:
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
+import { monitorEventLoopDelay } from "node:perf_hooks";
 import { z } from "zod";
 import MarkdownIt from "markdown-it";
 import { AppError, isAppError } from "./errors.ts";
@@ -43,7 +44,14 @@ if (production) {
 // ---------------------------------------------------------------- coordinator RPC
 
 const workerFile = existsSync(join(here, "core/coordinator.js")) ? join(here, "core/coordinator.js") : join(here, "core/coordinator.ts");
-const worker = new Worker(workerFile, { workerData: { dataDir, testHooks } });
+// Bounded worker heap so V8 collects frame/snapshot churn before RSS grows
+// past the 256 MB machine (M-004). Overridable for measurements.
+const workerOld = Number(process.env.WORKER_MAX_OLD_MB ?? (production ? 48 : 0));
+const workerYoung = Number(process.env.WORKER_MAX_YOUNG_MB ?? (production ? 8 : 0));
+const worker = new Worker(workerFile, {
+  workerData: { dataDir, testHooks },
+  resourceLimits: { ...(workerOld ? { maxOldGenerationSizeMb: workerOld } : {}), ...(workerYoung ? { maxYoungGenerationSizeMb: workerYoung } : {}) },
+});
 let ready = false;
 let shuttingDown = false;
 let rpcSeq = 0;
@@ -211,13 +219,16 @@ const session = async (req: FastifyRequest): Promise<Session> => ((req as any).s
 
 // ---------------------------------------------------------------- health and README
 
+const loopDelay = monitorEventLoopDelay({ resolution: 10 });
+loopDelay.enable();
 app.get("/healthz", async () => ({ ok: true }));
 app.get("/readyz", async (_req, reply) => {
   try {
     if (!ready || shuttingDown) throw new Error("not ready");
     accessSync(dataDir, constants.W_OK);
     const h = await rpc("health");
-    return { ok: true, ...h, mainRssMiB: Math.round(process.memoryUsage().rss / 1048576) };
+    const ms = (ns: number): number => Math.round(ns / 1e4) / 100;
+    return { ok: true, ...h, mainHeapMiB: Math.round(process.memoryUsage().heapUsed / 1048576), eventLoopDelayMs: { p50: ms(loopDelay.percentile(50)), p99: ms(loopDelay.percentile(99)), max: ms(loopDelay.max) }, sockets: sockets.size };
   } catch {
     reply.status(503);
     return { ok: false };

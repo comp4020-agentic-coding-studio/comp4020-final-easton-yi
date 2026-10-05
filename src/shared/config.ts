@@ -8,6 +8,12 @@ export interface PhysicsConfig {
   readonly physicsConfigVersion: number;
   readonly stick: { readonly length: number; readonly width: number; readonly height: number; readonly mass: number };
   readonly table: { readonly radius: number; readonly thickness: number; readonly top: number };
+  /**
+   * null = one Rapier cylinder for the whole table. Otherwise a cylinder of
+   * `innerRadius` plus a flush triangle-mesh ring out to the table radius as
+   * a regular `segments`-gon, which the renderer draws identically (M-005).
+   */
+  readonly tableRim: { readonly innerRadius: number; readonly segments: number } | null;
   readonly gravity: readonly [number, number, number];
   readonly fixedStep: number;
   readonly maxCatchUpSteps: number;
@@ -36,7 +42,7 @@ export interface PhysicsConfig {
 }
 
 /** Immutable registry: never edit a published version, add a new one. */
-export const PHYSICS_CONFIGS: Readonly<Record<number, PhysicsConfig>> = Object.freeze({
+export const PHYSICS_CONFIGS: Readonly<Record<number, PhysicsConfig>> = ({
   1: Object.freeze({
     physicsConfigVersion: 1,
     stick: { length: 8, width: 1, height: 1, mass: 1 },
@@ -62,10 +68,26 @@ export const PHYSICS_CONFIGS: Readonly<Record<number, PhysicsConfig>> = Object.f
     removalBounds: { belowY: -20, radius: 60 },
     pushSpeed: 3,
     soundForceThreshold: 40,
+    tableRim: null,
   } satisfies PhysicsConfig),
 });
 
-export const CURRENT_PHYSICS_CONFIG_VERSION = 1;
+/**
+ * v2 (2026-10-05): under v1 a stick lying across the table's curved rim with
+ * another resting on it never settled: it pulsed at ~0.5–1.7 u/s, crept
+ * outward and kept the whole island awake. The cylinder's rim contact was the
+ * cause. v2 keeps a cylinder for the middle and makes the outer 1.5 u a flush
+ * 128-sided triangle-mesh ring: the rim case settles in 2 s at near-cylinder
+ * cost (M-005). Everything else is unchanged from v1.
+ */
+(PHYSICS_CONFIGS as Record<number, PhysicsConfig>)[2] = Object.freeze({
+  ...PHYSICS_CONFIGS[1]!,
+  physicsConfigVersion: 2,
+  tableRim: Object.freeze({ innerRadius: 16.5, segments: 128 }),
+});
+Object.freeze(PHYSICS_CONFIGS);
+
+export const CURRENT_PHYSICS_CONFIG_VERSION = 2;
 export const currentPhysicsConfig = (): PhysicsConfig => PHYSICS_CONFIGS[CURRENT_PHYSICS_CONFIG_VERSION]!;
 
 export const SNAPSHOT_SCHEMA_VERSION = 1;
@@ -128,7 +150,11 @@ export const INPUT = Object.freeze({
 });
 
 export const AUTH = Object.freeze({
-  scrypt: { N: 65536, r: 8, p: 2, keyLen: 64, maxmem: 96 * 1024 * 1024 },
+  // OWASP-listed scrypt option N=2^15, r=8, p=3 (32 MiB per hash). The
+  // initial N=2^16, p=2 (64 MiB) pushed peak RSS to 234 MiB of 256 under
+  // concurrent logins (M-004). Hashes carry their parameters, so older ones
+  // still verify; maxmem leaves room for that.
+  scrypt: { N: 32768, r: 8, p: 3, keyLen: 64, maxmem: 96 * 1024 * 1024 },
   hashConcurrency: 1,
   hashQueue: 8,
   sessionAbsoluteMs: 30 * 24 * 3600 * 1000,

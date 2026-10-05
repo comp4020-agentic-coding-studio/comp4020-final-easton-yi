@@ -85,6 +85,9 @@ export class Room {
   /** Set when a save or the simulation failed; mutations stop until recovery. */
   paused: string | null = null;
   accumulator = 0;
+  lastOverloadLogged = false;
+  /** Count of passes where the backlog was dropped (the room ran slower than real time). */
+  overloads = 0;
   lastStepAt = performance.now();
   authorNames = new Map<string, string>();
   memberColors = new Map<string, number>();
@@ -231,8 +234,15 @@ export class Room {
       if (this.accumulator > this.cfg.fixedStep * this.cfg.maxCatchUpSteps) {
         // Sustained lag: drop the backlog instead of spiralling; the room runs
         // slower than real time and says so in the log (§5.4).
-        log({ event: "room.overload", level: "warn", workId: this.workId, backlogMs: Math.round(this.accumulator * 1000) });
+        this.overloads++;
+        if (!this.lastOverloadLogged) {
+          log({ event: "room.overload", level: "warn", workId: this.workId, backlogMs: Math.round(this.accumulator * 1000) });
+          this.lastOverloadLogged = true;
+        }
         this.accumulator = 0;
+      } else if (this.lastOverloadLogged && this.accumulator < this.cfg.fixedStep) {
+        log({ event: "room.overload.end", workId: this.workId });
+        this.lastOverloadLogged = false;
       }
       if (steps > 0) {
         this.dirty = true; // the world moved since the last save

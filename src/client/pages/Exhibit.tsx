@@ -114,7 +114,7 @@ export function ExhibitPage({ exhibitId }: { exhibitId: string }) {
         <h1 id="ex-h">{data.title}</h1>
         {data.description && <p className="description">{data.description}</p>}
         <p>
-          By {data.attribution.join(", ") || "unknown"} · {data.geometry.sticks.length} sticks · stable structure height <span className="num">{data.height.toFixed(1)}</span> u
+          By {data.attribution.join(", ") || "unknown"} · {data.geometry.sticks.length} {data.geometry.sticks.length === 1 ? "stick" : "sticks"} · stable structure height <span className="num">{data.height.toFixed(1)}</span> u
         </p>
         <p className="muted small">Orbit freely; nothing here moves or can be edited. The work it came from may have changed since.</p>
         {user ? (

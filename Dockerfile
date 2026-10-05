@@ -31,4 +31,6 @@ COPY --from=build /app/dist ./dist
 COPY package.json README.md ./
 COPY docs ./docs
 # Fails at startup if /data isn't a writable mount; never falls back to /tmp.
-CMD ["node", "dist/server/main.js"]
+# Heap caps keep the main thread and the worker (48/8 MB, set in main.ts)
+# inside the 256 MB machine (docs/measurements.md M-004).
+CMD ["node", "--max-old-space-size=64", "--max-semi-space-size=2", "dist/server/main.js"]

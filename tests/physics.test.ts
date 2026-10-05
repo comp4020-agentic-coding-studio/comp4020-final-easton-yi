@@ -229,3 +229,49 @@ describe("native snapshot restore", () => {
     copy.free();
   });
 });
+
+describe("table rim contact (config v2, M-005)", () => {
+  const rimCase = (w: PhysicsWorld): void => {
+    // a stick lying across the curved rim with a second one resting across it
+    place(w, { p: [-4.5, 0.505, 16.1], q: quatFromYawPitchRoll(-0.1, 0, 0) });
+    place(w, { p: [-4.5, 1.51, 14], q: quatFromYawPitchRoll(Math.PI / 2, 0, 0) });
+  };
+
+  it("a stick resting only on the rim ring counts as table-supported", () => {
+    const w = PhysicsWorld.create(cfg);
+    const id = place(w, { p: [17, 4.005, 0], q: VERTICAL }); // stands on the ring (r 16.5–18)
+    run(w, 600);
+    expect(w.supportedFromTable().has(id)).toBe(true);
+    expect(w.supportedHeight()).toBeCloseTo(8, 1);
+    w.free();
+  });
+
+  it("a loaded stick across the rim settles instead of creeping", () => {
+    const w = PhysicsWorld.create(cfg);
+    expect(cfg.tableRim?.segments).toBe(128);
+    rimCase(w);
+    let quiet = 0;
+    let stableAt = -1;
+    for (let t = 0; t < 900 && stableAt < 0; t++) {
+      w.step();
+      quiet = w.isQuiet() ? quiet + 1 : 0;
+      if (quiet >= 90) stableAt = t;
+    }
+    expect(stableAt).toBeGreaterThan(0);
+    expect(stableAt).toBeLessThan(400);
+    w.free();
+  });
+
+  it("works created under v1 keep their own (cylinder) table", async () => {
+    const { PHYSICS_CONFIGS } = await import("../src/shared/config.ts");
+    const v1 = PHYSICS_CONFIGS[1]!;
+    expect(v1.tableRim).toBe(null);
+    const w = PhysicsWorld.create(v1);
+    place(w, { p: [0, 0.505, 0], q: FLAT });
+    const copy = PhysicsWorld.restore(v1, w.snapshot(), w.envelope());
+    run(copy, 300);
+    expect(copy.pose(`s${n}`)!.p[1]).toBeCloseTo(0.5, 1);
+    w.free();
+    copy.free();
+  });
+});

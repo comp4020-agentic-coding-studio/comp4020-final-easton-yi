@@ -44,6 +44,7 @@ const port = parentPort!;
 await initPhysics();
 const store: Store = createStore(openDatabase(opts.dataDir));
 const rooms = new Map<string, Room>();
+let overloadEvents = 0; // from rooms already unloaded
 const conns = new Map<string, Conn>();
 const commandBuckets = new Map<string, TokenBucket>();
 const testState = { failWrites: false };
@@ -173,6 +174,7 @@ const persistRoom = (room: Room, reason: "checkpoint" | "stable" | "cleanup" | "
 const unload = (room: Room, reason: string): void => {
   if (!room.paused) persistRoom(room, "suspend");
   room.pw.free();
+  overloadEvents += room.overloads;
   rooms.delete(room.workId);
   log({ event: "room.suspend", workId: room.workId, reason, moving: room.moving });
 };
@@ -739,6 +741,16 @@ const pushTimers = (room: Room): void => {
 
 // ---------------------------------------------------------------- scheduler
 
+/** Rolling scheduler-pass cost, for /readyz and capacity measurements. */
+const passCost: number[] = [];
+
+const tickStats = () => {
+  const xs = [...passCost].sort((a, b) => a - b);
+  const q = (p: number): number => (xs.length ? r4(xs[Math.min(xs.length - 1, Math.floor(p * (xs.length - 1)))]!) : 0);
+  const live = [...rooms.values()].reduce((n, r) => n + r.overloads, 0);
+  return { passes: xs.length, p50Ms: q(0.5), p95Ms: q(0.95), maxMs: q(1), overloadEvents: overloadEvents + live };
+};
+
 const tick = (): void => {
   const t = performance.now();
   for (const room of [...rooms.values()]) {
@@ -757,7 +769,12 @@ const tick = (): void => {
     }
   }
 };
-setInterval(tick, 1000 / 60);
+setInterval(() => {
+  const t0 = performance.now();
+  tick();
+  passCost.push(performance.now() - t0);
+  if (passCost.length > 1200) passCost.splice(0, passCost.length - 1200);
+}, 1000 / 60);
 
 setInterval(() => {
   const t = now();
@@ -939,7 +956,18 @@ const notifyRemoved = (workId: string, userId: string, reason: "REMOVED" | "LEFT
 const methods: Record<string, (...args: any[]) => unknown> = {
   health: () => {
     store.db.prepare("SELECT 1").get();
-    return { rooms: rooms.size, conns: conns.size, rssMiB: Math.round(process.memoryUsage().rss / 1048576) };
+    const m = process.memoryUsage();
+    return {
+      rooms: rooms.size,
+      conns: conns.size,
+      sticks: [...rooms.values()].reduce((n, r) => n + r.pw.sticks.size, 0),
+      rssMiB: Math.round(m.rss / 1048576),
+      workerHeapMiB: Math.round(m.heapUsed / 1048576),
+      workerHeapTotalMiB: Math.round(m.heapTotal / 1048576),
+      externalMiB: Math.round(m.external / 1048576),
+      arrayBuffersMiB: Math.round(m.arrayBuffers / 1048576),
+      tick: tickStats(),
+    };
   },
 
   // --- accounts and sessions (hashing happens on the main thread)

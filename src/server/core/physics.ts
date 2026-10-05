@@ -44,6 +44,32 @@ export interface CollisionEvent {
 
 export type PlacementProblem = "NON_FINITE" | "OUT_OF_BOUNDS" | "COLLISION" | "CAPACITY";
 
+/**
+ * The table's outer ring as a closed triangle mesh: a flat annulus from
+ * `inner` to `outer` (a regular n-gon), its outer side and its bottom, centred
+ * on the table body. Flush with the inner cylinder's top, so together they are
+ * the visible table, which the renderer draws as the same n-gon.
+ */
+export const tableRimMesh = (inner: number, outer: number, thickness: number, n: number): { vertices: Float32Array; indices: Uint32Array } => {
+  const h = thickness / 2;
+  const v: number[] = [];
+  const idx: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    v.push(c * inner, h, s * inner, c * outer, h, s * outer, c * outer, -h, s * outer, c * inner, -h, s * inner);
+  }
+  for (let i = 0; i < n; i++) {
+    const a = i * 4;
+    const b = ((i + 1) % n) * 4;
+    idx.push(a, b + 1, a + 1, a, b, b + 1); // top
+    idx.push(a + 1, b + 2, a + 2, a + 1, b + 1, b + 2); // outer side
+    idx.push(a + 2, b + 3, a + 3, a + 2, b + 2, b + 3); // bottom
+  }
+  return { vertices: new Float32Array(v), indices: new Uint32Array(idx) };
+};
+
 const combine = (rule: PhysicsConfig["combineRule"]): RAPIER.CoefficientCombineRule =>
   RAPIER.CoefficientCombineRule[rule];
 
@@ -69,14 +95,18 @@ export class PhysicsWorld {
     const table = world.createRigidBody(
       RAPIER.RigidBodyDesc.fixed().setTranslation(0, cfg.table.top - cfg.table.thickness / 2, 0),
     );
-    const collider = world.createCollider(
-      RAPIER.ColliderDesc.cylinder(cfg.table.thickness / 2, cfg.table.radius)
+    const material = (d: RAPIER.ColliderDesc): RAPIER.ColliderDesc =>
+      d
         .setFriction(cfg.friction)
         .setRestitution(cfg.restitution)
         .setFrictionCombineRule(combine(cfg.combineRule))
-        .setRestitutionCombineRule(combine(cfg.combineRule)),
-      table,
-    );
+        .setRestitutionCombineRule(combine(cfg.combineRule));
+    const rim = cfg.tableRim;
+    const collider = world.createCollider(material(RAPIER.ColliderDesc.cylinder(cfg.table.thickness / 2, rim ? rim.innerRadius : cfg.table.radius)), table);
+    if (rim) {
+      const m = tableRimMesh(rim.innerRadius, cfg.table.radius, cfg.table.thickness, rim.segments);
+      world.createCollider(material(RAPIER.ColliderDesc.trimesh(m.vertices, m.indices, RAPIER.TriMeshFlags.FIX_INTERNAL_EDGES)), table);
+    }
     return new PhysicsWorld(cfg, world, collider.handle);
   }
 
@@ -117,6 +147,14 @@ export class PhysicsWorld {
     return { sticks: [...this.sticks.values()], tick: this.tick, tableCollider: this.tableCollider };
   }
 
+  /** Every collider of the fixed table body (one cylinder, plus the rim ring in v2). */
+  tableColliders(): RAPIER.Collider[] {
+    const body = this.world.getCollider(this.tableCollider).parent()!;
+    const out: RAPIER.Collider[] = [];
+    for (let i = 0; i < body.numColliders(); i++) out.push(body.collider(i));
+    return out;
+  }
+
   private stickShape(): RAPIER.Cuboid {
     const s = this.cfg.stick;
     return new RAPIER.Cuboid(s.length / 2, s.height / 2, s.width / 2);
@@ -145,7 +183,7 @@ export class PhysicsWorld {
       const contact = collider.contactShape(shape, pos, rot, 0.01);
       if (contact && -contact.distance > depth) depth = -contact.distance;
     };
-    probe(this.world.getCollider(this.tableCollider));
+    for (const c of this.tableColliders()) probe(c);
     const reach = this.cfg.stick.length + 2;
     for (const meta of this.sticks.values()) {
       if (ignore?.has(meta.id)) continue;
@@ -348,8 +386,9 @@ export class PhysicsWorld {
       });
       return out;
     };
-    queue.push(this.tableCollider);
-    const seenColliders = new Set<number>([this.tableCollider]);
+    const roots = this.tableColliders().map((c) => c.handle);
+    queue.push(...roots);
+    const seenColliders = new Set<number>(roots);
     while (queue.length) {
       const c = queue.shift()!;
       for (const next of edgesFrom(c)) {
