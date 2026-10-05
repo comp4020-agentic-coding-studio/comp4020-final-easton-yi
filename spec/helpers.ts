@@ -146,7 +146,7 @@ export class Window {
     const w = new Window(ws);
     w.send({ type: "hello", csrf: client.csrf });
     await w.waitFor((m) => m.type === "hello.ok");
-    if (workId) await w.join(workId);
+    if (workId) await w.joinLive(workId);
     return w;
   }
 
@@ -157,6 +157,20 @@ export class Window {
   async join(workId: string): Promise<any> {
     this.send({ type: "room.join", workId });
     return this.waitFor((m) => m.type === "room.snapshot" && m.workId === workId);
+  }
+
+  /**
+   * Join and wait for a live room. Only three rooms run at once (WORLD-04)
+   * and earlier tests' rooms keep their slot while they settle, so a join can
+   * legitimately get the read-only last-saved view first.
+   */
+  async joinLive(workId: string, timeoutMs = 20_000): Promise<any> {
+    const until = Date.now() + timeoutMs;
+    for (;;) {
+      const s = await this.join(workId);
+      if (s.live || Date.now() > until) return s;
+      await sleep(500);
+    }
   }
 
   waitFor(pred: (m: any) => boolean, timeoutMs = 10_000): Promise<any> {
@@ -171,7 +185,7 @@ export class Window {
     });
   }
 
-  command(kind: string, payload: unknown, commandId = randomUUID()): string {
+  command(kind: string, payload: unknown, commandId: string = randomUUID()): string {
     const s = this.snapshot;
     this.send({
       v: 1,
