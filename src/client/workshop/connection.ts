@@ -15,6 +15,7 @@ export class RoomConnection {
   private timer = 0;
   private heartbeat = 0;
   private hiddenAt = 0;
+  private lastHeard = 0;
   private workId: string;
   private onMessage: (m: ServerMessage) => void;
   private onStatus: (s: ConnStatus) => void;
@@ -26,6 +27,8 @@ export class RoomConnection {
     this.onMessage = onMessage;
     this.onStatus = onStatus;
     document.addEventListener("visibilitychange", this.onVisibility);
+    window.addEventListener("offline", this.onOffline);
+    window.addEventListener("online", this.onOnline);
     this.open();
   }
 
@@ -49,6 +52,7 @@ export class RoomConnection {
       ws.send(JSON.stringify({ type: "hello", csrf: getCsrf() }));
     };
     ws.onmessage = (ev) => {
+      this.lastHeard = Date.now();
       let m: ServerMessage;
       try {
         m = JSON.parse(String(ev.data));
@@ -60,7 +64,11 @@ export class RoomConnection {
         this.setStatus("open");
         this.send({ type: "room.join", workId: this.workId });
         clearInterval(this.heartbeat);
-        this.heartbeat = window.setInterval(() => this.send({ type: "heartbeat", draft: this.draftPresence(), visible: !document.hidden }), TRANSPORT.heartbeatMs);
+        this.heartbeat = window.setInterval(() => {
+          // a link can die without closing; silence past the stale window counts as disconnected
+          if (Date.now() - this.lastHeard > TRANSPORT.heartbeatStaleMs) return this.drop();
+          this.send({ type: "heartbeat", draft: this.draftPresence(), visible: !document.hidden });
+        }, TRANSPORT.heartbeatMs);
         return;
       }
       this.onMessage(m);
@@ -90,6 +98,30 @@ export class RoomConnection {
     this.timer = window.setTimeout(() => this.open(), base * (0.75 + Math.random() * 0.5));
   }
 
+  /** Treat the current socket as dead and start reconnecting. */
+  private drop(): void {
+    const ws = this.ws;
+    this.ws = null;
+    clearInterval(this.heartbeat);
+    try {
+      ws?.close(4000, "client gave up");
+    } catch {
+      // already closed
+    }
+    if (!this.stopped) this.retry();
+  }
+
+  private onOffline = (): void => {
+    if (this.ws) this.drop();
+  };
+
+  private onOnline = (): void => {
+    if (this.stopped || this.status === "open") return;
+    this.attempt = 0;
+    clearTimeout(this.timer);
+    this.open();
+  };
+
   /** Returning from the background: confirm fresh state before placing again (SYNC-07). */
   private onVisibility = (): void => {
     if (document.hidden) {
@@ -114,6 +146,8 @@ export class RoomConnection {
     clearTimeout(this.timer);
     clearInterval(this.heartbeat);
     document.removeEventListener("visibilitychange", this.onVisibility);
+    window.removeEventListener("offline", this.onOffline);
+    window.removeEventListener("online", this.onOnline);
     this.ws?.close(1000, "leaving");
     this.ws = null;
     this.setStatus("closed");

@@ -52,3 +52,21 @@ volume (P5).
 Node's built-in TypeScript type stripping adds ~20 MiB RSS per isolate at
 startup (101 vs 75 MiB before any world exists), so production runs bundled
 JavaScript instead (see ADR-0001).
+
+## M-003 · Cross-session visibility, local loopback (2026-10-05)
+
+`APP_URL=http://localhost:8080 node scripts/measure/visibility.ts 40` against
+`NODE_ENV=production node dist/server/main.js` on the development machine.
+Two WebSocket sessions (owner and invited editor) in one process share one
+clock. Each of 40 accepted placements was timed from A's send to B receiving
+`sticks.added` (SYNC-04) and to A receiving `command.result`. Placements were
+spaced to stay under the 2 commands/s limit; the work grew from 0 to 40 sticks.
+
+| Metric | p50 | p95 | max |
+| --- | --- | --- | --- |
+| Visible to the other session | 4.5 ms | 12.3 ms | 12.3 ms |
+| Command acknowledged to sender | 4.4 ms | 12.2 ms | 12.2 ms |
+
+This is loopback: it measures server ordering, snapshot transaction and fan
+out, **not** the network to Fly's `syd` region. The p95 ≤ 1000 ms gate still
+needs the same script run against the deployed app.

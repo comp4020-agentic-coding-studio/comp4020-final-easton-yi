@@ -170,6 +170,11 @@ describe("validity", () => {
     const base = obstacle("base", flat(0, 0.505, 0));
     expect(validate(flat(0, 1.51, 0), dims, [base], table, b, tol, false).kind).toBe("ready");
     expect(validate(flat(0, 6, 0), dims, [base], table, b, tol, false).kind).toBe("unsupported");
+    // a short drop onto a support is still "ready", and says how far it drops
+    const short = validate(flat(0, 1.505 + 0.2, 0), dims, [base], table, b, tol, false);
+    expect(short.kind).toBe("ready");
+    expect(short.kind === "ready" && short.drop).toBeCloseTo(0.2, 2);
+    expect(validate(flat(0, 1.505 + 0.3, 0), dims, [base], table, b, tol, false).kind).toBe("unsupported");
     const hit = validate(flat(0.5, 0.8, 0), dims, [base], table, b, tol, false);
     expect(hit.kind).toBe("intersecting");
     expect(hit.kind === "intersecting" && hit.with).toBe("base");

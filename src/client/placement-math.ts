@@ -225,8 +225,11 @@ export const snapDown = (d: Draft, dims: Dims, obstacles: Obstacle[], table: Tab
   return { draft: { ...d, center: [d.center[0], d.center[1] - moved, d.center[2]] }, moved };
 };
 
+/** A support this close below still counts as "ready": the stick settles onto it. */
+export const SHORT_DROP = 0.25;
+
 export type Validity =
-  | { kind: "ready"; supported: true }
+  | { kind: "ready"; supported: true; drop: number }
   | { kind: "unsupported" }
   | { kind: "intersecting"; with: string | null; depth: number }
   | { kind: "out-of-bounds"; reason: "below" | "above" | "far" }
@@ -253,10 +256,19 @@ export const validate = (
   }
   const w = worstOverlap(box, obstacles, table);
   if (w.depth > tol) return { kind: "intersecting", with: w.with, depth: w.depth };
-  // Supported if lowering by a small amount would touch something. This is a
-  // hint about contact, not a promise of stability (PLACE-08).
-  const lowered = stickBox({ p: [pose.p[0], pose.p[1] - 0.05, pose.p[2]], q: pose.q }, dims);
-  return worstOverlap(lowered, obstacles, table).depth > 0 ? { kind: "ready", supported: true } : { kind: "unsupported" };
+  // "Ready" if something lies within a short drop straight below; a longer
+  // fall is "unsupported". A hint about contact, never a promise of
+  // stability (PLACE-08).
+  const touchesAt = (t: number): boolean => worstOverlap(stickBox({ p: [pose.p[0], pose.p[1] - t, pose.p[2]], q: pose.q }, dims), obstacles, table).depth > 0;
+  if (!touchesAt(SHORT_DROP)) return { kind: "unsupported" };
+  let lo = 0;
+  let hi = SHORT_DROP;
+  for (let i = 0; i < 24; i++) {
+    const mid = (lo + hi) / 2;
+    if (touchesAt(mid)) hi = mid;
+    else lo = mid;
+  }
+  return { kind: "ready", supported: true, drop: lo };
 };
 
 /** Find a legal initial spot near `near`, lifting above whatever is there (PLACE-01). */

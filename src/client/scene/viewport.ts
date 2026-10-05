@@ -469,7 +469,8 @@ export class Viewport {
     const fit = sphere.radius / Math.sin(Math.min(fov, fov * this.camera.aspect) / 2);
     const target = sphere.center.clone();
     target.y = Math.max(0, target.y * 0.8);
-    const pos = new THREE.Vector3().setFromSpherical(new THREE.Spherical(Math.min(this.controls.maxDistance, fit * 1.05), Number.isFinite(s.phi) ? Math.min(s.phi, 1.3) : 0.95, Number.isFinite(s.theta) ? s.theta : Math.PI / 4)).add(target);
+    // the table is a disc seen at an angle, so the bounding sphere overstates it; frame a little tighter
+    const pos = new THREE.Vector3().setFromSpherical(new THREE.Spherical(Math.min(this.controls.maxDistance, fit * (this.ids.length ? 0.95 : 0.78)), Number.isFinite(s.phi) ? Math.min(s.phi, 1.3) : 0.95, Number.isFinite(s.theta) ? s.theta : Math.PI / 4)).add(target);
     this.moveCamera(target, pos, instant);
   }
 

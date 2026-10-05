@@ -122,6 +122,7 @@ export class Window {
     this.ws = ws;
     ws.on("message", (data) => {
       const m = JSON.parse(data.toString());
+      Object.defineProperty(m, "receivedAt", { value: performance.now(), enumerable: false });
       if (m.type === "room.snapshot") this.snapshot = m;
       if (m.type === "lease.changed" && this.snapshot) this.snapshot.lease = m.lease;
       this.messages.push(m);
@@ -144,6 +145,9 @@ export class Window {
       ws.once("unexpected-response", (_req, res) => reject(new Error(`upgrade refused ${res.statusCode}`)));
     });
     const w = new Window(ws);
+    // like the browser client: a heartbeat every 5 s, or the server drops the window after 15 s
+    const beat = setInterval(() => ws.readyState === ws.OPEN && w.send({ type: "heartbeat" }), 5000);
+    ws.on("close", () => clearInterval(beat));
     w.send({ type: "hello", csrf: client.csrf });
     await w.waitFor((m) => m.type === "hello.ok");
     if (workId) await w.joinLive(workId);

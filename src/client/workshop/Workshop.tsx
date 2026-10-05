@@ -67,7 +67,7 @@ export const validityText = (v: Validity | null, phase: Phase): { icon: string; 
   if (!v) return { icon: "", text: "", tone: "ok" };
   switch (v.kind) {
     case "ready":
-      return { icon: "✓", text: "Ready to place", tone: "ok" };
+      return { icon: "✓", text: v.drop > 0.02 ? `Ready to place · drops ${v.drop.toFixed(2)} u onto the surface below` : "Ready to place", tone: "ok" };
     case "unsupported":
       return { icon: "↓", text: "Unsupported; will fall", tone: "warn" };
     case "intersecting":
@@ -427,6 +427,12 @@ export function Workshop({ workId }: { workId: string }) {
       return;
     }
     viewport.current = v;
+    // Read-only probe for browser tests (CAM-01): opt-in per browser, never shown in the UI.
+    try {
+      if (localStorage.getItem("stillwood.test") === "1") (window as unknown as Record<string, unknown>).__stillwood = { framing: () => v.currentFraming(), sticks: () => v.allPoses().length };
+    } catch {
+      // storage unavailable: no probe
+    }
     const c = new RoomConnection(workId, (m) => onMessageRef.current(m), setConnStatus);
     c.draftPresence = () => (draftRef.current && roomRef.current?.lease ? { seq: draftSeq.current, pose: draftPose(draftRef.current) } : null);
     conn.current = c;
