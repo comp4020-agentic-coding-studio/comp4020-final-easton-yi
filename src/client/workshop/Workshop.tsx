@@ -117,7 +117,7 @@ export function Workshop({ workId }: { workId: string }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const viewport = useRef<Viewport | null>(null);
   const conn = useRef<RoomConnection | null>(null);
-  const [glError, setGlError] = useState<string | null>(webglAvailable() ? null : "This browser can't show 3D (WebGL is unavailable), so building isn't possible here.");
+  const [glError, setGlError] = useState<string | null>(() => (webglAvailable() ? null : "This browser can't show 3D (WebGL is unavailable), so building isn't possible here."));
   const [connStatus, setConnStatus] = useState<ConnStatus>("connecting");
   const [room, setRoom] = useState<RoomView | null>(null);
   const roomRef = useRef<RoomView | null>(null);
@@ -454,7 +454,7 @@ export function Workshop({ workId }: { workId: string }) {
     viewport.current = v;
     // Read-only probe for browser tests (CAM-01): opt-in per browser, never shown in the UI.
     try {
-      if (localStorage.getItem("stillwood.test") === "1") (window as unknown as Record<string, unknown>).__stillwood = { framing: () => v.currentFraming(), sticks: () => v.allPoses().length };
+      if (localStorage.getItem("stillwood.test") === "1") (window as unknown as Record<string, unknown>).__stillwood = { framing: () => v.currentFraming(), sticks: () => v.allPoses().length, poses: () => v.allPoses(), rendered: () => v.renderedPositions(), stats: () => v.stats() };
     } catch {
       // storage unavailable: no probe
     }

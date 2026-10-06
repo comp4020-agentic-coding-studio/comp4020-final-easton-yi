@@ -5,7 +5,7 @@ The resume record for implementing `docs/BRIEF.md` (product rules) under
 Nothing here is a grade claim. Human-judgement items stay **pending** until a
 real person has tried the app.
 
-- **Current stage:** P7 (owner-controlled work deletion, user-directed change of 2026-10-06) passes locally on top of P6 (audit and handoff). P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers). The P7 change is **not committed or deployed** yet.
+- **Current stage:** P8 (graphics quality and idle rendering, user-directed change of 2026-10-06) passes locally, on top of P7 (owner-controlled work deletion) and P6 (audit and handoff). P8 is **not committed or deployed**. P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers). The P7 change is **not committed or deployed** yet.
 - **Next action:** deploy to Fly, then re-run `pnpm check`, `scripts/measure/visibility.ts` and `scripts/measure/capacity.ts` against the live URL; run the human sessions in `acceptance-report.md`.
 
 ## Baseline (P0, 2026-10-05)
@@ -37,6 +37,7 @@ real person has tried the app.
 | P1 | Real Docker HTTP checks | **blocked** | As above; production-mode bundle passes `pnpm check` |
 | P1 | Camera changes are local | **pass (browser)** | `tests/e2e/together.spec.ts`: B's framing unchanged while A places |
 | P2 | Crit 8 slice on Fly | **blocked** | Not deployed: sandbox can't reach Fly. README draft, `/readme/` server-rendered, onboarding, empty/error states all done locally |
+| P8 | High unchanged; tiers, Auto, idle/hidden rendering, lifecycle bounds | **pass (local)** | `tests/graphics-quality.test.ts` (23), `tests/e2e/graphics.spec.ts` (9), M-007/M-008 pixel comparisons, `scripts/measure/graphics-auto.ts` |
 | P3 | Concurrent release converges; overlap rejection keeps draft; no camera stealing; old epochs/leases fail; unknown never duplicates | **pass** | `spec/collaboration.test.ts`, `tests/e2e/together.spec.ts`, `spec/versions.test.ts` restore |
 | P3 | p95 ≤ 1000 ms visibility over ≥30 changes | **pass locally, Fly unverified** | M-003 (40 changes, p95 12.3 ms), M-006 (600 changes under load, p95 25.4 ms); loopback, not Fly |
 | P4 | Exhibit unchanged by collapse; withdrawal blocks API; restore invalidates stale requests; owner disconnect can't lock; restored geometry matches, members/best height kept | **pass** | `spec/versions.test.ts`, `tests/e2e/exhibit.spec.ts` |
@@ -131,12 +132,14 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | HEIGHT-02 | 1.5 s stable confirmation; "Measuring…" with previous value; best never decreases on restore | spec | `versions.test.ts` restore | verified automatically | — |
 | LOOK-01 | Procedural longitudinal grain, distinct end grain, bevel, soft shadows | screenshot | `p1-two-sticks.png` | in progress | Human judgement pending |
 | LOOK-02 | Table first; right rail; ≤280 px adjust panel; restrained status; no debug UI | screenshots at both viewports | `p5-*.png` | verified in browser | Taste is H |
+| LOOK-04 | Graphics quality control (view toolbar, workshop + exhibit); `GRAPHICS` presets; `AutoQuality` controller; one idempotent `applyQuality`; browser-local `stillwood.graphicsQuality.v1` | unit (injected time) + e2e + before/after screenshots | `graphics-quality.test.ts`, `graphics.spec.ts`, M-007, `p8-*.png` | verified automatically / in browser (headless SwiftShader) | No real-GPU or player-device measurement; Auto recovers through ordinary use (M-008: ~1–2 min) but never at ~30 Hz, nor when animations are more than 10 s apart; Low loses the ghost's shadow footprint (other cues kept) |
 | LOOK-03 | Strength-scaled knocks, 6 voices, gesture-unlocked, mute; no shake | — | `audio.ts` | implemented / unverified | Not heard by a person |
 | ACCESS-01 | DOM controls for every action; shortcuts skip text inputs; searchable stick list | e2e keyboard-only | `access.spec.ts` | verified in browser | — |
 | ACCESS-02 | Observe/Adjust toggle on coarse pointers; 44 px targets; capped handle regions | e2e 390×844 touch | `access.spec.ts` | verified in browser (emulated) | Real phone pending |
 | ACCESS-03 | 1920×1080 and 390×844, visible focus, dialogs restore focus, WebGL fallback with readable info | e2e | `access.spec.ts` | verified in browser | WebGL-off fallback not browser-tested |
 | OPS-01 | Distinct failure states; DB failure pauses room; NaN pauses | restart test | failed-write test | verified automatically | NaN path not injected |
-| OPS-02 | Shadows → pixel ratio degradation | — | `adaptQuality` | implemented / unverified | — |
+| OPS-02 | Client degradation through the LOOK-04 tiers (reversible); old one-way `adaptQuality` removed | as LOOK-04 | as LOOK-04 | verified automatically | Server-side frame/ghost rate degradation unchanged |
+| OPS-05 | Single rAF scheduler with `invalidate()`; renders only while something changes; nothing while hidden; samples only continuous animated frames; context restore wakes it | e2e two-context idle viewer (ghost move/release, placement, collapse, dropped partner, own reconnect), simulated hidden period, switching with a partner active, remount loop/resource check | `graphics.spec.ts` | verified in browser | Real tab hiding isn't automatable in this headless runner (simulated through `document.hidden`; manual check in INITIAL_PROMPT §9.4); a silently dead link (heartbeat timeout, no socket close) isn't browser-tested, though it ends in the same `draft.removed`; shadow reuse between drawn frames deferred |
 | OPS-03 | Structured JSON semantic logs; actor names, no secrets; `work.trash`/`work.untrash`/`work.purge` with IDs and counts only | log audit (920 lines, 0 secret matches) | `logs-demo.md` | verified automatically | Lifecycle events not yet in `logs-demo.md` |
 | OPS-04 | Live `flyctl logs` tail; log-only demo | local demo | `logs-demo.md`, `demo-server-log.jsonl` | implemented / unverified | Needs a Fly run |
 
@@ -167,6 +170,9 @@ See [`acceptance-report.md`](acceptance-report.md).
 - The 0.2 u Snap-to-support reach is the directive's starting value, unvalidated with people.
 - The client advisory overlap check (SAT, sampled table) can differ from the server's Rapier result near tolerance; the server decides.
 - No example scenes; no email recovery (by design).
+- Graphics quality (M-007, M-008): Auto's constants are unmeasured on real devices. Recovery needs 15 s of good measured animation (p90 ≤20 ms), which may span interactions up to 10 s apart, so 30 Hz-capped browsers and sparse use stay at the lower tier until the player picks one; a view stops upgrading after three reversed upgrades. An occluded but not hidden window may still throttle rAF; such frames aren't distinguished from slow ones.
+- `pnpm check` is intermittently red (seen 2026-10-06: 3 of 9 runs on the P8 build, 0 of 3 on a baseline `3a4a700` build, all on fresh or long-lived local production instances). Every failure is the same: the shared "Owner" account in `spec/versions.test.ts` sends commands faster than the per-user limit (2/s, burst 4), a placement comes back `RATE_LIMITED`, and the next tests fail within milliseconds because the bucket hasn't refilled. P8 changes neither the server nor the specs (only a client constant block in `src/shared/config.ts`), so this is spec timing, but a red run blocks the CI deploy. Likely fix: pace that spec's commands to the documented limit or give its describe blocks separate shared accounts, within the sign-up budget.
+- Fixed with P8: on phones a long status line widened the workshop's single grid column past the screen (visible in the old `p5-phone-390x844.png`), and repeated workshop re-renders created throwaway WebGL contexts until Chrome evicted the scene's.
 
 ## Student-only tasks (not done by the agent)
 

@@ -52,6 +52,10 @@ export function Intro({ progress, onClose }: { progress: Set<string>; onClose: (
           <li>Editors can leave at any time, from People, or from My works if the work is in the owner's trash.</li>
         </ul>
       </details>
+      <p className="muted small">
+        If the view feels slow, open Graphics in the view controls and choose Medium or Low. Auto, the default, adjusts by itself. It only affects
+        this device.
+      </p>
       <p className="actions">
         <button type="button" className={done ? "primary" : ""} onClick={() => onClose(done)}>
           {done ? "Done" : "Skip"}

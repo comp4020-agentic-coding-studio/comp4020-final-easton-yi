@@ -163,3 +163,110 @@ The 80% headroom target holds in the steady state but not in the drop-plus-
 login burst on this machine. Not adopted yet: tighter heap caps (risk of
 worker heap OOM) or a lower scrypt cost. The deciding numbers are the ones from
 the Fly machine itself, still to be measured.
+
+## M-007 · Graphics quality and idle rendering, before/after (2026-10-06)
+
+Problem: the viewport rendered every animation frame forever, even with a
+still scene, and its only adaptation was a one-way downgrade (shadows off,
+then pixel ratio 1) after a leaky count of intervals above 34 ms passed 90.
+Change: LOOK-04 tiers with a reversible Auto controller, and OPS-05 idle and
+hidden rendering. Baseline commit `3a4a700`, three 0.186.1.
+
+Setup: development machine above; Playwright's headless Chromium with
+SwiftShader (software WebGL, `--use-angle=swiftshader`), local server on a
+disposable data directory. Scene: one exhibit (two pillars, a beam, a loose
+stick; 4 sticks) and its source work, identical saved geometry and framing
+before and after. Scratch scripts counted `requestAnimationFrame` callbacks
+and WebGL `draw*` calls by wrapping them in an init script.
+
+| Exhibit, 1280×800, DPR 1, Auto/High | Before | After |
+| --- | --- | --- |
+| 5 s idle after load: rAF callbacks / draw calls | 300 / 1500 | 0 / 0 |
+| ~1.5 s orbit drag (60 pointer moves): frames, median / p95 interval | 203, 16.7 / 33.2 ms | 166, 16.7 / 16.7 ms |
+| 5 s idle after the orbit: rAF callbacks / draw calls | 269 / 1345 | 0 / 0 |
+
+Visual comparison, same browser, geometry, camera, viewport and DPR: the
+High (and fresh Auto) exhibit at DPR 1 and DPR 2, and a workshop close-up with
+a held ghost, its handles and outline, are **pixel-identical** to the baseline
+across the whole 3D scene. The only differing pixels are the new Graphics
+button in the toolbar. Before: `docs/evidence/p8-closeup-before.png`; after:
+`p8-closeup-high.png`, `p8-closeup-medium.png`, `p8-closeup-low.png`,
+`p8-side-high.png`, `p8-side-low.png`. The baseline console also showed
+three's “PCFSoftShadowMap has been removed. Using PCFShadowMap instead”; the
+code now names `PCFShadowMap`, which is what was rendered before.
+
+Inspection: Medium's 1024² shadows are a little softer (the PCF radius is in
+texels). Low has no real-time shadows, so the held ghost no longer casts its
+footprint onto the table; the outline colour, status text (“Ready to place ·
+drops … u”, “Intersecting”), handles, dashed drop guide, numeric readouts and
+Top/Side views remain, and `tests/e2e/graphics.spec.ts` places a stick in Low
+at the position the readouts gave.
+
+What this does **not** show: anything about real GPUs, player-device frame
+rates, battery use or a collapse under load. SwiftShader runs on the CPU; the
+interval numbers above are headless behaviour, and the orbit difference is not
+a performance claim. No hardware GPU was available. The Auto rule was
+revised after this entry; see M-008.
+
+Found on the way: `Workshop` called `webglAvailable()` in a non-lazy
+`useState` argument, so every re-render created a throwaway WebGL context.
+After about 16 clicks Chrome logged “Too many active WebGL contexts” and
+evicted the scene's own context (blank view). Observed on the new build; the
+calling code was unchanged since the baseline, which wasn't re-run for it.
+The always-on loop would have redrawn after a restore; idle rendering didn't. Fixed (lazy initial
+state, the probe releases its context, `webglcontextrestored` wakes the
+view) and covered in `graphics.spec.ts`.
+
+## M-008 · Auto recovery under ordinary use, and High parity re-check (2026-10-06)
+
+Problem: M-007's Auto rule needed 15 s of good frames inside **one
+uninterrupted** animated run (plus a 2 s rolling window). With idle rendering,
+ordinary building produces short runs: an orbit and its damping (~2 s), a
+ghost drag, a falling stick, and single frames for button presses. A scripted
+session of that (`ordinaryCycle` in `tests/graphics-quality.test.ts`: per
+14.3 s cycle, 4.4 s of measured animated time in five runs, pauses of
+1.5–4 s), fed to the old controller at a steady 16.7 ms per frame starting
+from Low, made **no tier change in 10 simulated minutes**. Recovery was
+practically unreachable.
+
+Change (`GRAPHICS.auto`, `src/client/scene/quality.ts`): the 2 s windows are
+made of measured time and may span interactions; a pause over 10 s between
+measured frames (`evidenceMaxGapMs`), a return to the tab or a tier change
+discards all evidence; decisions happen only on measured frames; a good window
+is p90 ≤ 20 ms and 15 s of consecutive good windows allow one tier up. The
+fixed 60 s backoff after a reversed upgrade now doubles, and a view stops
+upgrading after three reversed upgrades (`maxFailedUpgrades`). The deferred
+upgrade's separate 2 s freshness rule is gone: deferred evidence is simply
+used on the next measured, safe frame unless a gap has discarded it.
+
+Result, same scripted session (injected time): Low → Medium at 58.4 s, Medium
+→ High at 115.9 s. The same activity with pauses ×4 (over 10 s) gathers
+nothing and stays at Low. A device smooth at Medium but slow at High, used
+continuously for 30 simulated minutes, tries High exactly 3 times (backoff
+≥60 s then ≥120 s) and stays at Medium: at most 8 tier changes in total. These
+are unit tests in `tests/graphics-quality.test.ts`.
+
+In a browser (`scripts/measure/graphics-auto.ts`; headless Chromium,
+SwiftShader, 1280×800, DPR 1, empty work). For calibration, a 4 s orbit at DPR 1
+gives a median interval of 16.7 ms (1% above 34 ms) unthrottled, and 83 ms
+(96% above 34 ms) with `Emulation.setCPUThrottlingRate` 60. Run:
+
+| Phase | Tier changes |
+| --- | --- |
+| Continuous orbit, CPU ×60 | High → Medium at 9 s, → Low at 13 s |
+| Throttling removed (15 s); ordinary use: 1.2 s orbit, 2.5 s pause, Add + 3 steppers + Cancel, 1.5 s pause, a view button, 3 s pause | Low → Medium after 62 s, → High after 130 s (14 cycles) |
+| Two more minutes of orbits with 3 s pauses | stayed High; 0 reversed upgrades |
+
+The real-browser recovery times match the simulation. They are controller
+behaviour under software rendering, not frame rates on any device; CPU
+throttling stands in for a temporary slowdown.
+
+Parity re-check (`/tmp` scratch script, same exhibit and browser as M-007):
+starting the exhibit in Low or Medium and switching to High through the
+control gives a scene **pixel-identical** to the original renderer at DPR 1 and
+DPR 2 (shadow map recreated after Low, resized after Medium), with 2048²
+shadows and `antialias: true` in the context attributes. On a 3× touch
+screen, Low → High returns to the 1.5 cap (`graphics.spec.ts`, phone). With a
+partner moving a ghost, twelve switches, a resize and a switch while hidden,
+the viewer's frame back at High is byte-identical to its frame before
+(`graphics.spec.ts`, "switching tiers while holding a stick…").

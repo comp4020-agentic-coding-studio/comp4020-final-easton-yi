@@ -2,7 +2,9 @@
 // authoritative stick transforms (interpolated ~100 ms behind arrival, never
 // extrapolated), the local held ghost and its handles, and partners' ghosts.
 // Each window controls its own camera; nothing arriving from the network
-// moves it (CAM-01).
+// moves it (CAM-01). It renders only while something is changing or moving
+// and never while the tab is hidden (OPS-05); graphics quality is applied in
+// one place, applyQuality (LOOK-04).
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
@@ -27,6 +29,9 @@ import {
 } from "../placement-math.ts";
 import { boxCorners, stickBox, type Vec3 } from "../../shared/geometry.ts";
 import type { WireBody } from "../../shared/protocol.ts";
+import { GRAPHICS, TRANSPORT } from "../../shared/config.ts";
+import { AutoQuality, effectivePixelRatio, type QualityMode, type QualityTier } from "./quality.ts";
+import { getGraphicsState, reportAppliedTier, subscribeGraphics } from "../graphics-setting.ts";
 
 export const PERSON_COLORS = ["#2F6FB2", "#B5532E", "#7A4FA3", "#2E8A6B", "#A8862A", "#B23A6E", "#4C6A1E", "#3D5A80"];
 export const PERSON_SHAPES = ["●", "▲", "■", "◆", "★", "✚", "⬟", "⬢"];
@@ -48,10 +53,16 @@ export type ViewName = "default" | "top" | "side";
 
 const prefersReducedMotion = (): boolean => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
+/**
+ * Probe once per page view: every probe is a real context, and browsers evict
+ * the oldest (the scene's) once about 16 are alive, so release it straight away.
+ */
 export function webglAvailable(): boolean {
   try {
     const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+    const gl = c.getContext("webgl2") || c.getContext("webgl");
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    return !!gl;
   } catch {
     return false;
   }
@@ -105,9 +116,19 @@ export class Viewport {
   reducedMotion = prefersReducedMotion();
   private raf = 0;
   private disposed = false;
-  private lastFrame = performance.now();
-  private slowFrames = 0;
-  private quality = 2;
+  /** Frame start of the previous frame, and whether the scheduled frame continues an animated run. */
+  private lastFrameAt = 0;
+  private continuous = false;
+  private inFrame = false;
+  private invalidatedInFrame = false;
+  /** Authoritative motion is still being interpolated until this time. */
+  private motionUntil = 0;
+  private renders = 0;
+  private sun: THREE.DirectionalLight;
+  private auto = new AutoQuality();
+  private applied: { tier: QualityTier; pixelRatio: number; width: number; height: number } | null = null;
+  private dprQuery: MediaQueryList | null = null;
+  private unsubscribeGraphics: () => void;
   private transition: { from: { t: THREE.Vector3; p: THREE.Vector3 }; to: { t: THREE.Vector3; p: THREE.Vector3 }; start: number } | null = null;
   private resizeObserver: ResizeObserver;
 
@@ -118,10 +139,12 @@ export class Viewport {
     this.events = opts;
     this.mode = opts.mode;
 
+    // The same context options in every quality tier; changing them would need a new context.
     this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.maxPixelRatio()));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // three r186 removed PCFSoftShadowMap and renders it as PCFShadowMap (with a
+    // console warning); naming PCF directly is the same shadows without the warning.
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
@@ -145,11 +168,16 @@ export class Viewport {
     this.controls.dampingFactor = 0.12;
     this.controls.zoomSpeed = 0.8;
     this.controls.rotateSpeed = 0.7;
-    this.controls.addEventListener("start", () => (this.orbitActive = true));
+    this.controls.addEventListener("start", () => {
+      this.orbitActive = true;
+      this.invalidate();
+    });
     this.controls.addEventListener("end", () => {
       if (this.orbitActive) this.events.onCameraGestureEnd?.();
       this.orbitActive = false;
+      this.invalidate();
     });
+    this.controls.addEventListener("change", this.invalidate);
     this.setView("default", true);
 
     // lights
@@ -168,6 +196,7 @@ export class Viewport {
     sun.shadow.radius = 3;
     this.scene.add(sun);
     this.scene.add(sun.target);
+    this.sun = sun;
 
     // table: its cylinder matches the collider exactly (WORLD-02)
     const tableMesh = new THREE.Mesh(new THREE.CylinderGeometry(this.table.radius, this.table.radius, this.table.thickness, 128), tableMaterial());
@@ -239,15 +268,15 @@ export class Viewport {
     canvas.addEventListener("pointercancel", this.onPointerUp);
     canvas.addEventListener("lostpointercapture", this.onPointerUp);
     canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+    // three rebuilds GPU state on restore; an idle scene still needs a frame to show it
+    canvas.addEventListener("webglcontextrestored", this.invalidate);
     window.addEventListener("blur", this.cancelDrag);
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
-    this.resize();
-    this.loop();
-  }
-
-  private maxPixelRatio(): number {
-    return matchMedia("(pointer: coarse)").matches ? 1.5 : 2;
+    document.addEventListener("visibilitychange", this.onVisibility);
+    this.watchDpr();
+    this.unsubscribeGraphics = subscribeGraphics(() => this.setQualityMode(getGraphicsState().mode));
+    this.setQualityMode(getGraphicsState().mode, true);
   }
 
   // ---------------------------------------------------------------- authoritative sticks
@@ -273,6 +302,7 @@ export class Viewport {
     }
     this.seedAttr.needsUpdate = true;
     this.sticks.count = this.ids.length;
+    this.invalidate();
   }
 
   removeBodies(ids: string[]): void {
@@ -287,16 +317,29 @@ export class Viewport {
     this.seedAttr.needsUpdate = true;
     this.sticks.count = keep.length;
     if (this.selected && remove.has(this.selected)) this.select(null);
+    this.invalidate();
   }
 
-  /** A full authoritative frame: buffered and rendered ~100 ms behind arrival. */
+  /**
+   * A full authoritative frame: buffered and rendered ~100 ms behind arrival.
+   * A frame that moves anything keeps rendering until its interpolation has
+   * finished, whatever later messages say about the room being settled.
+   */
   pushFrame(bodies: WireBody[]): void {
     const t = performance.now();
+    let moved = false;
     for (const b of bodies) {
       const list = this.samples.get(b[0]);
       if (!list) continue;
-      list.push({ t, p: new THREE.Vector3(b[1], b[2], b[3]), q: new THREE.Quaternion(b[4], b[5], b[6], b[7]) });
+      const s = { t, p: new THREE.Vector3(b[1], b[2], b[3]), q: new THREE.Quaternion(b[4], b[5], b[6], b[7]) };
+      const last = list[list.length - 1];
+      if (!last || last.p.distanceToSquared(s.p) > 1e-10 || 1 - Math.abs(last.q.dot(s.q)) > 1e-10) moved = true;
+      list.push(s);
       if (list.length > 12) list.splice(0, list.length - 12);
+    }
+    if (moved) {
+      this.motionUntil = t + TRANSPORT.interpolationDelayMs;
+      this.invalidate();
     }
   }
 
@@ -312,6 +355,16 @@ export class Viewport {
     return this.ids.map((id) => ({ id, ...this.stickPose(id)! }));
   }
 
+  /** Where each stick was last drawn, for the test probe: interpolation has finished when this matches allPoses. */
+  renderedPositions(): Vec3[] {
+    const m = new THREE.Matrix4();
+    const p = new THREE.Vector3();
+    return this.ids.map((_, i) => {
+      this.sticks.getMatrixAt(i, m);
+      return p.setFromMatrixPosition(m).toArray() as Vec3;
+    });
+  }
+
   // ---------------------------------------------------------------- ghosts
 
   setDraft(d: Draft | null, opts: { editable: boolean; status: "ok" | "warn" | "bad" | "pending" }): void {
@@ -323,6 +376,7 @@ export class Viewport {
     (this.draftMesh.material as THREE.MeshStandardMaterial).opacity = opts.status === "pending" ? 0.3 : 0.45;
     (this.draftMesh.material as THREE.MeshStandardMaterial).color.set(opts.status === "bad" ? "#d29a8c" : "#C9A27A");
     this.syncDraft();
+    this.invalidate();
   }
 
   private syncDraft(): void {
@@ -348,6 +402,7 @@ export class Viewport {
     const g = this.draftShadowLine.geometry as THREE.BufferGeometry;
     g.setFromPoints([new THREE.Vector3(pose.p[0], lowest, pose.p[2]), new THREE.Vector3(pose.p[0], below, pose.p[2])]);
     this.draftShadowLine.computeLineDistances();
+    this.invalidate();
   }
 
   private surfaceBelow(p: Vec3): number {
@@ -387,14 +442,22 @@ export class Viewport {
     for (const [id, e] of this.remote) {
       if (seen.has(id)) continue;
       this.scene.remove(e.group);
+      e.group.traverse((o) => {
+        // the outline shares the selection geometry, so only the box and materials are this ghost's
+        if (o instanceof THREE.Mesh) o.geometry.dispose();
+        ((o as THREE.Mesh).material as THREE.Material | undefined)?.dispose();
+      });
       e.label.remove();
       this.remote.delete(id);
     }
+    this.invalidate();
   }
 
   setPushArrow(point: Vec3 | null, dir: Vec3 | null): void {
+    this.invalidate();
     if (this.pushArrow) {
       this.scene.remove(this.pushArrow);
+      this.pushArrow.dispose();
       this.pushArrow = null;
     }
     if (!point || !dir) return;
@@ -409,6 +472,7 @@ export class Viewport {
   select(id: string | null): void {
     this.selected = id;
     this.selectedOutline.visible = !!id;
+    this.invalidate();
   }
 
   // ---------------------------------------------------------------- camera
@@ -423,9 +487,11 @@ export class Viewport {
       this.controls.target.copy(target);
       this.camera.position.copy(position);
       this.controls.update();
+      this.invalidate();
       return;
     }
     this.transition = { from: { t: this.controls.target.clone(), p: this.camera.position.clone() }, to: { t: target.clone(), p: position.clone() }, start: performance.now() };
+    this.invalidate();
   }
 
   setView(view: ViewName, instant = false): void {
@@ -707,37 +773,152 @@ export class Viewport {
   // ---------------------------------------------------------------- frame loop
 
   private resize(): void {
+    // Resize keeps target, distance and the held draft (CAM-04).
+    this.syncSize();
+  }
+
+  /**
+   * Keeps CSS size, drawing buffer, camera aspect and the tier's pixel ratio
+   * together. Recomputed on resize, DPR change and tier change, so a resize
+   * can't bring back a stale cap; unchanged values touch nothing.
+   */
+  private syncSize(): void {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
-    if (!w || !h) return;
-    // Resize keeps target, distance and the held draft (CAM-04).
-    this.renderer.setSize(w, h, false);
+    if (!w || !h || !this.applied) return;
+    const pixelRatio = effectivePixelRatio(this.applied.tier, window.devicePixelRatio, matchMedia("(pointer: coarse)").matches);
+    if (w === this.applied.width && h === this.applied.height && pixelRatio === this.applied.pixelRatio) return;
+    // CSS size comes from the stylesheet; this sets the drawing buffer only, in one step
+    this.renderer.setDrawingBufferSize(w, h, pixelRatio);
+    this.applied = { ...this.applied, width: w, height: h, pixelRatio };
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+    this.invalidate();
   }
+
+  /** A DPR change (zoom, another monitor) doesn't always resize the container, so watch it directly. */
+  private watchDpr = (): void => {
+    this.dprQuery?.removeEventListener("change", this.onDprChange);
+    this.dprQuery = matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    this.dprQuery.addEventListener("change", this.onDprChange);
+  };
+  private onDprChange = (): void => {
+    if (this.disposed) return;
+    this.watchDpr();
+    this.syncSize();
+  };
+
+  // ---------------------------------------------------------------- graphics quality (LOOK-04)
+
+  private setQualityMode(mode: QualityMode, initial = false): void {
+    if (this.disposed || (!initial && mode === this.auto.mode)) return;
+    this.applyQuality(this.auto.setMode(mode));
+  }
+
+  /**
+   * The one place a tier reaches the renderer. Idempotent: the same tier and
+   * size reallocate nothing. Materials, lights, geometry, tone mapping and the
+   * context are the same in every tier; only pixel ratio and shadows differ.
+   */
+  private applyQuality(tier: QualityTier): void {
+    const preset = GRAPHICS.tiers[tier];
+    const shadows = preset.shadowMapSize > 0;
+    if (this.renderer.shadowMap.enabled !== shadows) {
+      this.renderer.shadowMap.enabled = shadows;
+      if (!shadows) {
+        // free the GPU target in Low; three recreates it on the next shadow pass,
+        // which runs before the main pass, so the first frame back is current
+        this.sun.shadow.map?.dispose();
+        this.sun.shadow.map = null;
+      }
+      // r186 keys programs on shadowMapEnabled but doesn't notice the flag
+      // changing, so lit materials must recompile (onBeforeCompile and the
+      // wood cache keys are kept)
+      this.scene.traverse((o) => {
+        const m = (o as THREE.Mesh).material;
+        for (const mat of Array.isArray(m) ? m : m ? [m] : []) if (mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.ShadowMaterial) mat.needsUpdate = true;
+      });
+    }
+    // r186 resizes the existing shadow target (disposing the old one) when mapSize differs
+    if (shadows && this.sun.shadow.mapSize.x !== preset.shadowMapSize) this.sun.shadow.mapSize.set(preset.shadowMapSize, preset.shadowMapSize);
+    this.applied = { tier, pixelRatio: this.applied?.pixelRatio ?? 0, width: this.applied?.width ?? 0, height: this.applied?.height ?? 0 };
+    this.syncSize();
+    reportAppliedTier(this, tier);
+    this.invalidate();
+  }
+
+  // ---------------------------------------------------------------- frame scheduling (OPS-05)
+
+  /**
+   * Ask for one frame. Calls coalesce into a single requestAnimationFrame;
+   * nothing is scheduled while hidden or after disposal.
+   */
+  invalidate = (): void => {
+    if (this.inFrame) {
+      this.invalidatedInFrame = true;
+      return;
+    }
+    if (this.disposed || this.raf || document.hidden) return;
+    this.raf = requestAnimationFrame(this.tick);
+  };
+
+  private onVisibility = (): void => {
+    if (document.hidden) {
+      cancelAnimationFrame(this.raf);
+      this.raf = 0;
+      this.continuous = false;
+      return;
+    }
+    // the hidden gap is neither a slow frame nor evidence of speed
+    this.continuous = false;
+    this.auto.resume();
+    this.invalidate();
+  };
 
   private tmpM = new THREE.Matrix4();
   private tmpP = new THREE.Vector3();
   private tmpQ = new THREE.Quaternion();
   private one = new THREE.Vector3(1, 1, 1);
 
-  private loop = (): void => {
-    if (this.disposed) return;
-    this.raf = requestAnimationFrame(this.loop);
+  private tick = (): void => {
+    this.raf = 0;
+    if (this.disposed || document.hidden) return;
     const now = performance.now();
-    const dt = now - this.lastFrame;
-    this.lastFrame = now;
-    this.adaptQuality(dt);
+    const interval = this.continuous ? now - this.lastFrameAt : undefined;
+    this.lastFrameAt = now;
+    this.inFrame = true;
+    this.invalidatedInFrame = false;
+    let animating: boolean;
+    try {
+      animating = this.update(now);
+      this.renderer.render(this.scene, this.camera);
+      this.renders++;
+    } finally {
+      this.inFrame = false;
+    }
+    const sticksMoving = now < this.motionUntil;
+    const next = this.auto.frame(now, { interval, deferUpgrade: !!this.drag || this.orbitActive || sticksMoving });
+    if (next) this.applyQuality(next);
+    // keep going while anything moves or a gesture is held; otherwise stop until invalidated
+    this.continuous = animating || this.invalidatedInFrame;
+    if (this.continuous) this.raf ||= requestAnimationFrame(this.tick);
+  };
+
+  /** Advance the scene to `now`; true while something is still changing on its own. */
+  private update(now: number): boolean {
+    let animating = !!this.drag || this.orbitActive;
     if (this.transition) {
       const k = Math.min(1, (now - this.transition.start) / 450);
       const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
       this.controls.target.lerpVectors(this.transition.from.t, this.transition.to.t, e);
       this.camera.position.lerpVectors(this.transition.from.p, this.transition.to.p, e);
       if (k >= 1) this.transition = null;
+      animating = true;
     }
-    this.controls.update();
+    if (this.controls.update()) animating = true; // damping still settling
     this.protectCamera();
-    const renderAt = now - 100;
+    const renderAt = now - TRANSPORT.interpolationDelayMs;
+    if (renderAt < this.motionUntil) animating = true;
     for (let i = 0; i < this.ids.length; i++) {
       const list = this.samples.get(this.ids[i]!)!;
       let a = list[0]!;
@@ -769,6 +950,12 @@ export class Viewport {
       // ease remote ghosts toward their latest pose (presentation only)
       e.group.position.lerp(e.pose.p, this.reducedMotion ? 1 : 0.35);
       e.group.quaternion.slerp(e.pose.q, this.reducedMotion ? 1 : 0.35);
+      if (e.group.position.distanceToSquared(e.pose.p) < 1e-8 && 1 - Math.abs(e.group.quaternion.dot(e.pose.q)) < 1e-10) {
+        e.group.position.copy(e.pose.p);
+        e.group.quaternion.copy(e.pose.q);
+      } else {
+        animating = true;
+      }
       const [sx, sy] = this.screen(e.group.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
       e.label.style.transform = `translate(${sx - cRect.left}px, ${sy - cRect.top}px) translate(-50%, -100%)`;
       e.label.style.display = sx < rect.left || sx > rect.right || sy < rect.top || sy > rect.bottom ? "none" : "";
@@ -779,37 +966,43 @@ export class Viewport {
       const s = Math.max(0.6, Math.min(3, this.unitsPerPixel(m.position.toArray() as Vec3) * 30));
       m.scale.setScalar(s);
     }
-    this.renderer.render(this.scene, this.camera);
-  };
+    return animating;
+  }
 
-  /** Degrade decoration first: shadows, then pixel ratio (OPS-02). Never input or collisions. */
-  private adaptQuality(dt: number): void {
-    if (document.hidden) return;
-    if (dt > 34) this.slowFrames++;
-    else this.slowFrames = Math.max(0, this.slowFrames - 1);
-    if (this.slowFrames > 90 && this.quality > 0) {
-      this.slowFrames = 0;
-      this.quality--;
-      if (this.quality === 1) {
-        this.renderer.shadowMap.enabled = false;
-        this.scene.traverse((o) => {
-          const m = (o as THREE.Mesh).material as THREE.Material | undefined;
-          if (m) m.needsUpdate = true;
-        });
-      } else {
-        this.renderer.setPixelRatio(1);
-        this.resize();
-      }
-    }
+  /**
+   * Opt-in test probe (see Workshop/Exhibit): scene renders so far and the
+   * applied quality. Never shown in the UI.
+   */
+  stats(): { renders: number; mode: QualityMode; tier: QualityTier; pixelRatio: number; shadows: boolean; shadowMapSize: number; programs: number; textures: number; geometries: number; auto: ReturnType<AutoQuality["debug"]> } {
+    const info = this.renderer.info;
+    return {
+      renders: this.renders,
+      mode: this.auto.mode,
+      tier: this.auto.tier,
+      pixelRatio: this.renderer.getPixelRatio(),
+      shadows: this.renderer.shadowMap.enabled,
+      shadowMapSize: this.sun.shadow.mapSize.x,
+      programs: info.programs?.length ?? 0,
+      textures: info.memory.textures,
+      geometries: info.memory.geometries,
+      auto: this.auto.debug(),
+    };
   }
 
   dispose(): void {
     this.disposed = true;
     cancelAnimationFrame(this.raf);
+    this.raf = 0;
     this.cancelDrag();
     this.resizeObserver.disconnect();
     window.removeEventListener("blur", this.cancelDrag);
+    document.removeEventListener("visibilitychange", this.onVisibility);
+    this.dprQuery?.removeEventListener("change", this.onDprChange);
+    this.unsubscribeGraphics();
+    reportAppliedTier(this, null);
+    this.controls.removeEventListener("change", this.invalidate);
     this.controls.dispose();
+    this.sun.shadow.dispose();
     this.scene.traverse((o) => {
       const m = o as THREE.Mesh;
       m.geometry?.dispose();
@@ -818,6 +1011,8 @@ export class Viewport {
       else mat?.dispose();
     });
     this.renderer.dispose();
+    // release the context now rather than at garbage collection, so remounts can't pile them up
+    this.renderer.forceContextLoss();
     this.renderer.domElement.remove();
     this.labels.remove();
   }

@@ -149,6 +149,47 @@ export const INPUT = Object.freeze({
   parallelMaxStep: 0.5,
 });
 
+/**
+ * Client graphics quality (LOOK-04, OPS-05). Browser-only presentation: it
+ * never changes physics, the room connection or saved work. The Auto numbers
+ * are initial tuning values, not measured device capacity.
+ */
+export const GRAPHICS = Object.freeze({
+  /** Browser-local, versioned; holds only the selected mode. */
+  storageKey: "stillwood.graphicsQuality.v1",
+  tiers: {
+    // High is the original renderer: DPR cap 2 (1.5 on a coarse pointer), 2048² shadow map.
+    high: { pixelRatioCap: 2, coarsePixelRatioCap: 1.5, shadowMapSize: 2048 },
+    medium: { pixelRatioCap: 1.5, coarsePixelRatioCap: 1.5, shadowMapSize: 1024 },
+    low: { pixelRatioCap: 1, coarsePixelRatioCap: 1, shadowMapSize: 0 },
+  },
+  auto: {
+    /** Measured animated time ignored after entering Auto, returning to the tab or changing tier. */
+    warmupMs: 2000,
+    /** Evidence comes in non-overlapping windows of this much measured animated time. */
+    windowMs: 2000,
+    slowFrameMs: 34,
+    /** A window is bad when at least this share of its intervals are slow. */
+    badWindowShare: 0.7,
+    badWindowsToDowngrade: 2,
+    /** A window is good when its p90 interval is at or below this. */
+    recoverP90Ms: 20,
+    /** Consecutive good windows adding up to this much measured time allow one tier up. */
+    recoverSustainMs: 15_000,
+    /**
+     * Windows may span separate interactions, but a longer pause than this
+     * between measured frames discards all evidence, so idle time never
+     * counts and old samples can't cause an upgrade.
+     */
+    evidenceMaxGapMs: 10_000,
+    upgradeCooldownMs: 30_000,
+    /** After an upgrade is reversed by a downgrade, no upgrade for this long, doubling each time. */
+    failedUpgradeBackoffMs: 60_000,
+    /** After this many reversed upgrades a view stops upgrading automatically. */
+    maxFailedUpgrades: 3,
+  },
+});
+
 export const AUTH = Object.freeze({
   // OWASP-listed scrypt option N=2^15, r=8, p=3 (32 MiB per hash). The
   // initial N=2^16, p=2 (64 MiB) pushed peak RSS to 234 MiB of 256 under

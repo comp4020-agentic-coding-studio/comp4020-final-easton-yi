@@ -1,8 +1,10 @@
 // DOM controls that mirror every placement and camera gesture, so building
 // never requires the canvas, a mouse or right-click (ACCESS-01, LOOK-02).
-import { useMemo, useState, type RefObject } from "react";
+import { useMemo, useRef, useState, type RefObject } from "react";
 import type { Viewport } from "../scene/viewport.ts";
 import { PERSON_SHAPES } from "../scene/viewport.ts";
+import { setQualityMode, useGraphicsQuality } from "../graphics-setting.ts";
+import { parseQualityMode, type QualityTier } from "../scene/quality.ts";
 import type { Draft, Pivot } from "../placement-math.ts";
 import type { RemoteDraft, StickInfo } from "../../shared/protocol.ts";
 
@@ -155,26 +157,76 @@ function ExactPose({ draft, disabled, onApply }: { draft: Draft; disabled: boole
 
 export function ViewControls({ viewport }: { viewport: RefObject<Viewport | null> }) {
   const v = (): Viewport | null => viewport.current;
+  const [qualityOpen, setQualityOpen] = useState(false);
+  const qualityButton = useRef<HTMLButtonElement>(null);
   return (
-    <div className="view-controls" role="toolbar" aria-label="View">
-      <button type="button" onClick={() => v()?.setView("default")} title="Default view">
-        Default
-      </button>
-      <button type="button" onClick={() => v()?.setView("top")}>Top</button>
-      <button type="button" onClick={() => v()?.setView("side")}>Side</button>
-      <button type="button" onClick={() => v()?.fitAll()}>Fit all</button>
-      <button type="button" onClick={() => v()?.zoom(0.8)} aria-label="Zoom in">
-        Zoom +
-      </button>
-      <button type="button" onClick={() => v()?.zoom(1.25)} aria-label="Zoom out">
-        Zoom −
-      </button>
-      <button type="button" onClick={() => v()?.raiseTarget(2)} aria-label="Raise view target">
-        Look higher
-      </button>
-      <button type="button" onClick={() => v()?.raiseTarget(-2)} aria-label="Lower view target">
-        Look lower
-      </button>
+    <>
+      <div className="view-controls" role="toolbar" aria-label="View">
+        <button type="button" onClick={() => v()?.setView("default")} title="Default view">
+          Default
+        </button>
+        <button type="button" onClick={() => v()?.setView("top")}>Top</button>
+        <button type="button" onClick={() => v()?.setView("side")}>Side</button>
+        <button type="button" onClick={() => v()?.fitAll()}>Fit all</button>
+        <button type="button" onClick={() => v()?.zoom(0.8)} aria-label="Zoom in">
+          Zoom +
+        </button>
+        <button type="button" onClick={() => v()?.zoom(1.25)} aria-label="Zoom out">
+          Zoom −
+        </button>
+        <button type="button" onClick={() => v()?.raiseTarget(2)} aria-label="Raise view target">
+          Look higher
+        </button>
+        <button type="button" onClick={() => v()?.raiseTarget(-2)} aria-label="Lower view target">
+          Look lower
+        </button>
+        <button ref={qualityButton} type="button" aria-expanded={qualityOpen} aria-controls="quality-panel" onClick={() => setQualityOpen(!qualityOpen)}>
+          Graphics
+        </button>
+      </div>
+      {qualityOpen && (
+        <GraphicsQuality
+          onClose={() => {
+            setQualityOpen(false);
+            qualityButton.current?.focus();
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+const TIER_LABEL: Record<QualityTier, string> = { high: "High", medium: "Medium", low: "Low" };
+
+/**
+ * Per-device graphics quality (LOOK-04). Opened from the view toolbar, but a
+ * sibling of it: the toolbar scrolls sideways on phones and would clip it.
+ */
+function GraphicsQuality({ onClose }: { onClose: () => void }) {
+  const { mode, applied } = useGraphicsQuality();
+  return (
+    <div
+      id="quality-panel"
+      className="quality-panel"
+      role="group"
+      aria-label="Graphics"
+      onKeyDown={(e) => {
+        if (e.key !== "Escape") return;
+        e.stopPropagation(); // don't also cancel a held stick
+        onClose();
+      }}
+    >
+      <label htmlFor="quality-mode">Graphics quality</label>
+      <select id="quality-mode" value={mode} aria-describedby="quality-help" onChange={(e) => setQualityMode(parseQualityMode(e.target.value) ?? "auto")}>
+        <option value="auto">Auto (recommended)</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <p id="quality-help" className="muted small">
+        Auto balances detail and smoothness. This setting only affects this device.
+      </p>
+      {mode === "auto" && applied && <p className="small quality-current">Currently: {TIER_LABEL[applied]}</p>}
     </div>
   );
 }

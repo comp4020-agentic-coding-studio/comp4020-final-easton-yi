@@ -7,9 +7,9 @@ judgement that hasn't happened. All automated and browser evidence ran against
 a **local** production-mode server (`NODE_ENV=production node
 dist/server/main.js`), **not** the Fly deployment. See "Not yet verified".
 
-Latest full run (2026-10-06, fresh local production-mode instance): `pnpm typecheck` clean · `pnpm test:unit` 65 passed ·
-`APP_URL=… pnpm check` 49 passed (2 shipped invariants + 47 product specs) ·
-`pnpm test:e2e` 9 passed.
+Latest full run (2026-10-06, after the graphics-quality change): `pnpm typecheck` clean · `pnpm test:unit` 88 passed ·
+`APP_URL=… pnpm check` 49 passed (2 shipped invariants + 47 product specs) in 6 of 9 runs; the other 3 had 1–4 failures in `spec/versions.test.ts` (see implementation-status, known limitations) ·
+`pnpm test:e2e` 18 passed (local server with test hooks).
 
 | Scenario | A | B | H | Evidence |
 | --- | --- | --- | --- | --- |
@@ -33,6 +33,8 @@ Latest full run (2026-10-06, fresh local production-mode instance): `pnpm typech
 | AT-18 Trash and restore (added 2026-10-06) | pass | pass | — | `spec/lifecycle.test.ts` (owner-only, editor leaves a trashed work from their own list, known-ID reads, restore keeps sticks/members, exhibits withdrawn, fresh stream/epoch), `tests/lifecycle-restart.test.ts` SIGKILL, `tests/e2e/lifecycle.spec.ts`, `docs/evidence/lifecycle-trash.png` |
 | AT-19 Permanent deletion (added 2026-10-06) | pass | pass | — | `spec/lifecycle.test.ts` (refusals, success keeps accounts/unrelated work, repeats, stale command), `tests/lifecycle-restart.test.ts` (failed transaction, direct SQLite read, restart), `tests/e2e/lifecycle.spec.ts` |
 | AT-20 Exhibit limit counts withdrawn exhibits; republish uses no slot (added 2026-10-06) | pass | — | — | `spec/lifecycle.test.ts` "exhibit limit" (boundary, 3 concurrent publishes, concurrent republish), `tests/lifecycle-restart.test.ts` (over the limit from older data: republish keeps ID and geometry; creating another is refused) |
+| AT-21 Graphics quality (added 2026-10-06) | pass | pass | **pending** | `tests/graphics-quality.test.ts` (Auto with injected time, incl. ordinary use and no oscillation), `tests/e2e/graphics.spec.ts` (presets, antialiasing, reload, bad storage, preservation, Low placement after resize/DPR, switching with a partner active, exhibit, phone), M-007/M-008 pixel-identical High (fresh and after Low/Medium), `scripts/measure/graphics-auto.ts` real-browser recovery; whether Medium/Low look acceptable to a person is H |
+| AT-22 Idle and hidden rendering (added 2026-10-06) | — | pass | — | `tests/e2e/graphics.spec.ts` (idle partner: ghost move/release, placement, collapse and dropped partner to the final pose, own reconnect; zero renders while hidden, simulated, see INITIAL_PROMPT §9.4; remounts), M-007 idle counts |
 
 ## Not yet verified
 
@@ -52,6 +54,10 @@ Latest full run (2026-10-06, fresh local production-mode instance): `pnpm typech
    uninvolved in implementation has tried the app.
 4. **Real touchpad and a real phone.** Only emulated touch has been tested.
 5. **Sound.** Collision knocks are implemented but no person has listened.
+6. **Graphics on real hardware.** Tier behaviour and idle rendering are verified
+   in headless SwiftShader only; no real GPU, phone frame rate or battery
+   effect has been measured, and a real hidden tab was checked only by
+   simulation (manual check in INITIAL_PROMPT §9.4).
 
 ## Human session protocol (for the student to run)
 

@@ -126,12 +126,37 @@ shipping, the author asked for four gaps to be closed; that also corrected the
 exhibit limit to count withdrawn exhibits, as the brief's storage limit
 intends. Individual stick deletion stays out of scope.
 
+## A second change: graphics quality
+
+Also on 2026-10-06 the author gave
+[`docs/GRAPHICS_QUALITY_PROMPT.md`](docs/GRAPHICS_QUALITY_PROMPT.md): replace
+the renderer's one-way downgrade with an Auto/High/Medium/Low setting, keep
+High exactly as it was, and stop drawing when nothing moves. The agent
+captured High screenshots from the unchanged build first, then compared the
+finished one against them under the same geometry, camera, viewport and DPR:
+the 3D scene is pixel-identical. Brief rules LOOK-04 and OPS-05 and scenarios
+AT-21 and AT-22 were added, OPS-02 was corrected in place, and
+[M-007](docs/measurements.md) has the numbers. Two existing defects came to
+light while testing it. On a phone, a long status line made the workshop wider
+than the screen; the old phone screenshot showed it, but no test checked the
+stage's width. And every workshop re-render created a throwaway WebGL context
+until Chrome evicted the scene's own. The always-on render loop had hidden the
+second one by redrawing after a restore. Both are fixed and tested. A review
+pass then found that Auto's first recovery rule was practically unreachable:
+it needed 15 s of one uninterrupted animation, and a simulated ten minutes of
+ordinary building at a steady 60 Hz never left Low. Evidence may now build up
+across interactions up to 10 s apart, and repeated failed upgrades back off
+and then stop ([M-008](docs/measurements.md)). Only headless software
+rendering was available, so nothing is claimed about frame rates on real
+devices.
+
 ## What's verified and what isn't
 
 The app is deployed to `comp4020-final-easton-yi.fly.dev` and serves its
-pages and assets; that deployment predates the deletion change. Against a
-local production build: 65 unit and restart tests, 49 HTTP and WebSocket
-checks (`pnpm check`) and 9 browser tests pass.
+pages and assets; that deployment predates the deletion and graphics
+changes. Locally: 88 unit and restart tests pass, 49 HTTP and WebSocket
+checks (`pnpm check`) pass against a production build, and 18 browser tests
+pass against a local server with test hooks.
 Not yet done: re-running the latency and capacity measurements on the Fly
 machine, and any session with people who didn't build it. The protocol for
 those sessions is in [`acceptance-report.md`](docs/acceptance-report.md). The

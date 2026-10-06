@@ -34,7 +34,7 @@ export function ExhibitPage({ exhibitId }: { exhibitId: string }) {
   const [fav, setFav] = useState<boolean | null>(null);
   const [favError, setFavError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const gl = webglAvailable();
+  const [gl] = useState(webglAvailable);
 
   useEffect(() => {
     setError(null);
@@ -57,6 +57,12 @@ export function ExhibitPage({ exhibitId }: { exhibitId: string }) {
       return;
     }
     viewport.current = v;
+    // Read-only probe for browser tests: opt-in per browser, never shown in the UI.
+    try {
+      if (localStorage.getItem("stillwood.test") === "1") (window as unknown as Record<string, unknown>).__stillwood = { framing: () => v.currentFraming(), stats: () => v.stats() };
+    } catch {
+      // storage unavailable: no probe
+    }
     const bodies: WireBody[] = data.geometry.sticks.map((s, i) => [`s${i}`, s.p[0]!, s.p[1]!, s.p[2]!, s.q[0]!, s.q[1]!, s.q[2]!, s.q[3]!, 1]);
     v.setBodies(bodies, new Map(data.geometry.sticks.map((s, i) => [`s${i}`, s.seed])));
     v.frame(data.framing);

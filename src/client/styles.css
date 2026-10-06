@@ -560,6 +560,25 @@ label {
   background: rgba(252, 250, 245, 0.92);
   white-space: nowrap;
 }
+.quality-panel {
+  position: absolute;
+  left: 8px;
+  bottom: 52px;
+  width: min(280px, calc(100% - 16px));
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  z-index: 4;
+  box-shadow: 0 6px 18px rgba(40, 30, 10, 0.1);
+}
+.quality-panel label {
+  display: block;
+  margin-bottom: 4px;
+}
+.quality-panel p {
+  margin: 6px 0 0;
+}
 .mode-toggle {
   position: absolute;
   left: 12px;
@@ -804,7 +823,9 @@ dialog.confirm::backdrop {
 /* ---------- narrow screens: scene keeps ≥55% of the height */
 @media (max-width: 760px) {
   .workshop {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): a long status line or tool row scrolls inside its own row
+       instead of widening the column past the screen */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(55vh, 1fr) auto;
     grid-template-areas: "top" "stage" "adjust";
   }
