@@ -270,3 +270,53 @@ screen, Low → High returns to the 1.5 cap (`graphics.spec.ts`, phone). With a
 partner moving a ghost, twelve switches, a resize and a switch while hidden,
 the viewer's frame back at High is byte-identical to its frame before
 (`graphics.spec.ts`, "switching tiers while holding a stick…").
+
+## M-009 · Cross-session render latency in real browsers, local loopback (2026-10-12)
+
+`scripts/crit9/run.sh`: production build, loopback-only network namespace,
+three headless Chromium contexts building through the real UI. Unlike M-003,
+which measured message receipt, this measures to the **first rendered frame**
+containing the new stick, from the Place click in the sender's page. Final run
+(4): 25 of 26 placements accepted and 50 of 50 receiver observations rendered,
+with click to render median 61 ms, p95 246 ms, max 263 ms and none over
+1,000 ms; runs 1–3 were similar. Server-to-render is valid only in run 3
+(median 61, p95 245 ms), because the WSL2 wall clock stepped during the other
+runs. Full tables, method, limits and raw samples:
+[`evidence/crit-9-local-multiplayer-report.md`](evidence/crit-9-local-multiplayer-report.md) §E.
+Not a Fly number.
+
+## M-009b · Table core: cylinder → square cuboids (physics config v3, 2026-10-12)
+
+Problem (Crit 9 follow-up, F4): after a collapse, some rooms never reported
+"Structure saved", which blocked saving versions. In-process reproduction with
+the product's `Room` (`scripts/crit9/settle-diag.ts`) showed one stick flat at
+y ≈ 0.22 (0.28 u into the table), oscillating at about 1 u/s for minutes, over
+v2's centre cylinder. A single resting stick in an empty world
+(`scripts/crit9/table-map.ts`) settles everywhere except where its centre lies
+outside |x|+|z| ≤ 16.5. Rapier 0.19's cylinder supports a resting box at one
+point there, which likely also explains M-005's "convex prism sank sticks 0.3 u".
+
+| Measure | v2 (cylinder + ring) | v3 (8 rotated squares + ring) |
+| --- | --- | --- |
+| Positional map, 45 resting positions | 6 never settle, all outside the square | 0 |
+| Lowest point reached, 18 diagonal cases | 0.21 in 17 | 0.50 in 18 |
+| Recorded loop, 20 seeded variants plus the recording | 5 never within 120 s; 6 more took 24–112 s | 21 of 21 within 1.6–4.7 s |
+| Step cost, 112-stick mat plus drop (`scripts/crit9/table-bench.ts`), p50 / p95 / max | 0.64 / 0.90 / 5.3–5.6 ms | 0.96 / 1.14–1.22 / 2.4–2.9 ms |
+
+Amended in final verification (same day, before any deployment): a ray-cast
+coverage scan (`scripts/crit9/table-coverage.ts`, 0.05 u grid) found the
+squares' union leaves notches between corners down to radius 15.09, so
+73.35 u² of the visible top had no collider. v3's ring now starts at 14.5
+(squares unchanged, corners at 16.5). After the amendment:
+- coverage: 0 unsupported points among 406,533 inside the rendered 128-gon,
+  and 0 supported points outside it;
+- positional map: 45 of 45 positions settle, plus 20 of 20 notch positions;
+- sweep: 21 of 21 variants settle within 1.6–4.7 s;
+- step cost: p50 0.84 ms, p95 1.20 ms, max 2.64 ms (v2: 0.64, 0.92, 5.49 ms).
+
+The table above was measured before the amendment.
+
+Change: physics config **v3** for new works. v1 and v2 stay frozen, since their
+table colliders live inside saved snapshots, and existing v2 works keep the
+defect. The 3-room capacity profile (M-006) has not been re-run under v3.
+Details: [`evidence/crit-9-local-multiplayer-report.md`](evidence/crit-9-local-multiplayer-report.md#fu-1-settling-time-and-blocked-saving).

@@ -57,6 +57,8 @@ let shuttingDown = false;
 let rpcSeq = 0;
 const pending = new Map<number, { resolve: (v: unknown) => void; reject: (e: unknown) => void }>();
 const sockets = new Map<string, WebSocket>();
+/** connId → account, kept only with test hooks on, so a test can drop one person's sockets. */
+const socketOwners = new Map<string, string>();
 
 worker.on("message", (m: any) => {
   if (m.kind === "ready") {
@@ -322,6 +324,39 @@ app.post("/api/auth/recovery-code", async (req) => {
   return { recoveryCode };
 });
 
+// ---------------------------------------------------------------- permanent account deletion (ADR-0007)
+
+/** Test-only pause points, so a test can run another request at a known moment. */
+const latches = new Map<string, { reached: boolean; release: () => void; gate: Promise<void> }>();
+const latchPoint = async (name: string): Promise<void> => {
+  const l = testHooks ? latches.get(name) : undefined;
+  if (!l) return;
+  l.reached = true;
+  await l.gate;
+};
+
+// The target is the session's account, never an ID from the body. The slow
+// password check runs here, outside the coordinator; account.delete then
+// rechecks session and credential in order with every other mutation.
+app.post("/api/account/delete", async (req, reply) => {
+  const s = await session(req);
+  authLimit("deleteAccountPerUser", s.userId);
+  const body = req.body as { password?: unknown } | null;
+  const password =
+    typeof body?.password === "string" && body.password.length <= AUTH.passwordMax && Buffer.byteLength(body.password) <= AUTH.passwordMaxBytes ? body.password : "";
+  const cred = await rpc<{ pwHash: string; fingerprint: string }>("account.credential", s.userId);
+  if (!(await verifyPassword(password, cred.pwHash))) {
+    authLimit("failedLoginPerIp", clientIp(req));
+    log({ event: "account.delete", outcome: "rejected", code: "BAD_CREDENTIALS" });
+    throw new AppError("BAD_CREDENTIALS", "That password isn't right, so nothing was deleted.");
+  }
+  await latchPoint("account-delete:verified");
+  const result = await rpc("account.delete", s.userId, s.digest, cred.fingerprint);
+  reply.clearCookie(SESSION_COOKIE, { path: "/" });
+  for (const key of [`loginPerHandle:${s.handle}`, `recoverPerHandle:${s.handle}`, `deleteAccountPerUser:${s.userId}`]) authLimiters.delete(key);
+  return result;
+});
+
 // ---------------------------------------------------------------- works, members, invitations
 
 const id = (req: FastifyRequest, key = "id"): string => parse(Uuid, (req.params as Record<string, string>)[key]);
@@ -459,6 +494,41 @@ if (testHooks) {
     return { ok: true };
   });
   app.get("/api/test/room/:id", async (req) => rpc("test.roomInfo", (req.params as { id: string }).id));
+  app.post("/api/test/account-fault", async (req) => {
+    await rpc("test.accountFault", (req.body as { at: string | null }).at ?? null);
+    return { ok: true };
+  });
+  app.post("/api/test/fail-notify", async (req) => {
+    await rpc("test.failNotify", !!(req.body as { on: boolean }).on);
+    return { ok: true };
+  });
+  app.post("/api/test/latch", async (req) => {
+    const { name, op } = req.body as { name: string; op: "arm" | "release" };
+    if (op === "arm") {
+      let release = (): void => undefined;
+      const gate = new Promise<void>((r) => (release = r));
+      latches.set(name, { reached: false, release, gate });
+    } else {
+      latches.get(name)?.release();
+      latches.delete(name);
+    }
+    return { ok: true };
+  });
+  app.get("/api/test/latch/:name", async (req) => ({ reached: !!latches.get((req.params as { name: string }).name)?.reached }));
+  // Server-side forced disconnect of the calling session's own sockets, never anyone
+  // else's: "terminate" drops the TCP connection without a close frame; "close" sends one.
+  app.post("/api/test/drop-sockets", async (req) => {
+    const s = await session(req);
+    const { how } = (req.body ?? {}) as { how?: "terminate" | "close" };
+    let dropped = 0;
+    for (const [connId, ws] of sockets) {
+      if (socketOwners.get(connId) !== s.userId) continue;
+      if (how === "close") ws.close(1012, "test drop");
+      else ws.terminate();
+      dropped++;
+    }
+    return { dropped };
+  });
 }
 
 app.all("/api/*", async () => {
@@ -540,6 +610,7 @@ function onSocket(ws: WebSocket, s: Session): void {
       opened = true;
       clearTimeout(helloTimer);
       sockets.set(connId, ws);
+      if (testHooks) socketOwners.set(connId, s.userId);
       void rpc("conn.open", connId, s.userId, s.digest).catch(() => ws.close(1011, "unavailable"));
       return;
     }
@@ -547,6 +618,7 @@ function onSocket(ws: WebSocket, s: Session): void {
   });
   ws.on("close", () => {
     clearTimeout(helloTimer);
+    socketOwners.delete(connId);
     if (sockets.delete(connId)) void rpc("conn.close", connId).catch(() => undefined);
   });
   ws.on("error", () => undefined);

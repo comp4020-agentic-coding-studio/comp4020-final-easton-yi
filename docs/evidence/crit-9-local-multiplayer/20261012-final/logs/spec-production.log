@@ -1,0 +1,61 @@
+
+ RUN  v5.0.1 /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi
+
+ ✓ spec/versions.test.ts (8 tests) 29637ms
+   ✓ versions (2)
+     ✓ needs a settled structure; can wait for it; the wait can be cancelled 2887ms
+     ✓ is readable only by members, including after removal 1708ms
+   ✓ exhibits and favorites (2)
+     ✓ a frozen exhibit doesn't change when the work collapses; withdrawal blocks public access 4566ms
+     ✓ only settled named versions can be exhibited, and only by the owner 1585ms
+   ✓ restore (1)
+     ✓ saves a recovery point first, bumps the epoch, matches the version, keeps best height and members, and fails stale requests 3130ms
+   ✓ push mode (2)
+     ✓ blocks placement for everyone, and an owner who disconnects can't leave it locked 11583ms
+     ✓ refuses to start while the structure is moving and validates the contact point 2594ms
+   ✓ archive (1)
+     ✓ ends live editing, hides nothing it shouldn't, keeps exhibits public, and can be undone 1584ms
+ ✓ spec/lifecycle.test.ts (10 tests) 12195ms
+   ✓ authority over the lifecycle (2)
+     ✓ trash is owner-only: editors and strangers see nothing and get no private data by known IDs 1593ms
+   ✓ move to trash (2)
+     ✓ with two members connected: closes live editing, revokes invites, rejects late commands, withdraws every exhibit 1609ms
+   ✓ restore from trash (2)
+     ✓ keeps acknowledged scene data and permitted members, keeps exhibits withdrawn, and needs fresh room state 1877ms
+   ✓ permanent deletion (2)
+     ✓ removes the work's building content and exhibits; keeps both accounts, their other work and favorites 3438ms
+   ✓ leaving a trashed collaboration (1)
+     ✓ an editor sees only title and status, leaves without reading anything private, and isn't re-added by restore 1583ms
+   ✓ exhibit limit (1)
+     ✓ counts every retained exhibit for new exhibits; republish uses no slot; concurrent publishes can't overshoot 1623ms
+ ✓ spec/account-deletion.test.ts (4 tests) 5489ms
+   ✓ authentication for account deletion (1)
+     ✓ refuses without a session, the right password, CSRF or same origin, and a body can't choose the target 702ms
+   ✓ deleting an account (2)
+     ✓ revokes every session and credential at once; retries, old requests and re-registration can't reach the new account 797ms
+     ✓ two submissions at once delete once: one success, one 'signed out' 391ms
+   ✓ ownership boundaries (1)
+     ✓ deletes the account's works in every state; keeps a partner's work, de-identified, collaborating and restorable 3597ms
+ ✓ spec/placement.test.ts (11 tests) 4554ms
+   ✓ placement (7)
+     ✓ a new user creates a work, places sticks, and finds them after logging back in 305ms
+     ✓ an unsupported placement is accepted and falls 2010ms
+   ✓ authority (4)
+     ✓ stale epochs and stale views are rejected and the draft is the client's to keep 1526ms
+ ✓ spec/collaboration.test.ts (12 tests) 2617ms
+   ✓ invitations (3)
+     ✓ keeps the secret out of the path, previews without granting access, and accepts idempotently 308ms
+     ✓ allows at most three distinct accounts 406ms
+   ✓ leases and presence (2)
+     ✓ a second window of the same account observes until it explicitly takes over 1523ms
+ ✓ spec/accounts.test.ts (6 tests) 1335ms
+   ✓ accounts and sessions (6)
+     ✓ registers, reports the session, logs out and logs back in 407ms
+     ✓ recovers with the one-use code, rotates it and revokes old sessions 526ms
+ ✓ spec/invariants.test.ts (2 tests) 79ms
+
+ Test Files  7 passed (7)
+      Tests  53 passed (53)
+   Start at  09:28:42
+   Duration  56.79s (tests 99%, import 1%)
+

@@ -14,6 +14,7 @@ import type {
   StickInfo,
   WireBody,
 } from "../../shared/protocol.ts";
+import { DELETED_USER_NAME } from "../../shared/protocol.ts";
 import { PhysicsWorld, type BodyState } from "./physics.ts";
 import { makeEnvelope, type EnvelopeMeta, type Store, type WorkRow } from "./store.ts";
 import { r4, TokenBucket } from "./util.ts";
@@ -133,7 +134,7 @@ export class Room {
     return [...this.pw.sticks.values()].map((s) => ({
       id: s.id,
       authorId: s.authorId,
-      authorName: this.authorNames.get(s.authorId) ?? "Former member",
+      authorName: this.authorNames.get(s.authorId) ?? DELETED_USER_NAME,
       seed: s.seed,
       placedAt: s.placedAt,
     }));

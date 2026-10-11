@@ -1,0 +1,459 @@
+{
+  "M01": {
+    "distinctUserIds": 4,
+    "roles": [
+      "owner",
+      "editor",
+      "editor"
+    ],
+    "presenceOnA": [
+      "c9 -crit9 B",
+      "c9 -crit9 C"
+    ],
+    "sameTitleAndScene": true,
+    "refreshKeepsMembership": true,
+    "outsider": {
+      "page": "Can't open this work",
+      "state": 404
+    }
+  },
+  "M03": {
+    "ghostShownToB": true,
+    "ghostCountedAsStick": false,
+    "clearedOnCancel": true,
+    "clearedOnPlace": true,
+    "clearedOnLeave": true,
+    "sticksAfter": 1
+  },
+  "timing": {
+    "offsets": {
+      "A": {
+        "offsetMs": 0.164794921875,
+        "halfRttMs": 0.9498291015625
+      },
+      "B": {
+        "offsetMs": 0.15966796875,
+        "halfRttMs": 0.8436279296875
+      },
+      "C": {
+        "offsetMs": 0.110107421875,
+        "halfRttMs": 0.8612060546875
+      }
+    },
+    "serverOrderMapped": true,
+    "serverAccepts": 25,
+    "attempted": 26,
+    "accepted": 25,
+    "samples": [
+      {
+        "n": 1,
+        "sender": "A",
+        "stickId": "f5ba53b1-5fde-49b0-b647-2713a8205dab",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734378243.1353,
+        "B_received": 1791734378251.0403,
+        "B_rendered": 1791734378361.2402,
+        "C_received": 1791734378250.99,
+        "C_rendered": 1791734378332.39,
+        "serverAcceptedAt": 1791734378250
+      },
+      {
+        "n": 2,
+        "sender": "B",
+        "stickId": "59b1812c-8590-455c-9d30-bd7b7334c82f",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734379026.9402,
+        "A_received": 1791734379030.8352,
+        "A_rendered": 1791734379037.9353,
+        "C_received": 1791734379031.0898,
+        "C_rendered": 1791734379038.0898,
+        "serverAcceptedAt": 1791734379030
+      },
+      {
+        "n": 3,
+        "sender": "A",
+        "stickId": "56895544-b0be-4dc2-b313-1a1c3e2ddd3e",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734379673.3352,
+        "B_received": 1791734379682.0403,
+        "B_rendered": 1791734379730.8403,
+        "C_received": 1791734379886.39,
+        "C_rendered": 1791734379887.7898,
+        "serverAcceptedAt": 1791734379681
+      },
+      {
+        "n": 4,
+        "sender": "B",
+        "stickId": "f708bd9d-f73c-4535-8707-4279c5f1515e",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734380252.6401,
+        "A_received": 1791734380257.1353,
+        "A_rendered": 1791734380274.3352,
+        "C_received": 1791734380456.0898,
+        "C_rendered": 1791734380471.2898,
+        "serverAcceptedAt": 1791734380256
+      },
+      {
+        "n": 5,
+        "sender": "A",
+        "stickId": "9af5b868-2ac4-44ba-9132-7ec0d828a314",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734380809.8352,
+        "B_received": 1791734380816.3403,
+        "B_rendered": 1791734380868.1401,
+        "C_received": 1791734380996.49,
+        "C_rendered": 1791734380997.89,
+        "serverAcceptedAt": 1791734380815
+      },
+      {
+        "n": 6,
+        "sender": "B",
+        "stickId": "01234e6e-e9cd-4f55-bac6-caee82db6cb5",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734381278.8403,
+        "A_received": 1791734381288.9353,
+        "A_rendered": 1791734381339.1353,
+        "C_received": 1791734381448.0898,
+        "C_rendered": 1791734381455.19,
+        "serverAcceptedAt": 1791734381286
+      },
+      {
+        "n": 7,
+        "sender": "A",
+        "stickId": "c5a94c53-0d14-43d3-bca5-446df644eb01",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734381818.6353,
+        "B_received": 1791734381825.1401,
+        "B_rendered": 1791734381912.8403,
+        "C_received": 1791734382027.0898,
+        "C_rendered": 1791734382038.0898,
+        "serverAcceptedAt": 1791734381823
+      },
+      {
+        "n": 8,
+        "sender": "B",
+        "stickId": "2afe7c18-0191-40f0-8762-53573e4a7d10",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734382369.9402,
+        "A_received": 1791734382374.2354,
+        "A_rendered": 1791734382381.0352,
+        "C_received": 1791734382574.49,
+        "C_rendered": 1791734382589.0898,
+        "serverAcceptedAt": 1791734382374
+      },
+      {
+        "n": 9,
+        "sender": "A",
+        "stickId": "9e643e47-f4f8-4c85-a56f-4d794d491cb7",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734382963.4353,
+        "B_received": 1791734382971.5403,
+        "B_rendered": 1791734383007.2402,
+        "C_received": 1791734383146.7898,
+        "C_rendered": 1791734383154.99,
+        "serverAcceptedAt": 1791734382971
+      },
+      {
+        "n": 10,
+        "sender": "B",
+        "stickId": "92f28500-22fb-4101-923f-f819af012859",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734383483.0403,
+        "A_received": 1791734383490.8352,
+        "A_rendered": 1791734383503.5352,
+        "C_received": 1791734383676.89,
+        "C_rendered": 1791734383687.89,
+        "serverAcceptedAt": 1791734383489
+      },
+      {
+        "n": 11,
+        "sender": "A",
+        "stickId": "24b78d98-1669-4dc4-ba7b-b255436c8833",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734383985.9353,
+        "B_received": 1791734383989.6401,
+        "B_rendered": 1791734383996.8403,
+        "C_received": 1791734384215.89,
+        "C_rendered": 1791734384221.49,
+        "serverAcceptedAt": 1791734383989
+      },
+      {
+        "n": 12,
+        "sender": "B",
+        "stickId": "24dba195-6e70-47fa-9128-4e2cd22edd1b",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734384586.7402,
+        "A_received": 1791734384590.9353,
+        "A_rendered": 1791734384624.5352,
+        "C_received": 1791734384750.99,
+        "C_rendered": 1791734384755.5898,
+        "serverAcceptedAt": 1791734384590
+      },
+      {
+        "n": 13,
+        "sender": "A",
+        "stickId": "c912a64e-a3fb-40b7-a5b9-161107775329",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734385051.7354,
+        "B_received": 1791734385060.4402,
+        "B_rendered": 1791734385129.6401,
+        "C_received": 1791734385258.39,
+        "C_rendered": 1791734385271.39,
+        "serverAcceptedAt": 1791734385060
+      },
+      {
+        "n": 14,
+        "sender": "B",
+        "stickId": "30edf444-273e-4353-940f-e7140cc1a47d",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734385597.5403,
+        "A_received": 1791734385601.4353,
+        "A_rendered": 1791734385609.0352,
+        "C_received": 1791734385807.19,
+        "C_rendered": 1791734385821.39,
+        "serverAcceptedAt": 1791734385601
+      },
+      {
+        "n": 15,
+        "sender": "A",
+        "stickId": "d651c153-24a9-4358-97ce-c22507d4b54a",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734386155.8352,
+        "B_received": 1791734386162.0403,
+        "B_rendered": 1791734386196.8403,
+        "C_received": 1791734386347.19,
+        "C_rendered": 1791734386354.5898,
+        "serverAcceptedAt": 1791734386161
+      },
+      {
+        "n": 16,
+        "sender": "B",
+        "stickId": "7a4e6887-0ef6-4890-a95c-0714a329e96f",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734386743.7402,
+        "A_received": 1791734386752.5352,
+        "A_rendered": 1791734386803.4353,
+        "C_received": 1791734386929.69,
+        "C_rendered": 1791734386937.99,
+        "serverAcceptedAt": 1791734386752
+      },
+      {
+        "n": 17,
+        "sender": "A",
+        "stickId": "46b702a8-4edb-4504-ab10-04e4459d7c95",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734387264.8352,
+        "B_received": 1791734387269.0403,
+        "B_rendered": 1791734387288.1401,
+        "C_received": 1791734387478.49,
+        "C_rendered": 1791734387488.5898,
+        "serverAcceptedAt": 1791734387268
+      },
+      {
+        "n": 18,
+        "sender": "B",
+        "stickId": "559a3e68-d170-4ea5-bcf6-b4b9a16108b7",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734387904.4402,
+        "A_received": 1791734387908.7354,
+        "A_rendered": 1791734387912.0352,
+        "C_received": 1791734388134.99,
+        "C_rendered": 1791734388137.69,
+        "serverAcceptedAt": 1791734387908
+      },
+      {
+        "n": 19,
+        "sender": "A",
+        "stickId": "30c49fc7-ad88-40e4-b90d-b492bf05eba2",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734388464.3352,
+        "B_received": 1791734388474.2402,
+        "B_rendered": 1791734388570.4402,
+        "C_received": 1791734388691.89,
+        "C_rendered": 1791734388704.69,
+        "serverAcceptedAt": 1791734388473
+      },
+      {
+        "n": 20,
+        "sender": "B",
+        "stickId": "a21ffa27-6df2-42ff-a588-236a6b9dcfae",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734389114.7402,
+        "A_received": 1791734389123.3352,
+        "A_rendered": 1791734389143.4353,
+        "C_received": 1791734389355.69,
+        "C_rendered": 1791734389371.19,
+        "serverAcceptedAt": 1791734389123
+      },
+      {
+        "n": 21,
+        "sender": "A",
+        "stickId": "4d861186-6086-4955-afc2-b7881622dc2c",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734389773.5352,
+        "B_received": 1791734389781.4402,
+        "B_rendered": 1791734389859.1401,
+        "C_received": 1791734390010.5898,
+        "C_rendered": 1791734390020.89,
+        "serverAcceptedAt": 1791734389781
+      },
+      {
+        "n": 22,
+        "sender": "B",
+        "stickId": "18112b42-5da8-4a25-93f7-47b2fceab248",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734390348.0403,
+        "A_received": 1791734390354.4353,
+        "A_rendered": 1791734390420.8352,
+        "C_received": 1791734390578.2898,
+        "C_rendered": 1791734390587.7898,
+        "serverAcceptedAt": 1791734390353
+      },
+      {
+        "n": 23,
+        "sender": "A",
+        "stickId": "4cbd4c2f-48b2-4ef5-acc9-57529e74b65f",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734390951.9353,
+        "B_received": 1791734390958.8403,
+        "B_rendered": 1791734391034.7402,
+        "C_received": 1791734391177.0898,
+        "C_rendered": 1791734391188.19,
+        "serverAcceptedAt": 1791734390958
+      },
+      {
+        "n": 24,
+        "sender": "B",
+        "stickId": null,
+        "accepted": false,
+        "rejectedMessage": "↓ Unsupported; will fall",
+        "clickAt": 1791734390348.0403,
+        "A_received": null,
+        "A_rendered": null,
+        "C_received": null,
+        "C_rendered": null
+      },
+      {
+        "n": 25,
+        "sender": "C",
+        "stickId": "2403fe23-7a0f-444a-bac7-a6669257e3e1",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734397624.49,
+        "A_received": 1791734397631.0352,
+        "A_rendered": 1791734397633.6353,
+        "B_received": 1791734397631.5403,
+        "B_rendered": 1791734397648.6401,
+        "serverAcceptedAt": 1791734398049
+      },
+      {
+        "n": 26,
+        "sender": "C",
+        "stickId": "fa076c13-45cb-468c-b5d9-38396befc857",
+        "accepted": true,
+        "rejectedMessage": null,
+        "clickAt": 1791734399313.0898,
+        "A_received": 1791734399321.6353,
+        "A_rendered": 1791734399352.2354,
+        "B_received": 1791734399321.3403,
+        "B_rendered": 1791734399338.1401,
+        "serverAcceptedAt": 1791734399739
+      }
+    ]
+  },
+  "M02": {
+    "sticksEverywhere": 26,
+    "duplicates": 0,
+    "settled": true,
+    "settleWaitMs": 3295,
+    "maxPositionDeltaFromServer": 0,
+    "statusAtEnd": "Structure saved\nStable structure height 3.7 u\nbest 3.7 u\nConnected",
+    "senders": {
+      "A": 12,
+      "B": 12,
+      "C": 2
+    }
+  },
+  "M05": {
+    "partnerCommitAtGhost": "accepted",
+    "path": "refused by the client's advisory check before sending",
+    "placeDisabled": true,
+    "feedback": "✕ Intersecting; adjust position\n\nIntersecting; adjust position",
+    "draftKept": true,
+    "phantomSticks": 0,
+    "convergedWithServer": true
+  },
+  "M08": {
+    "socketsClosedInB": 1,
+    "statusWhileOffline": "Reconnecting…",
+    "bannerWhileOffline": "Reconnecting… You can look around and adjust your stick, but placing waits until you're back.",
+    "placeDisabledWhileOffline": true,
+    "serverSockets": {
+      "before": 4,
+      "during": 3,
+      "after": 4
+    },
+    "editsByAWhileBOffline": 3,
+    "bMatchesServerAfter": true,
+    "draftKeptAfterReconnect": true,
+    "draftAfterReconnect": "refused locally: ✕ Intersecting; adjust position",
+    "extraCycles": 3,
+    "bOpenSockets": 1,
+    "members": 3,
+    "bPresenceEntries": 1
+  },
+  "M09": {
+    "method": "document.hidden + visibilitychange overridden in the page (real tab hiding unavailable headless)",
+    "auto": {
+      "stateReceivedWhileHidden": true,
+      "rendersWhileHidden": 0,
+      "renderedOnReturn": true,
+      "returnToRenderedMs": 6
+    },
+    "low": {
+      "tier": "low",
+      "stateReceivedWhileHidden": true,
+      "rendersWhileHidden": 0,
+      "renderedOnReturn": true,
+      "returnToRenderedMs": 8
+    }
+  },
+  "M10": {
+    "otherWorkReceivedThisStick": false,
+    "otherWorkSticks": 0,
+    "otherWorkGhosts": 0
+  },
+  "L03": {
+    "visitorSawExhibit": true,
+    "editingControls": 0,
+    "exhibitSticksBefore": 35,
+    "exhibitSticksAfterMoreBuilding": 35,
+    "withdrawnOnReload": true
+  },
+  "hosts": [
+    "127.0.0.1:18990"
+  ]
+}

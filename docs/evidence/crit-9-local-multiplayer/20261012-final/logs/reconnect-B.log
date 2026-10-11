@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [desktop] › tests/e2e/crit9-reconnect.spec.ts:102:1 › F3: the indicator follows a lost socket (methods via CRIT9_RECONNECT_METHODS, default A,B; 5 attempts each) (43.4s)
+
+  1 passed (43.8s)

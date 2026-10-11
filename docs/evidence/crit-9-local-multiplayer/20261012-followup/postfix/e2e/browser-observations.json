@@ -1,0 +1,781 @@
+{
+  "M01": {
+    "distinctUserIds": 4,
+    "roles": [
+      "owner",
+      "editor",
+      "editor"
+    ],
+    "presenceOnA": [
+      "c9 942655 B",
+      "c9 942655 C"
+    ],
+    "sameTitleAndScene": true,
+    "refreshKeepsMembership": true,
+    "outsider": {
+      "page": "Can't open this work",
+      "state": 404
+    }
+  },
+  "M03": {
+    "ghostShownToB": true,
+    "ghostCountedAsStick": false,
+    "clearedOnCancel": true,
+    "clearedOnPlace": true,
+    "clearedOnLeave": true,
+    "sticksAfter": 1
+  },
+  "timing": {
+    "offsets": {
+      "A": {
+        "offsetMs": 654.29150390625,
+        "halfRttMs": 0.9971923828125
+      },
+      "B": {
+        "offsetMs": 653.98583984375,
+        "halfRttMs": 0.894287109375
+      },
+      "C": {
+        "offsetMs": 654.126220703125,
+        "halfRttMs": 0.9913330078125
+      }
+    },
+    "serverMatchedByCommandId": false,
+    "serverAccepts": 0,
+    "attempted": 26,
+    "accepted": 26,
+    "samples": [
+      {
+        "n": 1,
+        "sender": "A",
+        "stickId": "92b73011-49be-49a9-87de-b833ef399d97",
+        "accepted": true,
+        "commandId": "fd96565d-530f-46de-9d5a-9e3f4a7769c2",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "92b73011-49be-49a9-87de-b833ef399d97",
+          "at": 1791755948791.9001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755948126.1086,
+        "B_received": 1791755948137.814,
+        "B_rendered": 1791755948235.914,
+        "C_received": 1791755948137.6738,
+        "C_rendered": 1791755948176.9739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 2,
+        "sender": "B",
+        "stickId": "e9f854f1-0f30-4ed4-b649-6574c44966cf",
+        "accepted": true,
+        "commandId": "f3ac480d-0e05-47aa-89ce-524d7a732f05",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "e9f854f1-0f30-4ed4-b649-6574c44966cf",
+          "at": 1791755949534.5999
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755948867.714,
+        "A_received": 1791755948880.4087,
+        "A_rendered": 1791755948895.6086,
+        "C_received": 1791755948880.4739,
+        "C_rendered": 1791755948895.2737,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 3,
+        "sender": "A",
+        "stickId": "e04d0e5c-8d76-469b-8372-3b86e1408b3f",
+        "accepted": true,
+        "commandId": "5f13df7a-8c58-4c10-a4ba-8fbe37ff107f",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "e04d0e5c-8d76-469b-8372-3b86e1408b3f",
+          "at": 1791755950134.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755949437.9087,
+        "B_received": 1791755949444.614,
+        "B_rendered": 1791755949449.314,
+        "C_received": 1791755949647.2737,
+        "C_rendered": 1791755949661.9739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 4,
+        "sender": "B",
+        "stickId": "252aee8a-e1c6-40e4-95aa-33fed64da915",
+        "accepted": true,
+        "commandId": "fb1e44c5-0bc1-46ca-9ce0-014559b0cd77",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "252aee8a-e1c6-40e4-95aa-33fed64da915",
+          "at": 1791755950657.9
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755949994.5142,
+        "A_received": 1791755950003.8086,
+        "A_rendered": 1791755950013.8086,
+        "C_received": 1791755950134.0737,
+        "C_rendered": 1791755950145.6738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 5,
+        "sender": "A",
+        "stickId": "f5a2b2db-004e-49b0-9eda-b61a3e539ed4",
+        "accepted": true,
+        "commandId": "55d3532d-bf71-48cf-9bca-80202c17340e",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "f5a2b2db-004e-49b0-9eda-b61a3e539ed4",
+          "at": 1791755951331.4001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755950632.1086,
+        "B_received": 1791755950638.214,
+        "B_rendered": 1791755950696.414,
+        "C_received": 1791755950840.7737,
+        "C_rendered": 1791755950841.7737,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 6,
+        "sender": "B",
+        "stickId": "4efbad2a-e07e-4a98-beca-367e94fceaf6",
+        "accepted": true,
+        "commandId": "ab414e02-b4e4-4a56-bb6b-a895e7bbb703",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "4efbad2a-e07e-4a98-beca-367e94fceaf6",
+          "at": 1791755951800.0999
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755951120.314,
+        "A_received": 1791755951137.4087,
+        "A_rendered": 1791755951192.3086,
+        "C_received": 1791755951341.4739,
+        "C_rendered": 1791755951345.2737,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 7,
+        "sender": "A",
+        "stickId": "557ac47e-3370-4b9a-9a90-d70cbcb2c995",
+        "accepted": true,
+        "commandId": "46470b42-9ed8-44a0-b29e-d6669fa5e961",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "557ac47e-3370-4b9a-9a90-d70cbcb2c995",
+          "at": 1791755952387.7002
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755951727.7085,
+        "B_received": 1791755951734.214,
+        "B_rendered": 1791755951747.914,
+        "C_received": 1791755951864.4739,
+        "C_rendered": 1791755951878.7737,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 8,
+        "sender": "B",
+        "stickId": "a6b76664-00f5-4196-8ebe-7ebfc35bbff9",
+        "accepted": true,
+        "commandId": "a3bf7dfa-cd16-41db-b5c7-81a1688d0fb5",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "a6b76664-00f5-4196-8ebe-7ebfc35bbff9",
+          "at": 1791755952944.2998
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755952237.714,
+        "A_received": 1791755952251.8086,
+        "A_rendered": 1791755952274.0085,
+        "C_received": 1791755952370.5737,
+        "C_rendered": 1791755952378.9739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 9,
+        "sender": "A",
+        "stickId": "e3f18cc8-6a26-4c90-b1ee-b63e21491ebd",
+        "accepted": true,
+        "commandId": "6fa5f0a7-dcd2-4d9c-8d52-7f423c3740bb",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "e3f18cc8-6a26-4c90-b1ee-b63e21491ebd",
+          "at": 1791755953628.2002
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755952918.9087,
+        "B_received": 1791755952927.0142,
+        "B_rendered": 1791755952935.5142,
+        "C_received": 1791755953099.0737,
+        "C_rendered": 1791755953100.8738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 10,
+        "sender": "B",
+        "stickId": "753f1c93-969c-47f4-8d6d-93790a5ca20b",
+        "accepted": true,
+        "commandId": "41255a6c-2f4a-44b6-81cb-59977493b71f",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "753f1c93-969c-47f4-8d6d-93790a5ca20b",
+          "at": 1791755954077.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755953411.0142,
+        "A_received": 1791755953423.2085,
+        "A_rendered": 1791755953440.4087,
+        "C_received": 1791755953648.1738,
+        "C_rendered": 1791755953663.0737,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 11,
+        "sender": "A",
+        "stickId": "2e35ed1e-b40d-4393-9143-786b0fa96d63",
+        "accepted": true,
+        "commandId": "e78c5b54-b00b-401d-961b-759444a6b6eb",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "2e35ed1e-b40d-4393-9143-786b0fa96d63",
+          "at": 1791755954717.9001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755954012.3086,
+        "B_received": 1791755954016.414,
+        "B_rendered": 1791755954032.414,
+        "C_received": 1791755954238.6738,
+        "C_rendered": 1791755954245.1738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 12,
+        "sender": "B",
+        "stickId": "63e81e71-99ff-47eb-a4b2-ddcee9b05a0d",
+        "accepted": true,
+        "commandId": "f62ef64e-2868-4bef-961f-e7772dfc61bb",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "63e81e71-99ff-47eb-a4b2-ddcee9b05a0d",
+          "at": 1791755955306.0999
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755954642.5142,
+        "A_received": 1791755954651.8086,
+        "A_rendered": 1791755954653.0085,
+        "C_received": 1791755954831.4739,
+        "C_rendered": 1791755954845.4739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 13,
+        "sender": "A",
+        "stickId": "01a92850-a953-4cba-a412-d529f63c0085",
+        "accepted": true,
+        "commandId": "3ce58fae-3316-4e64-9702-6d4c6410191f",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "01a92850-a953-4cba-a412-d529f63c0085",
+          "at": 1791755955841.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755955178.0085,
+        "B_received": 1791755955187.614,
+        "B_rendered": 1791755955202.414,
+        "C_received": 1791755955360.2737,
+        "C_rendered": 1791755955361.4739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 14,
+        "sender": "B",
+        "stickId": "d1b69c1d-29cd-4efe-8ca3-82ae37f17232",
+        "accepted": true,
+        "commandId": "c684e6c5-5b86-42b5-8e8c-edecdf5b585f",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "d1b69c1d-29cd-4efe-8ca3-82ae37f17232",
+          "at": 1791755956437.4
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755955775.914,
+        "A_received": 1791755955782.6086,
+        "A_rendered": 1791755955845.5085,
+        "C_received": 1791755955959.9739,
+        "C_rendered": 1791755955961.4739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 15,
+        "sender": "A",
+        "stickId": "1bc367fc-be0f-471c-afd9-b0373dc2c921",
+        "accepted": true,
+        "commandId": "b6a5e69d-34cc-465b-a71a-8db55c7faf1c",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "1bc367fc-be0f-471c-afd9-b0373dc2c921",
+          "at": 1791755957024.9001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755956324.2085,
+        "B_received": 1791755956333.0142,
+        "B_rendered": 1791755956388.314,
+        "C_received": 1791755956513.5737,
+        "C_rendered": 1791755956528.9739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 16,
+        "sender": "B",
+        "stickId": "6cfd1b2e-2cb3-4f74-8016-93d90ab46c58",
+        "accepted": true,
+        "commandId": "767dc360-3197-4ec7-a1d5-36f017256ba9",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "6cfd1b2e-2cb3-4f74-8016-93d90ab46c58",
+          "at": 1791755957508.9
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755956840.714,
+        "A_received": 1791755956854.8086,
+        "A_rendered": 1791755956860.9087,
+        "C_received": 1791755957044.3738,
+        "C_rendered": 1791755957045.4739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 17,
+        "sender": "A",
+        "stickId": "b5b01440-4d86-4e30-a2f4-e8e8c27c9f37",
+        "accepted": true,
+        "commandId": "62034e20-e09d-4090-a7ec-8aa69f4e845d",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "b5b01440-4d86-4e30-a2f4-e8e8c27c9f37",
+          "at": 1791755958037.4001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755957373.5085,
+        "B_received": 1791755957383.414,
+        "B_rendered": 1791755957447.414,
+        "C_received": 1791755957540.2737,
+        "C_rendered": 1791755957544.8738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 18,
+        "sender": "B",
+        "stickId": "c266f0cd-fdbc-469b-815e-20a84bab859a",
+        "accepted": true,
+        "commandId": "beda442a-7971-4fa0-ade9-bffd69ce9a2a",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "c266f0cd-fdbc-469b-815e-20a84bab859a",
+          "at": 1791755958554.2998
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755957884.314,
+        "A_received": 1791755957900.0085,
+        "A_rendered": 1791755957970.3086,
+        "C_received": 1791755958104.0737,
+        "C_rendered": 1791755958111.6738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 19,
+        "sender": "A",
+        "stickId": "18500b44-6396-4fc7-86bc-4b29eb758217",
+        "accepted": true,
+        "commandId": "99612405-0982-4340-98ef-6ff58b3fb47f",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "18500b44-6396-4fc7-86bc-4b29eb758217",
+          "at": 1791755959084.8
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755958426.8086,
+        "B_received": 1791755958430.714,
+        "B_rendered": 1791755958443.214,
+        "C_received": 1791755958645.0737,
+        "C_rendered": 1791755958645.9739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 20,
+        "sender": "B",
+        "stickId": "3fe655ad-4f2d-4939-acce-452840994709",
+        "accepted": true,
+        "commandId": "cbce4736-2c96-4128-8d94-b081403174a2",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "3fe655ad-4f2d-4939-acce-452840994709",
+          "at": 1791755959650.7
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755958992.714,
+        "A_received": 1791755958996.5085,
+        "A_rendered": 1791755959007.7085,
+        "C_received": 1791755959197.2737,
+        "C_rendered": 1791755959211.8738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 21,
+        "sender": "A",
+        "stickId": "0b8dc6b8-eac7-4283-bd67-c2199979b251",
+        "accepted": true,
+        "commandId": "1e6e25e0-084a-412f-b470-297a6a5570ad",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "0b8dc6b8-eac7-4283-bd67-c2199979b251",
+          "at": 1791755960201.1
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755959541.5085,
+        "B_received": 1791755959546.814,
+        "B_rendered": 1791755959608.5142,
+        "C_received": 1791755959732.7737,
+        "C_rendered": 1791755959744.9739,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 22,
+        "sender": "B",
+        "stickId": "c2bf2703-0586-4387-9833-34db716d87ab",
+        "accepted": true,
+        "commandId": "8fc28947-6b8e-4a7e-ad0d-30ad8219d162",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "c2bf2703-0586-4387-9833-34db716d87ab",
+          "at": 1791755960733.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755960070.314,
+        "A_received": 1791755960075.3086,
+        "A_rendered": 1791755960078.7085,
+        "C_received": 1791755960267.0737,
+        "C_rendered": 1791755960278.8738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 23,
+        "sender": "A",
+        "stickId": "09b994ce-0e8a-4b8d-a10d-512375cb432c",
+        "accepted": true,
+        "commandId": "d846f632-6cd4-426a-a03a-5cca6e5f03c5",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "09b994ce-0e8a-4b8d-a10d-512375cb432c",
+          "at": 1791755961267.6
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755960603.9087,
+        "B_received": 1791755960607.714,
+        "B_rendered": 1791755960612.814,
+        "C_received": 1791755960815.4739,
+        "C_rendered": 1791755960828.2737,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 24,
+        "sender": "B",
+        "stickId": "46bfe5de-6513-48c6-a351-fee91a61e022",
+        "accepted": true,
+        "commandId": "90f21a7e-a6b0-4e2a-a818-025e4d0adb1a",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "46bfe5de-6513-48c6-a351-fee91a61e022",
+          "at": 1791755961723.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755961055.414,
+        "A_received": 1791755961113.8086,
+        "A_rendered": 1791755961114.3086,
+        "C_received": 1791755961113.6738,
+        "C_rendered": 1791755961114.8738,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 25,
+        "sender": "C",
+        "stickId": "90d6e363-6bcd-463d-a1fd-8f8ddc930ee8",
+        "accepted": true,
+        "commandId": "134e0b3b-720c-41e0-8e64-9166996ee7ae",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "90d6e363-6bcd-463d-a1fd-8f8ddc930ee8",
+          "at": 1791755963180.6
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755962481.5737,
+        "A_received": 1791755962495.6086,
+        "A_rendered": 1791755962538.9087,
+        "B_received": 1791755962495.814,
+        "B_rendered": 1791755962511.714,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      },
+      {
+        "n": 26,
+        "sender": "C",
+        "stickId": "9a661fb5-1166-4239-a06b-4e009e48b1b4",
+        "accepted": true,
+        "commandId": "3e66f092-0cae-4a9b-8383-80d034df65c4",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "9a661fb5-1166-4239-a06b-4e009e48b1b4",
+          "at": 1791755964189.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791755963526.7737,
+        "A_received": 1791755963672.1086,
+        "A_rendered": 1791755963677.8086,
+        "B_received": 1791755963535.814,
+        "B_rendered": 1791755963553.914,
+        "serverLog": null,
+        "serverOutcome": "no log line"
+      }
+    ]
+  },
+  "M02": {
+    "sticksEverywhere": 27,
+    "duplicates": 0,
+    "settled": true,
+    "settleWaitMs": 2791,
+    "maxPositionDeltaFromServer": 0,
+    "statusAtEnd": "Structure saved\nStable structure height 3.3 u\nbest 3.3 u\nConnected",
+    "senders": {
+      "A": 12,
+      "B": 12,
+      "C": 2
+    }
+  },
+  "M05": {
+    "partnerCommitAtGhost": "accepted",
+    "path": "refused by the client's advisory check before sending",
+    "placeDisabled": true,
+    "feedback": "✕ Intersecting; adjust position\n\nIntersecting; adjust position",
+    "draftKept": true,
+    "phantomSticks": 0,
+    "convergedWithServer": true
+  },
+  "M08_diagnostics": {
+    "closedOpenSockets": 1,
+    "statusTrace": [
+      {
+        "ms": 0,
+        "conn": "Connected",
+        "states": [
+          2
+        ]
+      },
+      {
+        "ms": 164,
+        "conn": "Reconnecting…",
+        "states": [
+          3
+        ]
+      },
+      {
+        "ms": 324,
+        "conn": "Reconnecting…",
+        "states": [
+          3
+        ]
+      },
+      {
+        "ms": 485,
+        "conn": "Reconnecting…",
+        "states": [
+          3
+        ]
+      },
+      {
+        "ms": 646,
+        "conn": "Reconnecting…",
+        "states": [
+          3
+        ]
+      },
+      {
+        "ms": 806,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 965,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 1127,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 1287,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 1447,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 1610,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 1770,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 1931,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 2091,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 2252,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 2411,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 2568,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 2726,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "ms": 2882,
+        "conn": "Reconnecting…",
+        "states": [
+          3,
+          3,
+          3
+        ]
+      }
+    ]
+  },
+  "hosts": [
+    "127.0.0.1:18994"
+  ]
+}

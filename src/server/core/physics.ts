@@ -102,7 +102,21 @@ export class PhysicsWorld {
         .setFrictionCombineRule(combine(cfg.combineRule))
         .setRestitutionCombineRule(combine(cfg.combineRule));
     const rim = cfg.tableRim;
-    const collider = world.createCollider(material(RAPIER.ColliderDesc.cylinder(cfg.table.thickness / 2, rim ? rim.innerRadius : cfg.table.radius)), table);
+    const inner = rim ? rim.innerRadius : cfg.table.radius;
+    let collider: RAPIER.Collider;
+    if (cfg.tableCore) {
+      // squares with their corners on the core circle; the ring overlaps the notches between them
+      const half = cfg.tableCore.radius / Math.SQRT2;
+      const n = cfg.tableCore.squares;
+      collider = null as unknown as RAPIER.Collider;
+      for (let i = 0; i < n; i++) {
+        const a = ((Math.PI / 2) * i) / n / 2;
+        const c = world.createCollider(material(RAPIER.ColliderDesc.cuboid(half, cfg.table.thickness / 2, half)).setRotation({ x: 0, y: Math.sin(a), z: 0, w: Math.cos(a) }), table);
+        collider ??= c;
+      }
+    } else {
+      collider = world.createCollider(material(RAPIER.ColliderDesc.cylinder(cfg.table.thickness / 2, inner)), table);
+    }
     if (rim) {
       const m = tableRimMesh(rim.innerRadius, cfg.table.radius, cfg.table.thickness, rim.segments);
       world.createCollider(material(RAPIER.ColliderDesc.trimesh(m.vertices, m.indices, RAPIER.TriMeshFlags.FIX_INTERNAL_EDGES)), table);
@@ -147,7 +161,7 @@ export class PhysicsWorld {
     return { sticks: [...this.sticks.values()], tick: this.tick, tableCollider: this.tableCollider };
   }
 
-  /** Every collider of the fixed table body (one cylinder, plus the rim ring in v2). */
+  /** Every collider of the fixed table body (one cylinder, plus the rim ring in v2; the square core in v3). */
   tableColliders(): RAPIER.Collider[] {
     const body = this.world.getCollider(this.tableCollider).parent()!;
     const out: RAPIER.Collider[] = [];

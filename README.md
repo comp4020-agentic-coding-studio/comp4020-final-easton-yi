@@ -56,7 +56,10 @@ one workshop).
   **Push** lets the owner give one bounded push.
 
 Accounts use a handle and password. There's no email: the recovery code you're
-shown once is the only way back if you forget your password.
+shown once is the only way back if you forget your password. **Account** (your
+name in the header) can also delete the account permanently, with every work
+and exhibit it owns. Works you only helped build stay with their owners, with
+your sticks credited to "Deleted user".
 
 ## How it's built
 
@@ -74,8 +77,9 @@ before anyone is told it succeeded. Decisions and their costs are recorded in
 pnpm install
 pnpm build && pnpm start           # http://localhost:8080, data in ./.data
 APP_URL=http://localhost:8080 pnpm check   # course invariants + HTTP/WebSocket contract specs
-pnpm test:unit                     # physics fixtures, placement maths, kill/restart tests
-pnpm test:e2e                      # Playwright, against APP_URL
+pnpm test:unit                     # physics fixtures, placement maths, kill/restart tests (no build needed)
+pnpm test:integration              # builds, then runs suites against the production bundle
+pnpm test:e2e                      # Playwright, against APP_URL (some specs need ENABLE_TEST_HOOKS=1)
 ```
 
 ## Known limits

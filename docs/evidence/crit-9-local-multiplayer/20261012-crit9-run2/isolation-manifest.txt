@@ -1,0 +1,16 @@
+run_id=20261012-crit9-run2
+git=c363bcf branch=main dirty_paths=32
+node=v24.21.0 playwright=Version 1.63.0
+started=2026-10-12T03:05:44+11:00
+namespace=user+net (unshare --map-root-user --net); interfaces: lo 
+egress_probe=http://1.1.1.1 and https://example.com both failed (no route / no DNS)
+environment=env -i allowlist: PATH, HOME=<run>/home, TMPDIR=<run>/tmp, LANG, TZ, PLAYWRIGHT_BROWSERS_PATH, CRIT9_*
+run_dir=/tmp/stillwood-crit9-20261012-crit9-run2-XXXX (realpath checked, not a symlink)
+server=production build (dist/server/main.js), NODE_ENV=production COOKIE_SECURE=0, pid=501968, origin=http://127.0.0.1:18990
+database=<run>/data/stillwood.db, fresh, migrated at startup; open fds of pid point only there
+server_env_FLY_vars=0; test hooks off (production)
+spawned_servers=tests/crit9-multiplayer.test.ts and tests/*restart*/account-deletion tests start their own on 127.0.0.1 with data dirs under <run>/tmp
+server_place_log_lines=91
+external_requests_seen_by_browser=127.0.0.1:18990
+teardown: server pid 501968 stopped; run dir removed after copy
+finished=2026-10-12T03:09:43+11:00 exit=1

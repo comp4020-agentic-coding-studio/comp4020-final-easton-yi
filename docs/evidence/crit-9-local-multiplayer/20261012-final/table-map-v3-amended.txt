@@ -1,0 +1,13 @@
+== v3 (amended), standard grid
+0°  r4:ok  r8:ok  r10:ok  r11:ok  r12:ok  r13:ok  r14:ok  r15:ok  r15.8:ok
+11.25°  r4:ok  r8:ok  r10:ok  r11:ok  r12:ok  r13:ok  r14:ok  r15:ok*  r15.8:ok*
+22.5°  r4:ok  r8:ok  r10:ok  r11:ok  r12:ok  r13:ok*  r14:ok*  r15:ok*  r15.8:ok*
+33.75°  r4:ok  r8:ok  r10:ok  r11:ok  r12:ok*  r13:ok*  r14:ok*  r15:ok*  r15.8:ok*
+45°  r4:ok  r8:ok  r10:ok  r11:ok  r12:ok*  r13:ok*  r14:ok*  r15:ok*  r15.8:ok*
+* = centre outside the square |x|+|z| ≤ 16.5
+== v3 (amended), notch angles (5.625° off a corner) near the edge
+5.625°  r14.6:ok  r15.1:ok*  r15.5:ok*  r15.9:ok*  r16.3:ok*
+16.875°  r14.6:ok*  r15.1:ok*  r15.5:ok*  r15.9:ok*  r16.3:ok*
+39.375°  r14.6:ok*  r15.1:ok*  r15.5:ok*  r15.9:ok*  r16.3:ok*
+185.625°  r14.6:ok  r15.1:ok*  r15.5:ok*  r15.9:ok*  r16.3:ok*
+* = centre outside the square |x|+|z| ≤ 16.5

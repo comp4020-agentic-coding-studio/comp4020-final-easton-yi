@@ -1,0 +1,2 @@
+{"config":2,"sticks":112,"mat":62,"dropped":50,"steps":720,"stepMs":{"p50":"0.64","p95":"0.91","max":"5.59"},"awakeAfter12s":1}
+{"config":3,"sticks":112,"mat":62,"dropped":50,"steps":720,"stepMs":{"p50":"0.96","p95":"1.14","max":"2.89"},"awakeAfter12s":2}

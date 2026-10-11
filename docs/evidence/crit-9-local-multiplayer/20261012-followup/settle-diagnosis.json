@@ -1,0 +1,1742 @@
+{
+ "method": "scripts/crit9/settle-diag.ts: the browser timing loop rebuilt in-process with the product's Room (settled decision), PhysicsWorld and client spawnDraft, at a run's recorded click times; jitter trials vary each interval by up to \u00b1150 ms with a fixed seed",
+ "recordedSchedules": {
+  "20261012-crit9": {
+   "config": 2,
+   "placed": 26,
+   "settleAfterLastMs": 1633
+  },
+  "20261012-crit9-run2": {
+   "config": 2,
+   "placed": 26,
+   "settleAfterLastMs": 1950
+  },
+  "20261012-crit9-run3": {
+   "config": 2,
+   "placed": 27,
+   "settleAfterLastMs": 3633
+  },
+  "20261012-crit9-run4": {
+   "config": 2,
+   "placed": 26,
+   "settleAfterLastMs": 1750
+  }
+ },
+ "sweeps": {
+  "v2": [
+   {
+    "label": "recorded",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 3633,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-0",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": null,
+    "final": {
+     "awake": 1,
+     "notQuiet": 1,
+     "maxV": 0.9099,
+     "maxW": 1.6679,
+     "quietStreakMs": null
+    },
+    "stuckBodyLast": [
+     {
+      "i": 11,
+      "v": 0.9099,
+      "w": 1.6679,
+      "y": 0.22,
+      "x": -9.19,
+      "z": -9.34,
+      "radius": 13.11,
+      "endRadii": [
+       12.93,
+       14.43
+      ],
+      "tiltDeg": 0.1,
+      "touches": {
+       "cylinder": 1,
+       "rim": 1,
+       "sticks": 5
+      },
+      "contacts": [
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "cylinder",
+        "normalY": -1,
+        "deepest": -0.329,
+        "points": 1
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": -1,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0.001,
+        "deepest": 0,
+        "points": 0
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "jitter-1",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1983,
+    "final": {
+     "awake": 13,
+     "notQuiet": 0,
+     "maxV": 0.0048,
+     "maxW": 0.0027,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-2",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": null,
+    "final": {
+     "awake": 1,
+     "notQuiet": 1,
+     "maxV": 0.8622,
+     "maxW": 1.3627,
+     "quietStreakMs": null
+    },
+    "stuckBodyLast": [
+     {
+      "i": 21,
+      "v": 0.8622,
+      "w": 1.3627,
+      "y": 0.22,
+      "x": 10.24,
+      "z": 9.51,
+      "radius": 13.97,
+      "endRadii": [
+       13.26,
+       15.7
+      ],
+      "tiltDeg": 0.1,
+      "touches": {
+       "cylinder": 1,
+       "rim": 1,
+       "sticks": 3
+      },
+      "contacts": [
+       {
+        "with": "stick",
+        "normalY": 0.054,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": -1,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "cylinder",
+        "normalY": -1,
+        "deepest": -0.341,
+        "points": 1
+       },
+       {
+        "with": "stick",
+        "normalY": 0.999,
+        "deepest": 0,
+        "points": 0
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "jitter-3",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": 1650,
+    "final": {
+     "awake": 6,
+     "notQuiet": 0,
+     "maxV": 0.0004,
+     "maxW": 0.0001,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-4",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 111800,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-5",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": null,
+    "final": {
+     "awake": 1,
+     "notQuiet": 1,
+     "maxV": 1.521,
+     "maxW": 1.6305,
+     "quietStreakMs": null
+    },
+    "stuckBodyLast": [
+     {
+      "i": 22,
+      "v": 1.521,
+      "w": 1.6305,
+      "y": 0.26,
+      "x": 9.26,
+      "z": 9.64,
+      "radius": 13.37,
+      "endRadii": [
+       15.01,
+       12.82
+      ],
+      "tiltDeg": 0.2,
+      "touches": {
+       "cylinder": 1,
+       "rim": 1,
+       "sticks": 3
+      },
+      "contacts": [
+       {
+        "with": "cylinder",
+        "normalY": -1,
+        "deepest": -0.309,
+        "points": 4
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 1,
+        "deepest": 0,
+        "points": 0
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "jitter-6",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 87700,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-7",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": 3583,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-8",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1633,
+    "final": {
+     "awake": 7,
+     "notQuiet": 0,
+     "maxV": 0.0074,
+     "maxW": 0.0017,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-9",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": 4117,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-10",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 4233,
+    "final": {
+     "awake": 2,
+     "notQuiet": 0,
+     "maxV": 0.0023,
+     "maxW": 0.0039,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-11",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": 1617,
+    "final": {
+     "awake": 6,
+     "notQuiet": 0,
+     "maxV": 0.0007,
+     "maxW": 0.0003,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-12",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": null,
+    "final": {
+     "awake": 1,
+     "notQuiet": 1,
+     "maxV": 1.0037,
+     "maxW": 0.5131,
+     "quietStreakMs": null
+    },
+    "stuckBodyLast": [
+     {
+      "i": 20,
+      "v": 1.0037,
+      "w": 0.5131,
+      "y": 0.22,
+      "x": 9.84,
+      "z": 9.86,
+      "radius": 13.93,
+      "endRadii": [
+       12.84,
+       15.97
+      ],
+      "tiltDeg": 0.7,
+      "touches": {
+       "cylinder": 1,
+       "rim": 1,
+       "sticks": 2
+      },
+      "contacts": [
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": -1,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "cylinder",
+        "normalY": -1,
+        "deepest": -0.291,
+        "points": 1
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 1,
+        "deepest": 0,
+        "points": 0
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "jitter-13",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 67133,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-14",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 78733,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-15",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": null,
+    "final": {
+     "awake": 2,
+     "notQuiet": 2,
+     "maxV": 0.8652,
+     "maxW": 1.3688,
+     "quietStreakMs": null
+    },
+    "stuckBodyLast": [
+     {
+      "i": 12,
+      "v": 0.8652,
+      "w": 1.3688,
+      "y": 0.23,
+      "x": 10.44,
+      "z": 10.4,
+      "radius": 14.73,
+      "endRadii": [
+       15.7,
+       14.82
+      ],
+      "tiltDeg": 0.1,
+      "touches": {
+       "cylinder": 1,
+       "rim": 1,
+       "sticks": 8
+      },
+      "contacts": [
+       {
+        "with": "stick",
+        "normalY": -0.019,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0.063,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "cylinder",
+        "normalY": -1,
+        "deepest": -0.329,
+        "points": 1
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": -0.549,
+        "deepest": 0,
+        "points": 0
+       }
+      ]
+     },
+     {
+      "i": 14,
+      "v": 0.8627,
+      "w": 1.3637,
+      "y": 0.22,
+      "x": 8.96,
+      "z": 9.16,
+      "radius": 12.81,
+      "endRadii": [
+       13.84,
+       12.98
+      ],
+      "tiltDeg": 0.1,
+      "touches": {
+       "cylinder": 1,
+       "rim": 1,
+       "sticks": 10
+      },
+      "contacts": [
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 1,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "rim",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "cylinder",
+        "normalY": -1,
+        "deepest": -0.344,
+        "points": 1
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0.019,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0.002,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       },
+       {
+        "with": "stick",
+        "normalY": 0,
+        "deepest": 0,
+        "points": 0
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "jitter-16",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 24467,
+    "final": {
+     "awake": 2,
+     "notQuiet": 0,
+     "maxV": 0.0031,
+     "maxW": 0.0023,
+     "quietStreakMs": 1517
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-17",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 97050,
+    "final": {
+     "awake": 1,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-18",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": 1633,
+    "final": {
+     "awake": 10,
+     "notQuiet": 0,
+     "maxV": 0.0023,
+     "maxW": 0.0017,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-19",
+    "placed": 26,
+    "rejected": 1,
+    "settleAfterLastMs": 1850,
+    "final": {
+     "awake": 6,
+     "notQuiet": 0,
+     "maxV": 0.0015,
+     "maxW": 0.0011,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   }
+  ],
+  "v3": [
+   {
+    "label": "recorded",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2550,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-0",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2250,
+    "final": {
+     "awake": 25,
+     "notQuiet": 0,
+     "maxV": 0.001,
+     "maxW": 0.0011,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-1",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1683,
+    "final": {
+     "awake": 13,
+     "notQuiet": 0,
+     "maxV": 0.0089,
+     "maxW": 0.0054,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-2",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1633,
+    "final": {
+     "awake": 8,
+     "notQuiet": 0,
+     "maxV": 0.0015,
+     "maxW": 0.0004,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-3",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2250,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-4",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2833,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-5",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2350,
+    "final": {
+     "awake": 20,
+     "notQuiet": 0,
+     "maxV": 0.0047,
+     "maxW": 0.011,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-6",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1633,
+    "final": {
+     "awake": 16,
+     "notQuiet": 0,
+     "maxV": 0.01,
+     "maxW": 0.006,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-7",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2083,
+    "final": {
+     "awake": 11,
+     "notQuiet": 0,
+     "maxV": 0.0044,
+     "maxW": 0.002,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-8",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1800,
+    "final": {
+     "awake": 16,
+     "notQuiet": 0,
+     "maxV": 0.0051,
+     "maxW": 0.0043,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-9",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2100,
+    "final": {
+     "awake": 11,
+     "notQuiet": 0,
+     "maxV": 0.002,
+     "maxW": 0.0018,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-10",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2050,
+    "final": {
+     "awake": 19,
+     "notQuiet": 0,
+     "maxV": 0.005,
+     "maxW": 0.004,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-11",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1650,
+    "final": {
+     "awake": 8,
+     "notQuiet": 0,
+     "maxV": 0.0056,
+     "maxW": 0.0056,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-12",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2150,
+    "final": {
+     "awake": 11,
+     "notQuiet": 0,
+     "maxV": 0.0171,
+     "maxW": 0.0083,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-13",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 2317,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-14",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1650,
+    "final": {
+     "awake": 6,
+     "notQuiet": 0,
+     "maxV": 0.0004,
+     "maxW": 0.0007,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-15",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 4700,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-16",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 3983,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-17",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1667,
+    "final": {
+     "awake": 7,
+     "notQuiet": 0,
+     "maxV": 0.0004,
+     "maxW": 0.0008,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-18",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 1633,
+    "final": {
+     "awake": 13,
+     "notQuiet": 0,
+     "maxV": 0.0136,
+     "maxW": 0.0066,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   },
+   {
+    "label": "jitter-19",
+    "placed": 27,
+    "rejected": 0,
+    "settleAfterLastMs": 3250,
+    "final": {
+     "awake": 0,
+     "notQuiet": 0,
+     "maxV": 0,
+     "maxW": 0,
+     "quietStreakMs": 1500
+    },
+    "stuckBodyLast": null
+   }
+  ]
+ },
+ "stuckStateProbes_v2_jitter0_jitter2": [
+  {
+   "label": "jitter-0",
+   "probes": [
+    {
+     "variant": "same pose alone in a fresh world, at rest",
+     "pose": {
+      "p": [
+       -9.268441200256348,
+       0.22066612541675568,
+       -9.270060539245605
+      ],
+      "q": [
+       -0.6946837306022644,
+       0.1962260752916336,
+       0.20822365581989288,
+       0.6599642634391785
+      ]
+     },
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.863,
+     "stuckBodyY": 0.216
+    },
+    {
+     "variant": "control (8 iterations)",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.91,
+     "stuckBodyY": 0.221
+    },
+    {
+     "variant": "16 solver iterations",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.839,
+     "stuckBodyY": 0.166
+    },
+    {
+     "variant": "32 solver iterations",
+     "settledWithin30sAfterS": 25.53,
+     "stuckBodySpeed": 0.004,
+     "stuckBodyY": 0.497
+    },
+    {
+     "variant": "4 internal PGS iterations",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.94,
+     "stuckBodyY": 0.231
+    },
+    {
+     "variant": "sticks touching it removed (diagnosis)",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.91,
+     "stuckBodyY": 0.221
+    }
+   ]
+  },
+  {
+   "label": "jitter-2",
+   "probes": [
+    {
+     "variant": "same pose alone in a fresh world, at rest",
+     "pose": {
+      "p": [
+       10.379266738891602,
+       0.21434712409973145,
+       9.865621566772461
+      ],
+      "q": [
+       0.6461284160614014,
+       -0.28436240553855896,
+       -0.27140578627586365,
+       -0.6542134284973145
+      ]
+     },
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 1.023,
+     "stuckBodyY": 0.223
+    },
+    {
+     "variant": "control (8 iterations)",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.863,
+     "stuckBodyY": 0.216
+    },
+    {
+     "variant": "16 solver iterations",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 0.261,
+     "stuckBodyY": 0.415
+    },
+    {
+     "variant": "32 solver iterations",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 1.03,
+     "stuckBodyY": 0.005
+    },
+    {
+     "variant": "4 internal PGS iterations",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 1.056,
+     "stuckBodyY": 0.224
+    },
+    {
+     "variant": "sticks touching it removed (diagnosis)",
+     "settledWithin30sAfterS": null,
+     "stuckBodySpeed": 1.023,
+     "stuckBodyY": 0.214
+    }
+   ]
+  }
+ ],
+ "sinkingEvents_v2": [
+  {
+   "label": "recorded",
+   "sunk": [
+    {
+     "id": "s4",
+     "atMs": 15217,
+     "y": 0.394,
+     "radius": 2.58,
+     "prevSpeed": 20.01,
+     "sinceLastPlacementMs": -3233
+    },
+    {
+     "id": "s8",
+     "atMs": 15217,
+     "y": 0.368,
+     "radius": 7.87,
+     "prevSpeed": 21.85,
+     "sinceLastPlacementMs": -3233
+    },
+    {
+     "id": "s10",
+     "atMs": 15233,
+     "y": 0.337,
+     "radius": 10.39,
+     "prevSpeed": 24.29,
+     "sinceLastPlacementMs": -3217
+    }
+   ],
+   "stuckDetail": []
+  },
+  {
+   "label": "jitter-0",
+   "sunk": [
+    {
+     "id": "s4",
+     "atMs": 15450,
+     "y": 0.301,
+     "radius": 2.68,
+     "prevSpeed": 20.82,
+     "sinceLastPlacementMs": -3483
+    },
+    {
+     "id": "s6",
+     "atMs": 15450,
+     "y": 0.367,
+     "radius": 5.37,
+     "prevSpeed": 19.64,
+     "sinceLastPlacementMs": -3483
+    },
+    {
+     "id": "s8",
+     "atMs": 15450,
+     "y": 0.299,
+     "radius": 7.81,
+     "prevSpeed": 22.39,
+     "sinceLastPlacementMs": -3483
+    },
+    {
+     "id": "s10",
+     "atMs": 15467,
+     "y": 0.325,
+     "radius": 10.4,
+     "prevSpeed": 24.26,
+     "sinceLastPlacementMs": -3466
+    },
+    {
+     "id": "s20",
+     "atMs": 15567,
+     "y": 0.351,
+     "radius": 5.24,
+     "prevSpeed": 33.03,
+     "sinceLastPlacementMs": -3366
+    },
+    {
+     "id": "s11",
+     "atMs": 16483,
+     "y": 0.373,
+     "radius": 12.51,
+     "prevSpeed": 6.06,
+     "sinceLastPlacementMs": -2450
+    }
+   ],
+   "stuckDetail": [
+    {
+     "i": 11,
+     "v": 1.0037,
+     "w": 0.5131,
+     "y": 0.22,
+     "x": -9.27,
+     "z": -9.26,
+     "radius": 13.1,
+     "endRadii": [
+      12.91,
+      14.45
+     ],
+     "tiltDeg": 0.7,
+     "touches": {
+      "cylinder": 1,
+      "rim": 1,
+      "sticks": 5
+     },
+     "contacts": [
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "rim",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "cylinder",
+       "normalY": -1,
+       "deepest": -0.291,
+       "points": 1
+      },
+      {
+       "with": "stick",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "stick",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "stick",
+       "normalY": 0,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "stick",
+       "normalY": -1,
+       "deepest": 0,
+       "points": 0
+      },
+      {
+       "with": "stick",
+       "normalY": 0.001,
+       "deepest": 0,
+       "points": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "jitter-1",
+   "sunk": [
+    {
+     "id": "s8",
+     "atMs": 15383,
+     "y": 0.325,
+     "radius": 8.15,
+     "prevSpeed": 22.19,
+     "sinceLastPlacementMs": -3250
+    },
+    {
+     "id": "s9",
+     "atMs": 15383,
+     "y": 0.333,
+     "radius": 9.36,
+     "prevSpeed": 23.61,
+     "sinceLastPlacementMs": -3250
+    },
+    {
+     "id": "s19",
+     "atMs": 15500,
+     "y": 0.363,
+     "radius": 3.42,
+     "prevSpeed": 32.13,
+     "sinceLastPlacementMs": -3133
+    }
+   ],
+   "stuckDetail": null
+  }
+ ]
+}

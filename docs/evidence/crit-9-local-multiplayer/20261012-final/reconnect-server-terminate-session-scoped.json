@@ -1,0 +1,447 @@
+[
+  {
+    "method": "B server terminate",
+    "n": 1,
+    "closedBeforeTrigger": 1,
+    "firstCloseMs": 1.5,
+    "closeCode": 1006,
+    "closeClean": false,
+    "reconnectingShownMs": 2.4,
+    "reconnectingFrameMs": 4.8,
+    "closeToIndicatorMs": 0.9,
+    "readyStateAt": {
+      "100ms": [
+        3
+      ],
+      "1000ms": [
+        3,
+        1
+      ],
+      "5000ms": [
+        3,
+        1
+      ]
+    },
+    "reconnectAttemptsInWindow": 1,
+    "connectedAgainMs": 523.8,
+    "timeline": [
+      {
+        "t": 1.5,
+        "kind": "ws-close",
+        "detail": {
+          "id": 0,
+          "code": 1006,
+          "clean": false
+        }
+      },
+      {
+        "t": 2.4,
+        "kind": "indicator",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 4.8,
+        "kind": "indicator-frame",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 11.6,
+        "kind": "ready-state",
+        "detail": {
+          "id": 0,
+          "state": 3
+        }
+      },
+      {
+        "t": 519.9,
+        "kind": "ws-construct",
+        "detail": 1
+      },
+      {
+        "t": 522.1,
+        "kind": "ws-open",
+        "detail": 1
+      },
+      {
+        "t": 523.8,
+        "kind": "indicator",
+        "detail": "Connected"
+      },
+      {
+        "t": 524.5,
+        "kind": "indicator-frame",
+        "detail": "Connected"
+      },
+      {
+        "t": 536.6,
+        "kind": "ready-state",
+        "detail": {
+          "id": 1,
+          "state": 1
+        }
+      }
+    ]
+  },
+  {
+    "method": "B server terminate",
+    "n": 2,
+    "closedBeforeTrigger": 1,
+    "firstCloseMs": 1.2,
+    "closeCode": 1006,
+    "closeClean": false,
+    "reconnectingShownMs": 1.9,
+    "reconnectingFrameMs": 2.7,
+    "closeToIndicatorMs": 0.7,
+    "readyStateAt": {
+      "100ms": [
+        3,
+        3
+      ],
+      "1000ms": [
+        3,
+        3,
+        1
+      ],
+      "5000ms": [
+        3,
+        3,
+        1
+      ]
+    },
+    "reconnectAttemptsInWindow": 1,
+    "connectedAgainMs": 527.5,
+    "timeline": [
+      {
+        "t": 1.2,
+        "kind": "ws-close",
+        "detail": {
+          "id": 1,
+          "code": 1006,
+          "clean": false
+        }
+      },
+      {
+        "t": 1.9,
+        "kind": "indicator",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 2.7,
+        "kind": "indicator-frame",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 10.8,
+        "kind": "ready-state",
+        "detail": {
+          "id": 1,
+          "state": 3
+        }
+      },
+      {
+        "t": 524.7,
+        "kind": "ws-construct",
+        "detail": 2
+      },
+      {
+        "t": 526.4,
+        "kind": "ws-open",
+        "detail": 2
+      },
+      {
+        "t": 527.5,
+        "kind": "indicator",
+        "detail": "Connected"
+      },
+      {
+        "t": 528.6,
+        "kind": "indicator-frame",
+        "detail": "Connected"
+      },
+      {
+        "t": 535.6,
+        "kind": "ready-state",
+        "detail": {
+          "id": 2,
+          "state": 1
+        }
+      }
+    ]
+  },
+  {
+    "method": "B server terminate",
+    "n": 3,
+    "closedBeforeTrigger": 1,
+    "firstCloseMs": 1,
+    "closeCode": 1006,
+    "closeClean": false,
+    "reconnectingShownMs": 1.5,
+    "reconnectingFrameMs": 2.3,
+    "closeToIndicatorMs": 0.5,
+    "readyStateAt": {
+      "100ms": [
+        3,
+        3,
+        3
+      ],
+      "1000ms": [
+        3,
+        3,
+        3,
+        1
+      ],
+      "5000ms": [
+        3,
+        3,
+        3,
+        1
+      ]
+    },
+    "reconnectAttemptsInWindow": 1,
+    "connectedAgainMs": 416.3,
+    "timeline": [
+      {
+        "t": 1,
+        "kind": "ws-close",
+        "detail": {
+          "id": 2,
+          "code": 1006,
+          "clean": false
+        }
+      },
+      {
+        "t": 1.5,
+        "kind": "indicator",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 2.3,
+        "kind": "indicator-frame",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 9.8,
+        "kind": "ready-state",
+        "detail": {
+          "id": 2,
+          "state": 3
+        }
+      },
+      {
+        "t": 412.4,
+        "kind": "ws-construct",
+        "detail": 3
+      },
+      {
+        "t": 415.1,
+        "kind": "ws-open",
+        "detail": 3
+      },
+      {
+        "t": 416.3,
+        "kind": "indicator",
+        "detail": "Connected"
+      },
+      {
+        "t": 417.2,
+        "kind": "indicator-frame",
+        "detail": "Connected"
+      },
+      {
+        "t": 434.9,
+        "kind": "ready-state",
+        "detail": {
+          "id": 3,
+          "state": 1
+        }
+      }
+    ]
+  },
+  {
+    "method": "B server terminate",
+    "n": 4,
+    "closedBeforeTrigger": 1,
+    "firstCloseMs": 1.2,
+    "closeCode": 1006,
+    "closeClean": false,
+    "reconnectingShownMs": 1.7,
+    "reconnectingFrameMs": 2.5,
+    "closeToIndicatorMs": 0.5,
+    "readyStateAt": {
+      "100ms": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "1000ms": [
+        3,
+        3,
+        3,
+        3,
+        1
+      ],
+      "5000ms": [
+        3,
+        3,
+        3,
+        3,
+        1
+      ]
+    },
+    "reconnectAttemptsInWindow": 1,
+    "connectedAgainMs": 388.5,
+    "timeline": [
+      {
+        "t": 1.2,
+        "kind": "ws-close",
+        "detail": {
+          "id": 3,
+          "code": 1006,
+          "clean": false
+        }
+      },
+      {
+        "t": 1.7,
+        "kind": "indicator",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 2.5,
+        "kind": "indicator-frame",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 10.3,
+        "kind": "ready-state",
+        "detail": {
+          "id": 3,
+          "state": 3
+        }
+      },
+      {
+        "t": 385.5,
+        "kind": "ws-construct",
+        "detail": 4
+      },
+      {
+        "t": 387.5,
+        "kind": "ws-open",
+        "detail": 4
+      },
+      {
+        "t": 388.5,
+        "kind": "indicator",
+        "detail": "Connected"
+      },
+      {
+        "t": 389.1,
+        "kind": "indicator-frame",
+        "detail": "Connected"
+      },
+      {
+        "t": 410.4,
+        "kind": "ready-state",
+        "detail": {
+          "id": 4,
+          "state": 1
+        }
+      }
+    ]
+  },
+  {
+    "method": "B server terminate",
+    "n": 5,
+    "closedBeforeTrigger": 1,
+    "firstCloseMs": 1.3,
+    "closeCode": 1006,
+    "closeClean": false,
+    "reconnectingShownMs": 1.9,
+    "reconnectingFrameMs": 3.2,
+    "closeToIndicatorMs": 0.6,
+    "readyStateAt": {
+      "100ms": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "1000ms": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        1
+      ],
+      "5000ms": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        1
+      ]
+    },
+    "reconnectAttemptsInWindow": 1,
+    "connectedAgainMs": 461,
+    "timeline": [
+      {
+        "t": 1.3,
+        "kind": "ws-close",
+        "detail": {
+          "id": 4,
+          "code": 1006,
+          "clean": false
+        }
+      },
+      {
+        "t": 1.9,
+        "kind": "indicator",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 3.2,
+        "kind": "indicator-frame",
+        "detail": "Reconnecting…"
+      },
+      {
+        "t": 7.5,
+        "kind": "ready-state",
+        "detail": {
+          "id": 4,
+          "state": 3
+        }
+      },
+      {
+        "t": 457.8,
+        "kind": "ws-construct",
+        "detail": 5
+      },
+      {
+        "t": 459.9,
+        "kind": "ws-open",
+        "detail": 5
+      },
+      {
+        "t": 461,
+        "kind": "indicator",
+        "detail": "Connected"
+      },
+      {
+        "t": 461.8,
+        "kind": "indicator-frame",
+        "detail": "Connected"
+      },
+      {
+        "t": 482.7,
+        "kind": "ready-state",
+        "detail": {
+          "id": 5,
+          "state": 1
+        }
+      }
+    ]
+  }
+]

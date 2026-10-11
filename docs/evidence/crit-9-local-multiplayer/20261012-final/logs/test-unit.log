@@ -1,0 +1,65 @@
+$ vitest run -c vitest.unit.config.ts
+
+ RUN  v5.0.1 /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi
+
+ ✓ tests/placement-math.test.ts (14 tests) 11ms
+stderr | tests/placement.test.ts
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/table-config-lifecycle.test.ts > physics config through save, restart and resume > v3 works stay v3 and settle over the former problem zones; v2 works keep v2
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/graphics-quality.test.ts (23 tests) 36ms
+stderr | tests/physics.test.ts
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/placement.test.ts (19 tests) 9ms
+ ✓ tests/trash-guard.test.ts (6 tests) 120ms
+ ✓ tests/account-deletion-db.test.ts (3 tests) 214ms
+ ✓ tests/physics.test.ts (36 tests) 595ms
+ ✓ tests/test-hooks.test.ts (4 tests) 2503ms
+   ✓ test-only socket drop (4)
+     ✓ doesn't exist in production, even with ENABLE_TEST_HOOKS=1 707ms
+     ✓ doesn't exist in default startup (no NODE_ENV, no flag) 565ms
+     ✓ doesn't exist in test mode without the flag 557ms
+     ✓ with explicit test configuration, drops only the caller's own sockets 672ms
+ ✓ tests/table-config-lifecycle.test.ts (1 test) 8684ms
+   ✓ physics config through save, restart and resume (1)
+     ✓ v3 works stay v3 and settle over the former problem zones; v2 works keep v2 8683ms
+ ✓ tests/restart.test.ts (6 tests) 10738ms
+   ✓ crash around the placement transaction (3)
+     ✓ killed before commit: nothing acknowledged, nothing saved 1284ms
+     ✓ killed after commit, before the reply: the same ID finds the saved result; no duplicate 1118ms
+     ✓ killed after the reply: the acknowledged stick is there after restart 1127ms
+   ✓ motion across restarts (2)
+     ✓ SIGKILL mid-fall resumes from the latest checkpoint, not from the start 5337ms
+     ✓ graceful SIGTERM saves and exits cleanly; the next process has the same work 1303ms
+   ✓ storage failure (1)
+     ✓ a failed write produces no success and no body left simulating 566ms
+ ✓ tests/lifecycle-restart.test.ts (4 tests) 11184ms
+   ✓ trash across restarts (2)
+     ✓ stays in the owner's trash after SIGKILL; restore afterwards keeps the scene 3108ms
+     ✓ a failed write leaves the work active, live and public; the retry succeeds 2278ms
+   ✓ permanent deletion in the datastore (1)
+     ✓ a failed transaction removes nothing; a successful one removes every work-scoped row and nothing else, surviving restart 2989ms
+   ✓ exhibit limit on existing data (1)
+     ✓ over the limit from older data: republish keeps its ID and geometry and is allowed; creating another is refused 2806ms
+ ✓ tests/account-deletion.test.ts (7 tests) 22509ms
+   ✓ complete deletion in the datastore (1)
+     ✓ leaves no row or nested field naming the account, keeps the partner's works whole, and survives restart 5446ms
+   ✓ atomicity (1)
+     ✓ a failure inside the transaction deletes nothing and leaves live rooms running; the retry succeeds 2709ms
+   ✓ interleavings at the point between the password check and the commit (2)
+     ✓ placement, work creation, sign-in and invitation acceptance that commit first are all swept up; a recovery or credential change stops the deletion 2657ms
+     ✓ after the commit, late commands, joins and a moving room's autosave can't write the work back 2346ms
+   ✓ after the commit (2)
+     ✓ a failed notification doesn't undo the deletion: access is refused from the database and the heartbeat tells the window 5694ms
+     ✓ a crash right after the commit keeps the deletion; restart restores nothing 1543ms
+   ✓ restoring a backup (1)
+     ✓ re-deletes, at startup, an account deleted after the backup was taken 2111ms
+
+ Test Files  11 passed (11)
+      Tests  123 passed (123)
+   Start at  09:26:59
+   Duration  22.69s (tests 98%, transform 1%)
+

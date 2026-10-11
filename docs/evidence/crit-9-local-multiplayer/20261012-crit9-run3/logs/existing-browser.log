@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 [desktop] › tests/e2e/account-deletion.spec.ts:7:1 › confirmation dialog: cancel, keyboard, wrong password, one submission at a time, and a lost answer (1.9s)
+  ✓  2 [desktop] › tests/e2e/account-deletion.spec.ts:73:1 › deleting from the account page: that session goes to the start page, the other session and the collaborator lose access (3.0s)
+  ✓  3 [desktop] › tests/e2e/lifecycle.spec.ts:7:1 › trash while a collaborator is connected, restore, then delete permanently (10.4s)
+  ✓  4 [desktop] › tests/e2e/together.spec.ts:8:1 › two people build together: ghosts, concurrent placement, own cameras, reconnect (28.5s)
+
+  4 passed (44.4s)

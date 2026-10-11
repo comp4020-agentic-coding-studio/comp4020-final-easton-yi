@@ -11,6 +11,14 @@ Latest full run (2026-10-06, after the graphics-quality change): `pnpm typecheck
 `APP_URL=… pnpm check` 49 passed (2 shipped invariants + 47 product specs) in 6 of 9 runs; the other 3 had 1–4 failures in `spec/versions.test.ts` (see implementation-status, known limitations) ·
 `pnpm test:e2e` 18 passed (local server with test hooks).
 
+Local multiplayer verification for Crit 9 (2026-10-12, four isolated runs in a
+loopback-only network namespace, production build): 57 of 61 leaf checks
+pass in the final run; one fails intermittently (the reconnect indicator, F3);
+one is blocked and two weren't run. In each run, 50 of 50 cross-session
+observations were rendered, with click-to-render p95 of about 250 ms and none
+over 1 s. **Local only**; this doesn't change any deployment status below. See
+[`evidence/crit-9-local-multiplayer-report.md`](evidence/crit-9-local-multiplayer-report.md).
+
 | Scenario | A | B | H | Evidence |
 | --- | --- | --- | --- | --- |
 | AT-01 New user creates and places; survives refresh, logout, login | pass | pass | — | `spec/placement.test.ts` "a new user creates a work…", `tests/e2e/solo.spec.ts` |
@@ -35,6 +43,7 @@ Latest full run (2026-10-06, after the graphics-quality change): `pnpm typecheck
 | AT-20 Exhibit limit counts withdrawn exhibits; republish uses no slot (added 2026-10-06) | pass | — | — | `spec/lifecycle.test.ts` "exhibit limit" (boundary, 3 concurrent publishes, concurrent republish), `tests/lifecycle-restart.test.ts` (over the limit from older data: republish keeps ID and geometry; creating another is refused) |
 | AT-21 Graphics quality (added 2026-10-06) | pass | pass | **pending** | `tests/graphics-quality.test.ts` (Auto with injected time, incl. ordinary use and no oscillation), `tests/e2e/graphics.spec.ts` (presets, antialiasing, reload, bad storage, preservation, Low placement after resize/DPR, switching with a partner active, exhibit, phone), M-007/M-008 pixel-identical High (fresh and after Low/Medium), `scripts/measure/graphics-auto.ts` real-browser recovery; whether Medium/Low look acceptable to a person is H |
 | AT-22 Idle and hidden rendering (added 2026-10-06) | — | pass | — | `tests/e2e/graphics.spec.ts` (idle partner: ghost move/release, placement, collapse and dropped partner to the final pose, own reconnect; zero renders while hidden, simulated, see INITIAL_PROMPT §9.4; remounts), M-007 idle counts |
+| AT-23 Account deletion (added 2026-10-12) | pass | pass | — | `spec/account-deletion.test.ts` (refusals, revocation, retries, re-registration, double submit, ownership boundaries over HTTP and WebSocket), `tests/account-deletion.test.ts` (whole-database residue scan, injected mid-transaction failures, latched interleavings, late autosave, lost notification, SIGKILL after commit, backup re-deletion), `tests/account-deletion-db.test.ts` (migration 3, foreign-key guards), `tests/e2e/account-deletion.spec.ts` (dialog; two owner sessions and an editor in separate contexts). **Not run on Fly** |
 
 ## Not yet verified
 

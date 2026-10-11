@@ -168,7 +168,12 @@ label {
 .notice.error {
   border-color: #e0b4ac;
 }
-.empty {
+.notice-region:not(:empty) {
+  width: 100%;
+  max-width: 68rem;
+  margin: 12px auto 0;
+  padding: 0 16px;
+}.empty {
   padding: 24px;
   background: var(--panel);
   border-radius: var(--radius);

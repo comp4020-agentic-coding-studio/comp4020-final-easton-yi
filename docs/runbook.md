@@ -59,6 +59,23 @@ To restore: stop the app (`flyctl scale count 0`), put the file back as
 scale back to 1. Try it on a copy first; the backup script reports
 `integrity_check` and the work count.
 
+A backup can hold accounts that were deleted after it was taken (ADR-0007).
+Before reopening service on it, carry the deletion records across:
+
+1. While the app is still running, take a fresh backup of the **current**
+   database with `backup.ts` and download it as `current.db`.
+2. On your machine, in a checkout of the deployed commit, put the backup you
+   are restoring into an empty directory as `stillwood.db`, then run
+   `node scripts/carry-deletions.ts ./current.db <that directory>`. It prints
+   `{"records":…,"added":…}` and migrates the file if it's older.
+3. Restore that directory's `stillwood.db` as above. At startup, before
+   `/readyz` turns ready, the server deletes those accounts again and logs
+   `account.delete.reapplied` with a count.
+
+Restoring a whole volume snapshot works the same way, provided the current
+database still exists to carry from. If it doesn't, accounts deleted after the
+snapshot come back. That is a known limit.
+
 ### Before deploying a schema migration
 
 Checked read-only on 2026-10-06: production is at schema `user_version` 1, with
@@ -84,6 +101,40 @@ If any work has been trashed, also restore the pre-migration file as described
 above (stop, replace `stillwood.db`, remove `-wal` and `-shm`, start). Alternatively, restore
 a whole volume from the snapshot with `flyctl volumes create data --snapshot-id <id> -a comp4020-final-easton-yi` and attach it. Either way, anything written after the backup is lost. Never delete the
 existing volume until the restored one has been verified.
+
+### Migration 3 (account deletion)
+
+Account deletion adds migration 3. It rebuilds `snapshots` so `creator_id` can
+be NULL, narrows the trashed-work update trigger, and adds the
+`account_deletions` table. Migrations now run with foreign keys off, which is
+SQLite's procedure for table rebuilds, and each one commits only if
+`foreign_key_check` is empty. Follow the five steps above, with the backup
+named `pre-migration-3.db`, and expect `user_version` 3. Older code starts on a
+version-3 database and ignores the new table. If accounts were deleted in the
+meantime, rolling back keeps them deleted.
+
+### Verifying account deletion after a deploy
+
+Use two dedicated test accounts made for this check, never a real account.
+Use two browsers, or one normal and one private window.
+
+1. Register `verifydel_a_<date>` and `verifydel_b_<date>`. A creates a work and
+   invites B, and B joins it. B creates a work and invites A; A places a stick
+   there and saves a version, and B exhibits that version.
+2. With B's windows open on A's work and on B's own work, A goes to Account →
+   Delete account. First enter a wrong password: expect "That password isn't
+   right, so nothing was deleted." Then enter the right one: expect the
+   exhibition page and "Your account and everything it owned have been
+   deleted."
+3. Within about a second, B's window on A's work moves to My works with "This
+   work was deleted, so it's no longer available." In B's own work, the Sticks
+   list says "placed by Deleted user", Versions shows "Deleted user", and the
+   exhibit's page credits "Deleted user".
+4. Signing in as A fails with "That handle and password don't match."
+5. `flyctl logs -a comp4020-final-easton-yi` shows one `account.delete` line
+   with `outcome: accepted`, `notifyFailed: 0` and no `actorId`, and no
+   `rpc.error` or `http.error` lines.
+6. Delete B the same way.
 
 ## Shutdown and recovery
 

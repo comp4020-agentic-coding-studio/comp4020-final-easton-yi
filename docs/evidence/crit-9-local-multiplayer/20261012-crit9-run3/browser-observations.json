@@ -1,0 +1,699 @@
+{
+  "M01": {
+    "distinctUserIds": 4,
+    "roles": [
+      "owner",
+      "editor",
+      "editor"
+    ],
+    "presenceOnA": [
+      "c9 9-run3 B",
+      "c9 9-run3 C"
+    ],
+    "sameTitleAndScene": true,
+    "refreshKeepsMembership": true,
+    "outsider": {
+      "page": "Can't open this work",
+      "state": 404
+    }
+  },
+  "M03": {
+    "ghostShownToB": true,
+    "ghostCountedAsStick": false,
+    "clearedOnCancel": true,
+    "clearedOnPlace": true,
+    "clearedOnLeave": true,
+    "sticksAfter": 1
+  },
+  "timing": {
+    "offsets": {
+      "A": {
+        "offsetMs": -0.058837890625,
+        "halfRttMs": 0.9083251953125
+      },
+      "B": {
+        "offsetMs": 0.09228515625,
+        "halfRttMs": 0.8572998046875
+      },
+      "C": {
+        "offsetMs": 0.0634765625,
+        "halfRttMs": 0.796142578125
+      }
+    },
+    "serverMatchedByCommandId": true,
+    "serverAccepts": 26,
+    "attempted": 26,
+    "accepted": 26,
+    "samples": [
+      {
+        "n": 1,
+        "sender": "A",
+        "stickId": "9689e354-3f7a-47f8-a171-e95c4fc78615",
+        "accepted": true,
+        "commandId": "c22aac22-5c6e-428e-b806-628fa99d741b",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "9689e354-3f7a-47f8-a171-e95c4fc78615",
+          "at": 1791735098361.8
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735098310.0588,
+        "B_received": 1791735098316.4077,
+        "B_rendered": 1791735098323.5078,
+        "C_received": 1791735098316.3364,
+        "C_rendered": 1791735098333.8364,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735098315
+      },
+      {
+        "n": 2,
+        "sender": "B",
+        "stickId": "51422d45-13ba-4f15-9043-3703b7cb26c0",
+        "accepted": true,
+        "commandId": "01a297a9-8603-4fda-bfbc-f55d25bcb1ee",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "51422d45-13ba-4f15-9043-3703b7cb26c0",
+          "at": 1791735099363.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735099311.1077,
+        "A_received": 1791735099319.0588,
+        "A_rendered": 1791735099320.959,
+        "C_received": 1791735099319.0366,
+        "C_rendered": 1791735099320.0366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735099317
+      },
+      {
+        "n": 3,
+        "sender": "A",
+        "stickId": "cd0166b7-3e6b-4f73-9521-c829adeb0de5",
+        "accepted": true,
+        "commandId": "3dc4dfe8-e70b-4ba3-9a54-2280b6b85d88",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "cd0166b7-3e6b-4f73-9521-c829adeb0de5",
+          "at": 1791735100055.8
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735100013.659,
+        "B_received": 1791735100021.0078,
+        "B_rendered": 1791735100080.8076,
+        "C_received": 1791735100226.9365,
+        "C_rendered": 1791735100228.0366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735100020
+      },
+      {
+        "n": 4,
+        "sender": "B",
+        "stickId": "30b667b0-7b89-48c2-bc3a-52ae60256827",
+        "accepted": true,
+        "commandId": "f136ebe0-b188-475f-afaa-668dc1e58434",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "30b667b0-7b89-48c2-bc3a-52ae60256827",
+          "at": 1791735100512.3
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735100501.7078,
+        "A_received": 1791735100512.359,
+        "A_rendered": 1791735100590.2588,
+        "C_received": 1791735100657.1365,
+        "C_rendered": 1791735100658.0366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735100512
+      },
+      {
+        "n": 5,
+        "sender": "A",
+        "stickId": "fa6b6bc4-d0f8-460c-91a3-ce4625453dbb",
+        "accepted": true,
+        "commandId": "d5bd0b4e-c742-44e1-af5f-a78c6648a52f",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "fa6b6bc4-d0f8-460c-91a3-ce4625453dbb",
+          "at": 1791735101075.4001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735101067.859,
+        "B_received": 1791735101072.6077,
+        "B_rendered": 1791735101140.2078,
+        "C_received": 1791735101258.7366,
+        "C_rendered": 1791735101273.2366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735101072
+      },
+      {
+        "n": 6,
+        "sender": "B",
+        "stickId": "a5844120-4d93-4f04-91b8-9a00cfb51ccc",
+        "accepted": true,
+        "commandId": "3cf67f70-d95a-4f67-8595-a3594d17c1b2",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "a5844120-4d93-4f04-91b8-9a00cfb51ccc",
+          "at": 1791735101652.9
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735101611.0078,
+        "A_received": 1791735101616.659,
+        "A_rendered": 1791735101668.959,
+        "C_received": 1791735101790.9365,
+        "C_rendered": 1791735101806.7366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735101615
+      },
+      {
+        "n": 7,
+        "sender": "A",
+        "stickId": "14a7ab3c-0401-448e-b3f1-fb41c2d0e87b",
+        "accepted": true,
+        "commandId": "2e739720-7ea6-4f12-a4a1-43043d2d35a0",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "14a7ab3c-0401-448e-b3f1-fb41c2d0e87b",
+          "at": 1791735102119.3
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735102074.659,
+        "B_received": 1791735102078.3076,
+        "B_rendered": 1791735102096.8076,
+        "C_received": 1791735102282.8364,
+        "C_rendered": 1791735102283.9365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735102077
+      },
+      {
+        "n": 8,
+        "sender": "B",
+        "stickId": "3ef4ffd2-f89c-428e-8511-84c1b1f0b25c",
+        "accepted": true,
+        "commandId": "cb88adbe-507a-4b1f-bb0b-e41e1b544387",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "3ef4ffd2-f89c-428e-8511-84c1b1f0b25c",
+          "at": 1791735102643.8
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735102638.1077,
+        "A_received": 1791735102643.5588,
+        "A_rendered": 1791735102649.0588,
+        "C_received": 1791735102855.8364,
+        "C_rendered": 1791735102857.0366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735102643
+      },
+      {
+        "n": 9,
+        "sender": "A",
+        "stickId": "ed029b11-771e-467d-9b47-97fcb81672f1",
+        "accepted": true,
+        "commandId": "3c54accc-c3e5-4f72-b1c1-8eaa94200498",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "ed029b11-771e-467d-9b47-97fcb81672f1",
+          "at": 1791735103270.3
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735103225.459,
+        "B_received": 1791735103235.8076,
+        "B_rendered": 1791735103293.4077,
+        "C_received": 1791735103436.6365,
+        "C_rendered": 1791735103439.9365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735103234
+      },
+      {
+        "n": 10,
+        "sender": "B",
+        "stickId": "a22a1af3-1589-495e-b69d-204125a1a25e",
+        "accepted": true,
+        "commandId": "684588a7-4900-4486-9369-d353f86f318c",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "a22a1af3-1589-495e-b69d-204125a1a25e",
+          "at": 1791735103924.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735103916.7078,
+        "A_received": 1791735103920.159,
+        "A_rendered": 1791735103924.0588,
+        "C_received": 1791735104116.1365,
+        "C_rendered": 1791735104123.8364,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735103919
+      },
+      {
+        "n": 11,
+        "sender": "A",
+        "stickId": "58ff6a02-db72-43ef-b2d8-5b79e4eac35e",
+        "accepted": true,
+        "commandId": "1e57d186-7a99-4978-bfbb-f1433f164afe",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "58ff6a02-db72-43ef-b2d8-5b79e4eac35e",
+          "at": 1791735104562.9001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735104531.0588,
+        "B_received": 1791735104535.5078,
+        "B_rendered": 1791735104537.3076,
+        "C_received": 1791735104731.7366,
+        "C_rendered": 1791735104740.5366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735104535
+      },
+      {
+        "n": 12,
+        "sender": "B",
+        "stickId": "f1e4ecad-59c6-4e92-8368-e7cdbbc725d0",
+        "accepted": true,
+        "commandId": "99998e32-55ae-41b4-a684-c30c454e3d31",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "f1e4ecad-59c6-4e92-8368-e7cdbbc725d0",
+          "at": 1791735105050.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735105036.1077,
+        "A_received": 1791735105050.359,
+        "A_rendered": 1791735105058.7588,
+        "C_received": 1791735105254.0366,
+        "C_rendered": 1791735105257.0366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735105049
+      },
+      {
+        "n": 13,
+        "sender": "A",
+        "stickId": "4af2c69e-a979-45a8-86d1-8baee5a8fd4f",
+        "accepted": true,
+        "commandId": "104c283f-24f2-443c-a19c-93fed65b2c4c",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "4af2c69e-a979-45a8-86d1-8baee5a8fd4f",
+          "at": 1791735105690.8
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735105649.0588,
+        "B_received": 1791735105656.5078,
+        "B_rendered": 1791735105710.3076,
+        "C_received": 1791735105858.7366,
+        "C_rendered": 1791735105859.7366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735105655
+      },
+      {
+        "n": 14,
+        "sender": "B",
+        "stickId": "4ae62fb2-6d1e-4a3b-8a73-b991cffab1ae",
+        "accepted": true,
+        "commandId": "c80873a2-e0a6-43da-9ee0-10dc0cdbfc99",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "4ae62fb2-6d1e-4a3b-8a73-b991cffab1ae",
+          "at": 1791735106160.8
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735106148.1077,
+        "A_received": 1791735106160.859,
+        "A_rendered": 1791735106169.0588,
+        "C_received": 1791735106339.1365,
+        "C_rendered": 1791735106340.4365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735106160
+      },
+      {
+        "n": 15,
+        "sender": "A",
+        "stickId": "88c132af-554a-40f9-89f6-390b61732e5f",
+        "accepted": true,
+        "commandId": "0fecaca4-baf5-43c6-8b08-e78a3d1ba5d3",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "88c132af-554a-40f9-89f6-390b61732e5f",
+          "at": 1791735106705.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735106663.159,
+        "B_received": 1791735106675.3076,
+        "B_rendered": 1791735106727.0078,
+        "C_received": 1791735106876.7366,
+        "C_rendered": 1791735106877.9365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735106675
+      },
+      {
+        "n": 16,
+        "sender": "B",
+        "stickId": "84c927f6-fae0-4bf6-b5bc-42fa6c5240a3",
+        "accepted": true,
+        "commandId": "621a531e-0d6d-4b01-ae8c-877729a6fce2",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "84c927f6-fae0-4bf6-b5bc-42fa6c5240a3",
+          "at": 1791735107227.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735107222.5078,
+        "A_received": 1791735107226.959,
+        "A_rendered": 1791735107233.359,
+        "C_received": 1791735107429.2366,
+        "C_rendered": 1791735107439.6365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735107226
+      },
+      {
+        "n": 17,
+        "sender": "A",
+        "stickId": "aa6bd699-9a08-4912-a1e2-2e904e178611",
+        "accepted": true,
+        "commandId": "b82a7edf-fbf6-41c8-828f-5ce37ab68f5c",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "aa6bd699-9a08-4912-a1e2-2e904e178611",
+          "at": 1791735107846.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735107794.0588,
+        "B_received": 1791735107797.8076,
+        "B_rendered": 1791735107801.6077,
+        "C_received": 1791735108020.1365,
+        "C_rendered": 1791735108023.3364,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735107797
+      },
+      {
+        "n": 18,
+        "sender": "B",
+        "stickId": "e520e57c-d33b-4110-8e2e-205e33f831f3",
+        "accepted": true,
+        "commandId": "617c334d-b62e-4cc8-81b7-88a2e1d3f1d0",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "e520e57c-d33b-4110-8e2e-205e33f831f3",
+          "at": 1791735108505.3
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735108462.8076,
+        "A_received": 1791735108470.2588,
+        "A_rendered": 1791735108528.7588,
+        "C_received": 1791735108655.5366,
+        "C_rendered": 1791735108657.0366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735108468
+      },
+      {
+        "n": 19,
+        "sender": "A",
+        "stickId": "ac9c80b4-2184-4da4-8a9a-f1d1b56accb5",
+        "accepted": true,
+        "commandId": "547ab038-6c10-4905-b29b-0555fc779612",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "ac9c80b4-2184-4da4-8a9a-f1d1b56accb5",
+          "at": 1791735109065.4001
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735109018.0588,
+        "B_received": 1791735109029.5078,
+        "B_rendered": 1791735109038.6077,
+        "C_received": 1791735109246.5366,
+        "C_rendered": 1791735109256.5366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735109028
+      },
+      {
+        "n": 20,
+        "sender": "B",
+        "stickId": "9ae94344-cce5-47c4-a29b-36c577cbabc8",
+        "accepted": true,
+        "commandId": "77965771-ff57-492c-9e01-05c078d59f12",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "9ae94344-cce5-47c4-a29b-36c577cbabc8",
+          "at": 1791735109645.7
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735109600.7078,
+        "A_received": 1791735109604.5588,
+        "A_rendered": 1791735109621.159,
+        "C_received": 1791735109807.4365,
+        "C_rendered": 1791735109823.1365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735109604
+      },
+      {
+        "n": 21,
+        "sender": "A",
+        "stickId": "bff839a1-e4d2-4e7e-a0f5-8f8921aae9a7",
+        "accepted": true,
+        "commandId": "88ad85f1-4c7b-4aca-9dd3-d50055b9e693",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "bff839a1-e4d2-4e7e-a0f5-8f8921aae9a7",
+          "at": 1791735110176
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735110124.359,
+        "B_received": 1791735110128.4077,
+        "B_rendered": 1791735110144.5078,
+        "C_received": 1791735110365.5366,
+        "C_rendered": 1791735110372.8364,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735110128
+      },
+      {
+        "n": 22,
+        "sender": "B",
+        "stickId": "bc6d532b-d8c3-475d-9c58-9e8fc7c737a2",
+        "accepted": true,
+        "commandId": "0993be51-2a65-4735-a782-303e754ac0f9",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "bc6d532b-d8c3-475d-9c58-9e8fc7c737a2",
+          "at": 1791735110827.5
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735110821.5078,
+        "A_received": 1791735110827.359,
+        "A_rendered": 1791735110831.359,
+        "C_received": 1791735111077.6365,
+        "C_rendered": 1791735111089.5366,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735110826
+      },
+      {
+        "n": 23,
+        "sender": "A",
+        "stickId": "aa7136e4-4bda-41fc-a186-799868b37b67",
+        "accepted": true,
+        "commandId": "e69ca9c4-384e-4aef-84f7-6e25b8bd20d5",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "aa7136e4-4bda-41fc-a186-799868b37b67",
+          "at": 1791735112147
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735112094.159,
+        "B_received": 1791735112547.3076,
+        "B_rendered": 1791735112556.1077,
+        "C_received": 1791735112100.5366,
+        "C_rendered": 1791735112143.8364,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735112100
+      },
+      {
+        "n": 24,
+        "sender": "B",
+        "stickId": "bba4fa15-e403-4d63-b910-d2a68afcc0de",
+        "accepted": true,
+        "commandId": "a840f5e7-aaa4-4809-b547-ca3031fa8a77",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "bba4fa15-e403-4d63-b910-d2a68afcc0de",
+          "at": 1791735113033.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735112993.6077,
+        "A_received": 1791735112998.459,
+        "A_rendered": 1791735113080.7588,
+        "C_received": 1791735112998.3364,
+        "C_rendered": 1791735113011.9365,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735112998
+      },
+      {
+        "n": 25,
+        "sender": "C",
+        "stickId": "9a3ca425-1747-4f88-a864-94daabfe6d02",
+        "accepted": true,
+        "commandId": "2faca50c-570a-4302-9984-476376f47978",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "9a3ca425-1747-4f88-a864-94daabfe6d02",
+          "at": 1791735114204.7
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.11 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735114168.9365,
+        "A_received": 1791735114176.159,
+        "A_rendered": 1791735114189.859,
+        "B_received": 1791735114176.0078,
+        "B_rendered": 1791735114217.5078,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735114175
+      },
+      {
+        "n": 26,
+        "sender": "C",
+        "stickId": "2acddaf2-b2a5-4c4f-bf24-aa2d03ec0bb0",
+        "accepted": true,
+        "commandId": "0674a9ce-3de1-4ab9-94c9-92579c0f5077",
+        "serverResult": {
+          "outcome": "accepted",
+          "stickId": "2acddaf2-b2a5-4c4f-bf24-aa2d03ec0bb0",
+          "at": 1791735115147.2
+        },
+        "draftBeforeClick": "✓ Ready to place · drops 0.10 u onto the surface below",
+        "unplacedStageText": null,
+        "clickAt": 1791735115137.8364,
+        "A_received": 1791735115147.2588,
+        "A_rendered": 1791735115180.359,
+        "B_received": 1791735115147.3076,
+        "B_rendered": 1791735115230.0078,
+        "serverLog": {
+          "outcome": "accepted"
+        },
+        "serverOutcome": "accepted",
+        "serverAcceptedAt": 1791735115146
+      }
+    ]
+  },
+  "M02": {
+    "sticksEverywhere": 26,
+    "duplicates": 0,
+    "settled": true,
+    "settleWaitMs": 92542,
+    "maxPositionDeltaFromServer": 0,
+    "statusAtEnd": "Structure saved\nStable structure height 7.0 u\nbest 7.0 u\nConnected",
+    "senders": {
+      "A": 12,
+      "B": 12,
+      "C": 2
+    }
+  },
+  "M05": {
+    "partnerCommitAtGhost": "accepted",
+    "path": "refused by the client's advisory check before sending",
+    "placeDisabled": true,
+    "feedback": "✕ Intersecting; adjust position\n\nIntersecting; adjust position",
+    "draftKept": true,
+    "phantomSticks": 0,
+    "convergedWithServer": true
+  },
+  "hosts": [
+    "127.0.0.1:18990"
+  ]
+}

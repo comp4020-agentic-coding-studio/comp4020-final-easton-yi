@@ -1,0 +1,2 @@
+{"config":2,"grid":"0.05 u","insideVisibleTop":406533,"unsupportedInside":84,"unsupportedAreaU2":0.21,"holeRadiusRange":[6.69,15.47],"deepestHoleFromVisibleEdgeU":11.31,"outsideVisibleTop":122527,"supportedOutside":0,"hitsNotAtTopHeight":16}
+{"config":3,"grid":"0.05 u","insideVisibleTop":406533,"unsupportedInside":0,"unsupportedAreaU2":0,"holeRadiusRange":null,"deepestHoleFromVisibleEdgeU":0,"outsideVisibleTop":122527,"supportedOutside":0,"hitsNotAtTopHeight":0}

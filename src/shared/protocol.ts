@@ -4,6 +4,13 @@
 import { z } from "zod";
 import { LIMITS } from "./config.ts";
 
+/**
+ * Author of a stick or version whose account was permanently deleted. A fixed
+ * value, so nothing maps it back to the account (ADR-0007).
+ */
+export const DELETED_USER_ID = "deleted-user";
+export const DELETED_USER_NAME = "Deleted user";
+
 export const ErrorCodes = [
   "BAD_REQUEST",
   "UNAUTHENTICATED",
@@ -187,6 +194,8 @@ export interface RemoteDraft {
   pose: { p: [number, number, number]; q: [number, number, number, number] };
 }
 
+export type AccessEndedReason = "LOGGED_OUT" | "SESSION_EXPIRED" | "REMOVED" | "LEFT" | "ARCHIVED" | "TRASHED" | "ACCOUNT_DELETED" | "WORK_DELETED";
+
 export interface CommandResultMsg {
   type: "command.result";
   commandId: string;
@@ -224,6 +233,6 @@ export type ServerMessage =
   | { type: "lease.changed"; lease: { leaseId: string } | null; reason?: string }
   | { type: "room.mode"; mode: RoomMode; actorName?: string; pushOwnerAway?: boolean; message?: string }
   | { type: "room.reset"; reason: "restore" | "recovery" }
-  | { type: "access.ended"; reason: "LOGGED_OUT" | "SESSION_EXPIRED" | "REMOVED" | "LEFT" | "ARCHIVED" | "TRASHED"; message?: string }
+  | { type: "access.ended"; reason: AccessEndedReason; message?: string }
   | { type: "error"; code: ErrorCode; message: string }
   | { type: "heartbeat.ok"; serverTime: number };

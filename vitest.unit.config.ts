@@ -6,6 +6,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
+    // build-dependent suites run with `pnpm test:integration` (vitest.integration.config.ts)
+    exclude: ["tests/integration/**"],
     testTimeout: 60_000,
     hookTimeout: 60_000,
   },

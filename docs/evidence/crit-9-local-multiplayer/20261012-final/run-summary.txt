@@ -1,0 +1,9 @@
+egress-blocked
+typecheck exit=0
+test:unit exit=0
+test:integration exit=0 (includes pnpm build)
+production build (Dockerfile env): drop-sockets HTTP 404
+production build + ENABLE_TEST_HOOKS=1: drop-sockets HTTP 404
+contract spec exit=0
+crit9 browser exit=0
+reconnect method B exit=0

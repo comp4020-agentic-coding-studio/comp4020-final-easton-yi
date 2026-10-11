@@ -150,13 +150,104 @@ and then stop ([M-008](docs/measurements.md)). Only headless software
 rendering was available, so nothing is claimed about frame rates on real
 devices.
 
+## A third change: permanent account deletion
+
+On 2026-10-12 the author gave
+[`docs/ACCOUNT_DELETION.md`](docs/ACCOUNT_DELETION.md): permanent deletion of
+an account and everything it owns, while works it only helped build survive
+without its identity. The decision and the full deletion inventory are in
+[ADR-0007](docs/adr/0007-account-deletion.md); the brief gained AUTH-06 and
+AT-23. Reading the schema before writing code turned up three things the
+directive couldn't know:
+
+- A version's creator was `NOT NULL` with a foreign key to the account, so it
+  couldn't be cleared without a migration that rebuilds the table.
+- The trash guard trigger would have refused the metadata rewrite in a
+  collaborator's trashed work, which would have blocked every such deletion.
+- Exhibits freeze contributors' names, not their IDs, so finding the deleted
+  person's name needed each public stick's attribution index.
+
+The foreign keys became the check on the inventory: the account row is deleted
+last, so anything missed fails the transaction instead of being left behind.
+
+One defect was caught by the new tests rather than by review. When notifying a
+collaborator failed, the code had already cleared that window's work, so the
+heartbeat fallback had nothing to check and the window would have stayed open,
+dead, without being told. That window's work is now cleared only after the
+notice is sent. Two test mistakes were fixed as well: a placement that collided
+with an existing stick, and an HTTP command built from a work's state after
+that state had stopped answering.
+
+## Testing collaboration for Crit 9
+
+On 2026-10-12 the author gave
+[`docs/crit9-local-multiplayer-test-prompt.md`](docs/crit9-local-multiplayer-test-prompt.md):
+a bounded local test of multiplayer behaviour, with no product changes. The
+agent read ADR-0002, 0006 and 0007 and the configured limits first. It then
+built a protocol suite and a browser suite and ran them, with the existing
+collaboration, restart and lifecycle suites, four times in a disposable
+environment. That environment had no network beyond loopback and an emptied
+environment (the shell held a Fly token). Real-time sync, ordering, conflicts,
+reconnects, restarts, permissions and lifecycle behaved as documented.
+
+The runs also surfaced four open findings, none fixed:
+- the reconnect indicator sometimes didn't appear within 5 s of a forced
+  socket close;
+- piles sometimes take over a minute to settle, delaying versions;
+- a partner's commit can take a held stick's spot without saying so;
+- a few automated clicks were dropped by a momentarily disabled button.
+
+The run also caught the harness's own mistakes, chiefly matching server log
+lines to placements by order. A clock step on WSL2 would have made those
+server-side timings look meaningful. Report:
+[`docs/evidence/crit-9-local-multiplayer-report.md`](docs/evidence/crit-9-local-multiplayer-report.md).
+
+## Following up the Crit 9 findings
+
+On 2026-10-12 the author asked for a bounded diagnosis of three items from
+that report, with minimal fixes only for confirmed defects.
+
+**Slow settling** was traced to the table, not the save logic or the test.
+Rebuilding the browser's construction in-process with the server's own room
+code showed a single stick vibrating at about 1 u/s, sunk 0.28 u into the
+centre cylinder. A positional map then showed Rapier's cylinder only supports
+a resting box inside the square |x|+|z| ≤ r; anywhere in its diagonal edge
+zones a stick sinks and never settles, so versions wait forever. Physics
+config v3 replaces the cylinder with eight flat square boxes, for new works
+only. Its effect and cost are recorded in M-009b and the report.
+
+**The reconnect-indicator failure** was the test's doing. Under Playwright's
+offline emulation, a page-initiated close sometimes stalls with no close
+event; it was reproduced once in five attempts while frames were streaming.
+The app's indicator followed every real close within about 2 ms. The M08
+check now closes before going offline, and asserts that a socket was really
+closed.
+
+**The build-dependent protocol suite** moved to a new `pnpm test:integration`.
+
+Harness mistakes were found on the way and fixed:
+- a mutation observer attached before `<html>` existed;
+- a helper socket without heartbeats;
+- a regression test whose rotation never reached the zones it was meant to
+  test.
+
+Report: [follow-up section](docs/evidence/crit-9-local-multiplayer-report.md#follow-up--2026-10-12-diagnosis-and-fixes).
+
+A final verification pass the same day found a defect in that fix. The eight
+squares leave notches between their corners, so 73 u² of the visible
+tabletop near the edge had no collider. v3 was amended before any deployment:
+its rim ring now starts at 14.5. A coverage scan then found no unsupported
+point inside the rendered table and no supported point outside it. The same
+pass scoped the test-only socket hook to the caller's own session, and
+confirmed it doesn't exist in production builds.
+
 ## What's verified and what isn't
 
 The app is deployed to `comp4020-final-easton-yi.fly.dev` and serves its
-pages and assets; that deployment predates the deletion and graphics
-changes. Locally: 88 unit and restart tests pass, 49 HTTP and WebSocket
-checks (`pnpm check`) pass against a production build, and 18 browser tests
-pass against a local server with test hooks.
+pages and assets; that deployment predates the deletion, graphics and
+account-deletion changes. Locally: 99 unit and restart tests pass, 53 HTTP and
+WebSocket checks (`pnpm check`) pass against a production build, and 20 browser
+tests pass against a local server with test hooks.
 Not yet done: re-running the latency and capacity measurements on the Fly
 machine, and any session with people who didn't build it. The protocol for
 those sessions is in [`acceptance-report.md`](docs/acceptance-report.md). The

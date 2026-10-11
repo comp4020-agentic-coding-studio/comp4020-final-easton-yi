@@ -1,0 +1,150 @@
+[
+  {
+    "group": "A→B and A→C",
+    "attempted": 12,
+    "accepted": 11,
+    "rejected": 1,
+    "expectedReceiverObservations": 22,
+    "rendered": 22,
+    "missingWithin5s": 0,
+    "clickToRender": {
+      "n": 22,
+      "median": 71,
+      "p95": 227.10009765625,
+      "max": 233.800048828125,
+      "over1000": 0
+    },
+    "serverToRender": {
+      "n": 22,
+      "median": 6,
+      "p95": 223.300048828125,
+      "max": 227.60009765625,
+      "over1000": 0
+    },
+    "clickToReceipt": {
+      "n": 22,
+      "median": 7.300048828125,
+      "p95": 217.10009765625,
+      "max": 221.300048828125,
+      "over1000": 0
+    },
+    "receiptToRender": {
+      "n": 22,
+      "median": 8.60009765625,
+      "p95": 67,
+      "max": 79.699951171875,
+      "over1000": 0
+    }
+  },
+  {
+    "group": "B→A and B→C",
+    "attempted": 12,
+    "accepted": 12,
+    "rejected": 0,
+    "expectedReceiverObservations": 24,
+    "rendered": 24,
+    "missingWithin5s": 0,
+    "clickToRender": {
+      "n": 24,
+      "median": 66.2001953125,
+      "p95": 231.599853515625,
+      "max": 249.199951171875,
+      "over1000": 0
+    },
+    "serverToRender": {
+      "n": 24,
+      "median": -214.300048828125,
+      "p95": 211.39990234375,
+      "max": 225.800048828125,
+      "over1000": 0
+    },
+    "clickToReceipt": {
+      "n": 24,
+      "median": 9.199951171875,
+      "p95": 229.800048828125,
+      "max": 239.699951171875,
+      "over1000": 0
+    },
+    "receiptToRender": {
+      "n": 24,
+      "median": 8.699951171875,
+      "p95": 67,
+      "max": 83.900146484375,
+      "over1000": 0
+    }
+  },
+  {
+    "group": "C→A and C→B (extra)",
+    "attempted": 2,
+    "accepted": 2,
+    "rejected": 0,
+    "expectedReceiverObservations": 4,
+    "rendered": 4,
+    "missingWithin5s": 0,
+    "clickToRender": {
+      "n": 4,
+      "median": 23.300048828125,
+      "p95": 51.300048828125,
+      "max": 51.300048828125,
+      "over1000": 0
+    },
+    "serverToRender": {
+      "n": 4,
+      "median": -444.800048828125,
+      "p95": -409.699951171875,
+      "max": -409.699951171875,
+      "over1000": 0
+    },
+    "clickToReceipt": {
+      "n": 4,
+      "median": 6.10009765625,
+      "p95": 12.7001953125,
+      "max": 12.7001953125,
+      "over1000": 0
+    },
+    "receiptToRender": {
+      "n": 4,
+      "median": 10.599853515625,
+      "p95": 45.300048828125,
+      "max": 45.300048828125,
+      "over1000": 0
+    }
+  },
+  {
+    "group": "all",
+    "attempted": 26,
+    "accepted": 25,
+    "rejected": 1,
+    "expectedReceiverObservations": 50,
+    "rendered": 50,
+    "missingWithin5s": 0,
+    "clickToRender": {
+      "n": 50,
+      "median": 56.5,
+      "p95": 231.599853515625,
+      "max": 249.199951171875,
+      "over1000": 0
+    },
+    "serverToRender": {
+      "n": 50,
+      "median": 4.39990234375,
+      "p95": 223.300048828125,
+      "max": 227.60009765625,
+      "over1000": 0
+    },
+    "clickToReceipt": {
+      "n": 50,
+      "median": 9.199951171875,
+      "p95": 222.5,
+      "max": 239.699951171875,
+      "over1000": 0
+    },
+    "receiptToRender": {
+      "n": 50,
+      "median": 8.699951171875,
+      "p95": 67,
+      "max": 83.900146484375,
+      "over1000": 0
+    }
+  }
+]

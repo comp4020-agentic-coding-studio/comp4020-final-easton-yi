@@ -1,0 +1,13 @@
+
+Running 8 tests using 1 worker
+
+  ✓  1 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:181:3 › Crit 9 local multiplayer (browser) › M01 separate identities join one work through the invitation; an outsider can't open it (3.3s)
+  ✓  2 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:218:3 › Crit 9 local multiplayer (browser) › M03 a partner's held stick shows as a ghost, apart from real sticks, and clears on cancel, place and leave (1.9s)
+  ✓  3 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:244:3 › Crit 9 local multiplayer (browser) › M02 + timing: placements from A, B and C appear in every other open session without reload (19.3s)
+  ✓  4 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:315:3 › Crit 9 local multiplayer (browser) › M05 a placement that conflicts with a partner's just-committed stick is refused with a reason and the draft is kept (973ms)
+  ✓  5 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates (18.4s)
+  ✓  6 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:446:3 › Crit 9 local multiplayer (browser) › M09 a hidden tab draws nothing, then shows the latest state on return without interaction (simulated visibility) (3.5s)
+  ✓  7 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:472:3 › Crit 9 local multiplayer (browser) › M10 a window on another work sees nothing from this one (3.3s)
+  ✓  8 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:493:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload (5.6s)
+
+  8 passed (57.9s)

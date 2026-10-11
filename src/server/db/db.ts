@@ -5,7 +5,7 @@ import Database from "better-sqlite3";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 
-const MIGRATIONS: string[] = [
+export const MIGRATIONS: string[] = [
   `
   CREATE TABLE users (
     id TEXT PRIMARY KEY,
@@ -186,6 +186,59 @@ const MIGRATIONS: string[] = [
     WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
     BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
   `,
+  // 2026-10-12 permanent account deletion (ADR-0007). A deleted account's
+  // versions in other people's works keep their content but lose the creator,
+  // so snapshots.creator_id becomes nullable (a rebuild: SQLite can't drop NOT
+  // NULL). The work_states update guard now refuses only real checkpoints
+  // (every one sets a new saved_at), so de-identifying stick authors in a
+  // trashed collaboration's metadata is allowed. account_deletions holds one
+  // digest per deleted account so a restored backup can be re-deleted.
+  `
+  CREATE TABLE snapshots_v3 (
+    id TEXT PRIMARY KEY,
+    work_id TEXT NOT NULL REFERENCES works(id),
+    creator_id TEXT REFERENCES users(id),
+    kind TEXT NOT NULL CHECK (kind IN ('named', 'restore-protect', 'push-protect')),
+    title TEXT NOT NULL,
+    blob BLOB NOT NULL,
+    meta TEXT NOT NULL,
+    tick INTEGER NOT NULL,
+    engine TEXT NOT NULL,
+    config_version INTEGER NOT NULL,
+    schema_version INTEGER NOT NULL,
+    checksum TEXT NOT NULL,
+    height REAL NOT NULL,
+    stick_count INTEGER NOT NULL,
+    source_epoch INTEGER NOT NULL,
+    source_seq INTEGER NOT NULL,
+    stable INTEGER NOT NULL,
+    geometry TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  );
+  INSERT INTO snapshots_v3 SELECT id, work_id, creator_id, kind, title, blob, meta, tick, engine, config_version, schema_version,
+    checksum, height, stick_count, source_epoch, source_seq, stable, geometry, created_at FROM snapshots;
+  DROP TABLE snapshots;
+  ALTER TABLE snapshots_v3 RENAME TO snapshots;
+  CREATE INDEX snapshots_work ON snapshots(work_id, kind, created_at);
+  CREATE INDEX snapshots_creator ON snapshots(creator_id);
+  CREATE TRIGGER snapshots_guard_insert BEFORE INSERT ON snapshots
+    WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
+    BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
+  DROP TRIGGER work_states_guard_update;
+  CREATE TRIGGER work_states_guard_update BEFORE UPDATE ON work_states
+    WHEN (SELECT trashed_at FROM works WHERE id = NEW.work_id) IS NOT NULL
+      AND (NEW.blob IS NOT OLD.blob OR NEW.tick IS NOT OLD.tick OR NEW.saved_at IS NOT OLD.saved_at
+        OR NEW.moving IS NOT OLD.moving OR NEW.engine IS NOT OLD.engine OR NEW.config_version IS NOT OLD.config_version
+        OR NEW.schema_version IS NOT OLD.schema_version OR NEW.work_id IS NOT OLD.work_id)
+    BEGIN SELECT RAISE(ABORT, 'WORK_TRASHED'); END;
+  CREATE INDEX invites_issuer ON invites(issuer_id);
+  CREATE INDEX invite_acceptances_user ON invite_acceptances(user_id);
+  CREATE INDEX receipts_actor ON command_receipts(actor_id);
+  CREATE TABLE account_deletions (
+    subject_digest TEXT PRIMARY KEY,
+    deleted_at INTEGER NOT NULL
+  );
+  `,
 ];
 
 export type DB = Database.Database;
@@ -195,14 +248,26 @@ export function openDatabase(dataDir: string): DB {
   const db = new Database(join(dataDir, "stillwood.db"));
   db.pragma("journal_mode = WAL");
   db.pragma("synchronous = FULL");
-  db.pragma("foreign_keys = ON");
   db.pragma("busy_timeout = 2000");
+  migrate(db);
+  db.pragma("foreign_keys = ON");
+  return db;
+}
+
+/**
+ * SQLite's table-rebuild procedure: foreign keys are off while migrating (the
+ * pragma can't change inside a transaction), and each migration commits only
+ * if foreign_key_check still finds nothing.
+ */
+export function migrate(db: DB, upTo = MIGRATIONS.length): void {
+  db.pragma("foreign_keys = OFF");
   const version = db.pragma("user_version", { simple: true }) as number;
-  for (let i = version; i < MIGRATIONS.length; i++) {
+  for (let i = version; i < upTo; i++) {
     db.transaction(() => {
       db.exec(MIGRATIONS[i]!);
+      const broken = db.pragma("foreign_key_check") as unknown[];
+      if (broken.length) throw new Error(`migration ${i + 1} left ${broken.length} foreign-key violations`);
       db.pragma(`user_version = ${i + 1}`);
     })();
   }
-  return db;
 }

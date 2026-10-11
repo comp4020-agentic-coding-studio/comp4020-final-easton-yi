@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api.ts";
 import { navigate, signInLink } from "../router.ts";
-import { useSession } from "../session.ts";
+import { accountDeleted, showNotice, useSession } from "../session.ts";
 import { Viewport, webglAvailable, PERSON_COLORS, PERSON_SHAPES } from "../scene/viewport.ts";
 import { knock, unlockAudio, isMuted, setMuted } from "../scene/audio.ts";
 import { RoomConnection, type ConnStatus } from "./connection.ts";
@@ -359,6 +359,18 @@ export function Workshop({ workId }: { workId: string }) {
         toast("The owner restored a saved version. Everyone now sees the restored structure.");
         return;
       case "access.ended": {
+        if (m.reason === "ACCOUNT_DELETED") {
+          conn.current?.close();
+          accountDeleted();
+          return;
+        }
+        if (m.reason === "WORK_DELETED") {
+          // No reason beyond the fact: the owner's account isn't anyone else's business.
+          conn.current?.close();
+          showNotice(m.message ?? "This work was deleted, so it's no longer available.", "/works/");
+          navigate("/works/", true);
+          return;
+        }
         const why =
           m.message ??
           { LOGGED_OUT: "You signed out.", SESSION_EXPIRED: "Your session ended. Sign in again to keep building.", REMOVED: "The owner removed you from this work.", LEFT: "You left this work.", ARCHIVED: "This work was archived.", TRASHED: "This work was moved to the trash." }[m.reason];

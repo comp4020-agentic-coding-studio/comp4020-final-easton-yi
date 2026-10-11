@@ -1,0 +1,359 @@
+{
+  "M01": {
+    "distinctUserIds": 4,
+    "roles": [
+      "owner",
+      "editor",
+      "editor"
+    ],
+    "sameStream": true,
+    "outsider": {
+      "state": 404,
+      "info": 404,
+      "join": "NOT_FOUND",
+      "command": 404,
+      "bodyLeaksTitleOrOwner": false
+    }
+  },
+  "M03": {
+    "ghostCarries": [
+      "userId",
+      "displayName",
+      "leaseId",
+      "color"
+    ],
+    "joinerSnapshotDrafts": 1,
+    "joinerSnapshotSticks": 0,
+    "sticksAddedAfterPlace": 1,
+    "presenceAfterLeave": [
+      "c9 9-run4 B",
+      "c9 9-run4 C"
+    ],
+    "ghostClearedAfterDisconnectMs": 1,
+    "ghostClearedAfterSilentSocketMs": 15243
+  },
+  "M04": {
+    "rounds": [
+      {
+        "order": "AB",
+        "a": [
+          "accepted",
+          1
+        ],
+        "b": [
+          "accepted",
+          2
+        ]
+      },
+      {
+        "order": "BA",
+        "a": [
+          "accepted",
+          4
+        ],
+        "b": [
+          "accepted",
+          3
+        ]
+      },
+      {
+        "order": "AB",
+        "a": [
+          "accepted",
+          5
+        ],
+        "b": [
+          "accepted",
+          6
+        ]
+      },
+      {
+        "order": "BA",
+        "a": [
+          "accepted",
+          8
+        ],
+        "b": [
+          "accepted",
+          7
+        ]
+      },
+      {
+        "order": "AB",
+        "a": [
+          "accepted",
+          9
+        ],
+        "b": [
+          "accepted",
+          10
+        ]
+      },
+      {
+        "order": "BA",
+        "a": [
+          "accepted",
+          12
+        ],
+        "b": [
+          "accepted",
+          11
+        ]
+      }
+    ],
+    "accepted": 12,
+    "rejected": 0,
+    "persisted": 12,
+    "perWindowAdded": [
+      12,
+      12,
+      12
+    ],
+    "identicalOrderAcrossWindows": true
+  },
+  "M05": {
+    "identicalPoseRounds": [
+      {
+        "order": "AB",
+        "winner": "A",
+        "loserCode": "COLLISION",
+        "loserQuery": [
+          "rejected",
+          "COLLISION"
+        ]
+      },
+      {
+        "order": "BA",
+        "winner": "B",
+        "loserCode": "COLLISION",
+        "loserQuery": [
+          "rejected",
+          "COLLISION"
+        ]
+      },
+      {
+        "order": "AB",
+        "winner": "A",
+        "loserCode": "COLLISION",
+        "loserQuery": [
+          "rejected",
+          "COLLISION"
+        ]
+      },
+      {
+        "order": "BA",
+        "winner": "B",
+        "loserCode": "COLLISION",
+        "loserQuery": [
+          "rejected",
+          "COLLISION"
+        ]
+      }
+    ],
+    "persistedAfterRounds": 4,
+    "perWindowAdded": [
+      6,
+      6,
+      6
+    ],
+    "restoreFirst": {
+      "placement": "STALE_WORLD",
+      "retryAfterSnapshot": "accepted"
+    },
+    "placementFirst": {
+      "placement": "accepted",
+      "removedByRestore": true,
+      "keptInRecoveryPoint": true
+    }
+  },
+  "M06": {
+    "roundRobin": {
+      "accepted": 12,
+      "seqContiguous": true,
+      "perWindowAdded": [
+        17,
+        17,
+        17
+      ]
+    },
+    "burst": {
+      "sent": 7,
+      "accepted": 4,
+      "rateLimited": 3,
+      "retryAfterMs": [
+        492,
+        492,
+        491
+      ],
+      "recoveredAfterWait": "accepted"
+    },
+    "roomLimit": {
+      "liveRooms": 3,
+      "fourthJoin": "ROOM_LIMIT",
+      "liveAfterTwoRoomsEmptied": true
+    }
+  },
+  "M07": [
+    {
+      "order": "commit then join",
+      "racedStickIn": "snapshot",
+      "snapshotSticks": 4,
+      "laterEvents": 3,
+      "overlap": 0,
+      "matchesServer": true,
+      "snapshotPresence": [
+        "c9 9-run4 A",
+        "c9 9-run4 B",
+        "c9 9-run4 C"
+      ],
+      "snapshotGhosts": [
+        "c9 9-run4 A"
+      ]
+    },
+    {
+      "order": "join then commit",
+      "racedStickIn": "sticks.added",
+      "snapshotSticks": 10,
+      "laterEvents": 4,
+      "overlap": 0,
+      "matchesServer": true,
+      "snapshotPresence": [
+        "c9 9-run4 A",
+        "c9 9-run4 B",
+        "c9 9-run4 C"
+      ],
+      "snapshotGhosts": [
+        "c9 9-run4 A"
+      ]
+    }
+  ],
+  "M08-protocol": {
+    "cycles": 3,
+    "sticksAfter": 3,
+    "ghostsAfter": 0,
+    "bPresenceEntries": 1,
+    "bConnections": 1,
+    "members": 3,
+    "serverConns": 2,
+    "serverSockets": 2
+  },
+  "M10": {
+    "messagesOnXFromW": 0,
+    "outsiderCommandOnX": 404,
+    "removedEditorCommandOnX": 404,
+    "memberCrossStream": "STALE_VIEW",
+    "roomsIntactAfter": true
+  },
+  "M11": {
+    "editorHttp": {
+      "rename": 403,
+      "archive": 403,
+      "trash": 403,
+      "invite": 403,
+      "removeMember": 403,
+      "publish": 403,
+      "deleteVersion": 403,
+      "purge": 403
+    },
+    "editorSocket": {
+      "restore": "NOT_OWNER",
+      "push": "NOT_OWNER"
+    },
+    "editorCanSaveVersion": true,
+    "leave": [
+      "LEFT",
+      "NOT_FOUND"
+    ],
+    "removal": [
+      "REMOVED",
+      "NOT_FOUND"
+    ],
+    "revokedInvite": "INVITE_INVALID",
+    "fourthAcceptance": "INVITE_FULL",
+    "membersAfter": 4,
+    "outsiderBody": {
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "That work doesn't exist or you don't have access to it."
+      }
+    }
+  },
+  "M12": {
+    "gracefulRestart": {
+      "before": {
+        "sticks": [
+          "1f83dd09-94a1-4b87-ab02-b3d65a1c99f3",
+          "45948127-1f84-46cc-85b8-f17f3cf153a3",
+          "becd4ff0-bd6e-498a-a151-c22f3e883e83"
+        ],
+        "members": 3,
+        "versions": [
+          "27ac0289-a89b-40d5-b9f3-c141a11c82d2",
+          "b348bd4c-8669-46c2-8d7c-198282fed23f"
+        ]
+      },
+      "after": {
+        "sticks": [
+          "1f83dd09-94a1-4b87-ab02-b3d65a1c99f3",
+          "45948127-1f84-46cc-85b8-f17f3cf153a3",
+          "becd4ff0-bd6e-498a-a151-c22f3e883e83"
+        ],
+        "members": 3,
+        "versions": [
+          "27ac0289-a89b-40d5-b9f3-c141a11c82d2",
+          "b348bd4c-8669-46c2-8d7c-198282fed23f"
+        ]
+      },
+      "sessionCookieStillValid": true,
+      "ghostsAfter": 0
+    },
+    "sigkill": {
+      "acknowledged": 3,
+      "survived": 3
+    }
+  },
+  "L01": {
+    "bWindow": "archived",
+    "bPlacement": "ARCHIVED",
+    "exhibitWhileArchived": 200,
+    "afterUnarchive": {
+      "live": true,
+      "sameSticks": true
+    }
+  },
+  "L02": {
+    "trash": {
+      "bNotified": "TRASHED",
+      "staleCommand": 410,
+      "exhibit": "WITHDRAWN",
+      "inEditorsUnavailableList": true
+    },
+    "restore": {
+      "sameSticks": true,
+      "invitationStillRevoked": true
+    },
+    "purge": {
+      "lateCommand": 404,
+      "lateJoin": "NOT_FOUND",
+      "rowsAfterStop": {
+        "works": 0,
+        "work_states": 0,
+        "previous_work_states": 0,
+        "snapshots": 0,
+        "exhibits": 0,
+        "command_receipts": 0
+      }
+    }
+  },
+  "L03": {
+    "exhibitSticks": 1,
+    "liveSticksAfterMoreBuilding": 3,
+    "exhibitUnchanged": true,
+    "anonymousSocket": "upgrade refused 401",
+    "signedInNonMemberJoin": "NOT_FOUND",
+    "afterWithdrawal": {
+      "exhibit": "WITHDRAWN",
+      "thumbnail": 404
+    }
+  }
+}

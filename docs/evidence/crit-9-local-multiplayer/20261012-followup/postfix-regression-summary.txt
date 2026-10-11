@@ -1,0 +1,19 @@
+egress-blocked
+== spec (production build)
+ Test Files  7 passed (7)
+      Tests  53 passed (53)
+== crit9 browser (production build)
+  ✓  1 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:181:3 › Crit 9 local multiplayer (browser) › M01 separate identities join one work through the invitation; an outsider can't open it (3.1s)
+  ✓  2 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:218:3 › Crit 9 local multiplayer (browser) › M03 a partner's held stick shows as a ghost, apart from real sticks, and clears on cancel, place and leave (2.0s)
+  ✓  3 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:244:3 › Crit 9 local multiplayer (browser) › M02 + timing: placements from A, B and C appear in every other open session without reload (24.0s)
+  ✓  4 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:315:3 › Crit 9 local multiplayer (browser) › M05 a placement that conflicts with a partner's just-committed stick is refused with a reason and the draft is kept (984ms)
+  ✓  5 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates (12.5s)
+  ✓  6 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:438:3 › Crit 9 local multiplayer (browser) › M09 a hidden tab draws nothing, then shows the latest state on return without interaction (simulated visibility) (2.9s)
+  ✓  7 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:464:3 › Crit 9 local multiplayer (browser) › M10 a window on another work sees nothing from this one (2.1s)
+  ✓  8 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:485:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload (4.3s)
+  8 passed (53.4s)
+== full browser suite (test hooks)
+  ✘  12 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates (14.4s)
+    Error: expect(locator).toBeVisible() failed
+  1 failed
+  25 passed (5.8m)

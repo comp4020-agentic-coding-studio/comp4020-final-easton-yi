@@ -1,0 +1,33 @@
+
+ RUN  v5.0.1 /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi
+
+ ✓ tests/crit9-multiplayer.test.ts (13 tests) 75247ms
+   ✓ M01 identities, invitation and outsiders (1)
+     ✓ distinct identities, roles from the invitation, outsider refused by ID 935ms
+   ✓ M03 ghosts and presence (1)
+     ✓ ghosts carry the right person, never become sticks, and clear on end, leave, disconnect and heartbeat timeout 16235ms
+   ✓ M04/M05 simultaneous placements (2)
+     ✓ M04 disjoint placements sent back to back are both accepted, once each, in one agreed order 7557ms
+     ✓ M05 identical placements: exactly one wins, the loser gets COLLISION, nothing phantom; restore vs placement uses epochs 8102ms
+   ✓ M06 rapid alternation and limits (1)
+     ✓ round-robin within limits converges; a burst past the per-account limit is refused with a retry time; a fourth room is offline 7711ms
+   ✓ M07 join during editing (1)
+     ✓ snapshot plus later events add up to the same set, with the join on either side of a commit 9178ms
+   ✓ M08 reconnect bookkeeping (1)
+     ✓ repeated reconnects leave one membership, one presence entry and no stale sockets or ghosts 2739ms
+   ✓ M10 work isolation (1)
+     ✓ nothing from W reaches a window on X; mismatched work IDs are refused and both rooms carry on 1847ms
+   ✓ M11 permissions and invitations (1)
+     ✓ editors can't do owner things by HTTP or socket; leave and removal end live access; revoked and full invitations admit nobody 3610ms
+   ✓ M12 save and restart (1)
+     ✓ a graceful restart keeps sticks, members, versions and sessions, drops ghosts; acknowledged placements survive SIGKILL 6344ms
+   ✓ L01-L03 lifecycle with a collaborator connected (3)
+     ✓ L01 archive turns B's window read-only and keeps public exhibits; unarchive returns the same sticks 2479ms
+     ✓ L02 trash with B connected, restore; then trash and purge, after which nothing writes the work back 4807ms
+     ✓ L03 an exhibit stays frozen while building continues, grants no editing, and withdrawal stops public reads 3698ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  03:22:39
+   Duration  75.38s (tests 100%)
+

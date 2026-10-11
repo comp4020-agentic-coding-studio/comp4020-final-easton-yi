@@ -1,0 +1,22 @@
+=== browser-crit9
+exit=1
+    Error: expect(locator).toBeVisible() failed
+  1 failed
+  7 passed (1.8m)
+=== protocol-crit9
+exit=0
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m13 passed[39m[22m[90m (13)[39m
+=== existing-contract
+exit=0
+[2m Test Files [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[32m45 passed[39m[22m[90m (45)[39m
+=== existing-restart
+exit=0
+     [33m[2m✓[22m[39m a failed transaction removes nothing; a successful one removes every work-scoped row and nothing else, surviving restart[33m 2961[2mms[22m[39m
+     [33m[2m✓[22m[39m a failed notification doesn't undo the deletion: access is refused from the database and the heartbeat tells the window[33m 5683[2mms[22m[39m
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m17 passed[39m[22m[90m (17)[39m
+=== existing-browser
+exit=0
+  4 passed (38.7s)

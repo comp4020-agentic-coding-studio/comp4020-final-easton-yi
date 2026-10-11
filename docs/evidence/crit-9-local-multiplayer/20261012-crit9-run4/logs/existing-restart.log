@@ -1,0 +1,40 @@
+
+ RUN  v5.0.1 /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi
+
+ ✓ tests/restart.test.ts (6 tests) 10735ms
+   ✓ crash around the placement transaction (3)
+     ✓ killed before commit: nothing acknowledged, nothing saved 1131ms
+     ✓ killed after commit, before the reply: the same ID finds the saved result; no duplicate 1097ms
+     ✓ killed after the reply: the acknowledged stick is there after restart 1114ms
+   ✓ motion across restarts (2)
+     ✓ SIGKILL mid-fall resumes from the latest checkpoint, not from the start 5515ms
+     ✓ graceful SIGTERM saves and exits cleanly; the next process has the same work 1302ms
+   ✓ storage failure (1)
+     ✓ a failed write produces no success and no body left simulating 573ms
+ ✓ tests/lifecycle-restart.test.ts (4 tests) 11051ms
+   ✓ trash across restarts (2)
+     ✓ stays in the owner's trash after SIGKILL; restore afterwards keeps the scene 2979ms
+     ✓ a failed write leaves the work active, live and public; the retry succeeds 2280ms
+   ✓ permanent deletion in the datastore (1)
+     ✓ a failed transaction removes nothing; a successful one removes every work-scoped row and nothing else, surviving restart 2961ms
+   ✓ exhibit limit on existing data (1)
+     ✓ over the limit from older data: republish keeps its ID and geometry and is allowed; creating another is refused 2829ms
+ ✓ tests/account-deletion.test.ts (7 tests) 22234ms
+   ✓ complete deletion in the datastore (1)
+     ✓ leaves no row or nested field naming the account, keeps the partner's works whole, and survives restart 5282ms
+   ✓ atomicity (1)
+     ✓ a failure inside the transaction deletes nothing and leaves live rooms running; the retry succeeds 2730ms
+   ✓ interleavings at the point between the password check and the commit (2)
+     ✓ placement, work creation, sign-in and invitation acceptance that commit first are all swept up; a recovery or credential change stops the deletion 2622ms
+     ✓ after the commit, late commands, joins and a moving room's autosave can't write the work back 2352ms
+   ✓ after the commit (2)
+     ✓ a failed notification doesn't undo the deletion: access is refused from the database and the heartbeat tells the window 5683ms
+     ✓ a crash right after the commit keeps the deletion; restart restores nothing 1486ms
+   ✓ restoring a backup (1)
+     ✓ re-deletes, at startup, an account deleted after the backup was taken 2076ms
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  03:24:53
+   Duration  22.36s (tests 100%)
+

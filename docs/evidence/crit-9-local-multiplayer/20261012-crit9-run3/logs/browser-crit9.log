@@ -1,0 +1,52 @@
+
+Running 8 tests using 1 worker
+
+  ✓  1 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:181:3 › Crit 9 local multiplayer (browser) › M01 separate identities join one work through the invitation; an outsider can't open it (3.1s)
+  ✓  2 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:218:3 › Crit 9 local multiplayer (browser) › M03 a partner's held stick shows as a ghost, apart from real sticks, and clears on cancel, place and leave (2.1s)
+  ✓  3 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:244:3 › Crit 9 local multiplayer (browser) › M02 + timing: placements from A, B and C appear in every other open session without reload (1.8m)
+  ✓  4 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:315:3 › Crit 9 local multiplayer (browser) › M05 a placement that conflicts with a partner's just-committed stick is refused with a reason and the draft is kept (976ms)
+  ✘  5 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates (5.1s)
+  -  6 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:428:3 › Crit 9 local multiplayer (browser) › M09 a hidden tab draws nothing, then shows the latest state on return without interaction (simulated visibility)
+  -  7 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:454:3 › Crit 9 local multiplayer (browser) › M10 a window on another work sees nothing from this one
+  -  8 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:475:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload
+
+
+  1) [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.conn-reconnecting')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('.conn-reconnecting') with timeout 5000ms
+      - waiting for locator('.conn-reconnecting')
+
+
+      380 |       return open.length;
+      381 |     });
+    > 382 |     await expect(B.locator(".conn-reconnecting")).toBeVisible({ timeout: 5000 });
+          |                                                   ^
+      383 |     await B.waitForTimeout(2500); // reconnect attempts fail while offline
+      384 |     await expect(B.locator(".conn-reconnecting")).toBeVisible();
+      385 |     const banner = await B.locator(".stage-banner").innerText();
+        at /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi/tests/e2e/crit9-multiplayer.spec.ts:382:51
+
+    Error Context: ../../../../tmp/stillwood-crit9-20261012-crit9-run3-SYZG/pw-crit9/crit9-multiplayer-Crit-9-l-2c187-ve-state-without-duplicates-desktop/error-context.md
+
+    Error Context: ../../../../tmp/stillwood-crit9-20261012-crit9-run3-SYZG/pw-crit9/crit9-multiplayer-Crit-9-l-2c187-ve-state-without-duplicates-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/stillwood-crit9-20261012-crit9-run3-SYZG/pw-crit9/crit9-multiplayer-Crit-9-l-2c187-ve-state-without-duplicates-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/stillwood-crit9-20261012-crit9-run3-SYZG/pw-crit9/crit9-multiplayer-Crit-9-l-2c187-ve-state-without-duplicates-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates 
+  3 did not run
+  4 passed (2.0m)

@@ -2,7 +2,7 @@ import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 import { onLinkClick, usePath } from "./router.ts";
-import { loadSession, logout, useSession } from "./session.ts";
+import { clearNotice, loadSession, logout, useSession } from "./session.ts";
 import { Gallery } from "./pages/Gallery.tsx";
 import { Works } from "./pages/Works.tsx";
 import { Favorites } from "./pages/Favorites.tsx";
@@ -57,10 +57,13 @@ function NotFound() {
 
 function App() {
   const path = usePath();
-  const { loaded } = useSession();
+  const { loaded, notice } = useSession();
   useEffect(() => {
     void loadSession();
   }, []);
+  useEffect(() => {
+    if (notice && notice.path !== path) clearNotice();
+  }, [path]);
   let page: React.ReactNode;
   let compact = false;
   let m: RegExpMatchArray | null;
@@ -87,6 +90,9 @@ function App() {
       </a>
       <Header compact={compact} />
       <div id="main" tabIndex={-1} className="app-body">
+        <div className="notice-region" role="status" aria-live="polite">
+          {notice && notice.path === path && <p className="notice">{notice.text}</p>}
+        </div>
         {page}
       </div>
     </div>

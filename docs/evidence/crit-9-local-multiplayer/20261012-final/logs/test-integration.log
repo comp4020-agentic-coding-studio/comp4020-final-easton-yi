@@ -1,0 +1,57 @@
+$ pnpm build && vitest run -c vitest.integration.config.ts
+$ vite build && node scripts/build-server.ts
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 42 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/client/index.html                   1.13 kB │ gzip:   0.64 kB
+dist/client/assets/index-CmedCLax.css   12.43 kB │ gzip:   3.53 kB
+dist/client/assets/index-CCUOtKIq.js   914.65 kB │ gzip: 248.32 kB │ map: 4,386.64 kB
+
+✓ built in 224ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 900 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+  dist/server/core/coordinator.js      124.5kb
+  dist/server/main.js                   41.8kb
+  dist/server/core/coordinator.js.map  251.7kb
+  dist/server/main.js.map              103.2kb
+
+⚡ Done in 11ms
+
+ RUN  v5.0.1 /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi
+
+ ✓ tests/integration/crit9-multiplayer.test.ts (13 tests) 75634ms
+   ✓ M01 identities, invitation and outsiders (1)
+     ✓ distinct identities, roles from the invitation, outsider refused by ID 933ms
+   ✓ M03 ghosts and presence (1)
+     ✓ ghosts carry the right person, never become sticks, and clear on end, leave, disconnect and heartbeat timeout 16230ms
+   ✓ M04/M05 simultaneous placements (2)
+     ✓ M04 disjoint placements sent back to back are both accepted, once each, in one agreed order 7606ms
+     ✓ M05 identical placements: exactly one wins, the loser gets COLLISION, nothing phantom; restore vs placement uses epochs 8120ms
+   ✓ M06 rapid alternation and limits (1)
+     ✓ round-robin within limits converges; a burst past the per-account limit is refused with a retry time; a fourth room is offline 7790ms
+   ✓ M07 join during editing (1)
+     ✓ snapshot plus later events add up to the same set, with the join on either side of a commit 9160ms
+   ✓ M08 reconnect bookkeeping (1)
+     ✓ repeated reconnects leave one membership, one presence entry and no stale sockets or ghosts 2761ms
+   ✓ M10 work isolation (1)
+     ✓ nothing from W reaches a window on X; mismatched work IDs are refused and both rooms carry on 1857ms
+   ✓ M11 permissions and invitations (1)
+     ✓ editors can't do owner things by HTTP or socket; leave and removal end live access; revoked and full invitations admit nobody 3626ms
+   ✓ M12 save and restart (1)
+     ✓ a graceful restart keeps sticks, members, versions and sessions, drops ghosts; acknowledged placements survive SIGKILL 6530ms
+   ✓ L01-L03 lifecycle with a collaborator connected (3)
+     ✓ L01 archive turns B's window read-only and keeps public exhibits; unarchive returns the same sticks 2498ms
+     ✓ L02 trash with B connected, restore; then trash and purge, after which nothing writes the work back 4834ms
+     ✓ L03 an exhibit stays frozen while building continues, grants no editing, and withdrawal stops public reads 3685ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  09:27:24
+   Duration  75.75s (tests 100%)
+

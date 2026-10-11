@@ -1,0 +1,30 @@
+== embedded stick, yaw -45°, at (-9.27,-9.26): recovers alone and under an aligned load (v2)
+{"startY":0.5,"load":0,"finalY":0.499,"settledAfterS":1.5,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.5,"load":5,"finalY":0.499,"settledAfterS":1.85,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.45,"load":0,"finalY":0.499,"settledAfterS":1.5,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.45,"load":5,"finalY":0.499,"settledAfterS":1.97,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.4,"load":0,"finalY":0.499,"settledAfterS":1.5,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.4,"load":5,"finalY":0.499,"settledAfterS":2.03,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.3,"load":0,"finalY":0.499,"settledAfterS":1.5,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.3,"load":5,"finalY":0.499,"settledAfterS":2.22,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.22,"load":0,"finalY":0.499,"settledAfterS":1.5,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+{"startY":0.22,"load":5,"finalY":0.499,"settledAfterS":2.35,"maxBaseSpeedAfter10s":0,"cylinderContactPoints":5}
+== the stuck pose and depth/roll variants (v2)
+{"label":"stuck rotation (rolled ~90°)","startY":0.5,"settledS":1.6,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"stuck rotation (rolled ~90°)","startY":0.45,"settledS":1.53,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"stuck rotation (rolled ~90°)","startY":0.4,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"stuck rotation (rolled ~90°)","startY":0.35,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"stuck rotation (rolled ~90°)","startY":0.3,"settledS":1.52,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"stuck rotation (rolled ~90°)","startY":0.22,"settledS":1.52,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"same axis, no roll","startY":0.5,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"same axis, no roll","startY":0.4,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"same axis, no roll","startY":0.3,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"same axis, no roll","startY":0.22,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":5}
+{"label":"rolled at (0,0)","startY":0.22,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":4}
+{"label":"rolled at (5,-3)","startY":0.22,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":4}
+{"label":"rolled at (-3,8)","startY":0.22,"settledS":1.5,"speed":0,"finalY":0.499,"cylinderPoints":4}
+== lowest point reached and settle step, v2 vs v3
+v2 y0=0.5  45/13:never(minY 0.21)  45/14:never(minY 0.21)  45/15:never(minY 0.21)  33.75/14:never(minY 0.21)  33.75/15:never(minY 0.21)  22.5/15:never(minY 0.21)  135/14:never(minY 0.21)  225/13:never(minY 0.21)  315/15:never(minY 0.21)
+v2 y0=0.505  45/13:never(minY 0.21)  45/14:518(minY 0.21)  45/15:never(minY 0.21)  33.75/14:never(minY 0.21)  33.75/15:never(minY 0.21)  22.5/15:never(minY 0.21)  135/14:90(minY 0.50)  225/13:never(minY 0.21)  315/15:never(minY 0.21)
+v3 y0=0.5  45/13:89(minY 0.50)  45/14:89(minY 0.50)  45/15:89(minY 0.50)  33.75/14:89(minY 0.50)  33.75/15:89(minY 0.50)  22.5/15:89(minY 0.50)  135/14:89(minY 0.50)  225/13:89(minY 0.50)  315/15:89(minY 0.50)
+v3 y0=0.505  45/13:90(minY 0.50)  45/14:90(minY 0.50)  45/15:90(minY 0.50)  33.75/14:90(minY 0.50)  33.75/15:90(minY 0.50)  22.5/15:90(minY 0.50)  135/14:90(minY 0.50)  225/13:90(minY 0.50)  315/15:90(minY 0.50)

@@ -5,7 +5,7 @@ The resume record for implementing `docs/BRIEF.md` (product rules) under
 Nothing here is a grade claim. Human-judgement items stay **pending** until a
 real person has tried the app.
 
-- **Current stage:** P8 (graphics quality and idle rendering, user-directed change of 2026-10-06) passes locally, on top of P7 (owner-controlled work deletion) and P6 (audit and handoff). P8 is **not committed or deployed**. P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers). The P7 change is **not committed or deployed** yet.
+- **Current stage:** P9 (permanent account deletion, user-directed change of 2026-10-12, ADR-0007) passes locally and is **not committed or deployed**; it adds migration 3 (runbook). P8 (graphics quality and idle rendering, user-directed change of 2026-10-06) passes locally, on top of P7 (owner-controlled work deletion) and P6 (audit and handoff). P8 is **not committed or deployed**. P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers). The P7 change is **not committed or deployed** yet.
 - **Next action:** deploy to Fly, then re-run `pnpm check`, `scripts/measure/visibility.ts` and `scripts/measure/capacity.ts` against the live URL; run the human sessions in `acceptance-report.md`.
 
 ## Baseline (P0, 2026-10-05)
@@ -37,6 +37,7 @@ real person has tried the app.
 | P1 | Real Docker HTTP checks | **blocked** | As above; production-mode bundle passes `pnpm check` |
 | P1 | Camera changes are local | **pass (browser)** | `tests/e2e/together.spec.ts`: B's framing unchanged while A places |
 | P2 | Crit 8 slice on Fly | **blocked** | Not deployed: sandbox can't reach Fly. README draft, `/readme/` server-rendered, onboarding, empty/error states all done locally |
+| P9 | Permanent account deletion (AUTH-06, AT-23): migration 3; refusals; no residue of ID, handle or name in any table; owned works in every state gone; partner works de-identified, restorable, live rooms resynced; injected mid-transaction failure deletes nothing; latched placement, creation, sign-in, acceptance, recovery and credential change; late autosave; lost notification; SIGKILL after commit; backup re-deletion; dialog and three-context browser run | **pass (local)** | `spec/account-deletion.test.ts` (4), `tests/account-deletion.test.ts` (7), `tests/account-deletion-db.test.ts` (3), `tests/trash-guard.test.ts` (6), `tests/e2e/account-deletion.spec.ts` (2) |
 | P8 | High unchanged; tiers, Auto, idle/hidden rendering, lifecycle bounds | **pass (local)** | `tests/graphics-quality.test.ts` (23), `tests/e2e/graphics.spec.ts` (9), M-007/M-008 pixel comparisons, `scripts/measure/graphics-auto.ts` |
 | P3 | Concurrent release converges; overlap rejection keeps draft; no camera stealing; old epochs/leases fail; unknown never duplicates | **pass** | `spec/collaboration.test.ts`, `tests/e2e/together.spec.ts`, `spec/versions.test.ts` restore |
 | P3 | p95 ≤ 1000 ms visibility over ≥30 changes | **pass locally, Fly unverified** | M-003 (40 changes, p95 12.3 ms), M-006 (600 changes under load, p95 25.4 ms); loopback, not Fly |
@@ -50,6 +51,9 @@ real person has tried the app.
 | Command | Result |
 | --- | --- |
 | `pnpm typecheck` | clean |
+| `pnpm test:unit` (2026-10-12, after P9) | 99 passed in 9 files, including account deletion (7 restart/hook scenarios, 3 database) and trash guard (6) |
+| `APP_URL=http://localhost:8090 pnpm test` against a fresh `NODE_ENV=production COOKIE_SECURE=0` build (2026-10-12, after P9) | 53 passed (49 earlier + 4 account deletion); the new spec registers 4 accounts, within the 40-signup budget |
+| `APP_URL=http://localhost:8099 pnpm test:e2e` against a fresh `ENABLE_TEST_HOOKS=1` build (2026-10-12, after P9) | 20 passed (18 earlier + 2 account deletion) |
 | `pnpm test:unit` (2026-10-06, after P7b) | 65 passed (physics/rim 18, placement 19, placement maths 14, restart 6, lifecycle restart 4, trash guard 5) |
 | `APP_URL=http://localhost:8090 pnpm check` against a fresh `NODE_ENV=production COOKIE_SECURE=0 DATA_DIR=/tmp/… node dist/server/main.js` (2026-10-06, after P7b) | 49 passed (2 shipped invariants + 47 contract specs, 10 of them lifecycle). One run makes 28 registration attempts (25 accounts, 3 deliberately refused); the test client refuses to exceed 40, two thirds of the per-IP burst of 60, with no credit for refill |
 | `APP_URL=http://localhost:8090 pnpm test:e2e` (fresh instance, 2026-10-06) | 9 passed (lifecycle walkthrough re-run alone after P7b: passed) |
@@ -111,8 +115,9 @@ Status vocabulary from the directive: `not started`, `in progress`,
 | AUTH-01 | Handle/display name/password; one-use rotating recovery code | specs | `accounts.test.ts` | verified automatically | — |
 | AUTH-02 | Owner/editor/visitor; every mutation re-checked in the coordinator; owner-only trash/restore/delete (`requireOwner(…, {allowTrashed})`) | specs | `collaboration.test.ts` editors can't do owner things; `lifecycle.test.ts` authority | verified automatically | — |
 | AUTH-03 | Invites: hashed, 7 days, 3 users, fragment token, one active, idempotent accept; join page and Work panel state the owner's publication/deletion authority | specs + e2e | `collaboration.test.ts` invitations; `tests/e2e/lifecycle.spec.ts` | verified in browser | 7-day expiry not time-travel tested |
-| AUTH-04 | Per-stick author kept after removal; exhibit attribution frozen at publish | specs | `collaboration.test.ts`, `versions.test.ts` | verified automatically | — |
+| AUTH-04 | Per-stick author kept after removal; exhibit attribution frozen at publish; a deleted account's author, version creator and attribution become "Deleted user" | specs | `collaboration.test.ts`, `versions.test.ts`, `account-deletion.test.ts` | verified automatically | — |
 | AUTH-05 | Private works 404 for non-members; trashed works 410 `TRASHED` for members (no data), 404 for strangers; public projection allowlisted (no IDs, members, blobs); leave, also while trashed | specs | `versions.test.ts`, `lifecycle.test.ts` | verified automatically | — |
+| AUTH-06 | `POST /api/account/delete`: session target, password via the scrypt queue, revalidation in the coordinator, one transaction (ADR-0007 inventory), post-commit notifications, heartbeat fallback, startup re-deletion after restore | specs + restart + e2e | `spec/account-deletion.test.ts`, `tests/account-deletion*.test.ts`, `tests/e2e/account-deletion.spec.ts` | verified automatically | Not deployed; Fly steps in `runbook.md` |
 | SAVE-01 | Current state / immutable snapshots / exhibits referencing snapshots; favorites reference exhibits | specs | `versions.test.ts` | verified automatically | — |
 | SAVE-02 | Full snapshot + receipt in one transaction before success | restart + failed-write tests | `restart.test.ts` | verified automatically | — |
 | SAVE-03 | 500 ms checkpoints; "Placement saved; structure moving" vs "Structure saved"; SIGTERM saves | restart test | `restart.test.ts` | verified automatically | — |

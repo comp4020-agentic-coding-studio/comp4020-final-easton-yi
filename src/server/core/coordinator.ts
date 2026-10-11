@@ -5,7 +5,7 @@ import { parentPort, workerData } from "node:worker_threads";
 import { randomBytes, randomUUID } from "node:crypto";
 import { statfsSync } from "node:fs";
 import { openDatabase } from "../db/db.ts";
-import { createStore, readEnvelope, makeEnvelope, type Store, type WorkRow } from "./store.ts";
+import { checksum, createStore, readEnvelope, makeEnvelope, type EnvelopeMeta, type Store, type WorkRow } from "./store.ts";
 import { initPhysics, PhysicsWorld } from "./physics.ts";
 import { Room, wireBody, type Conn, type Sender } from "./room.ts";
 import {
@@ -18,6 +18,8 @@ import {
 } from "../../shared/config.ts";
 import {
   ClientMessageS,
+  DELETED_USER_ID,
+  DELETED_USER_NAME,
   PlacePayload,
   PushConfirmPayload,
   RestorePayload,
@@ -28,6 +30,7 @@ import {
   type ErrorCode,
   type RoomSnapshotMsg,
   type ServerMessage,
+  type AccessEndedReason,
 } from "../../shared/protocol.ts";
 import { AppError, isAppError } from "../errors.ts";
 import { log } from "../log.ts";
@@ -47,7 +50,7 @@ const rooms = new Map<string, Room>();
 let overloadEvents = 0; // from rooms already unloaded
 const conns = new Map<string, Conn>();
 const commandBuckets = new Map<string, TokenBucket>();
-const testState = { failWrites: false };
+const testState = { failWrites: false, accountDeleteFault: null as string | null, failNotify: false };
 
 const send: Sender = (connIds, msg) => {
   if (connIds.length) port.postMessage({ kind: "send", conns: connIds, data: JSON.stringify(msg) });
@@ -133,7 +136,7 @@ const requireExhibitSlot = (workId: string): void => {
   }
 };
 
-const displayName = (userId: string): string => store.q.userById.get(userId)?.display_name ?? "Former member";
+const displayName = (userId: string | null): string => (userId && store.q.userById.get(userId)?.display_name) || DELETED_USER_NAME;
 
 const refreshNames = (room: Room): void => {
   const members = store.q.members.all(room.workId);
@@ -290,7 +293,7 @@ const leaveRoom = (conn: Conn, reason: string): void => {
   conn.role = null;
 };
 
-const endAccess = (conn: Conn, reason: "LOGGED_OUT" | "SESSION_EXPIRED" | "REMOVED" | "LEFT" | "ARCHIVED"): void => {
+const endAccess = (conn: Conn, reason: AccessEndedReason): void => {
   const room = conn.workId ? rooms.get(conn.workId) : undefined;
   if (room) cancelPendingSave(room, conn.userId, "cancelled");
   leaveRoom(conn, reason);
@@ -916,8 +919,10 @@ function onMessage(connId: string, raw: unknown): void {
           endAccess(conn, "SESSION_EXPIRED");
           return;
         }
-        if (room && conn.workId && !membership(conn.workId, conn.userId)) {
-          endAccess(conn, "REMOVED");
+        // Also for read-only windows and rooms already closed: a lost
+        // notification is caught here from the database, not from memory.
+        if (conn.workId && !membership(conn.workId, conn.userId)) {
+          endAccess(conn, store.q.work.get(conn.workId) ? "REMOVED" : "WORK_DELETED");
           return;
         }
         if (room && conn.leaseId && msg.draft) {
@@ -1002,6 +1007,216 @@ const notifyRemoved = (workId: string, userId: string, reason: "REMOVED" | "LEFT
   for (const c of [...room.conns.values()]) if (c.userId === userId) endAccess(c, reason);
 };
 
+// ---------------------------------------------------------------- permanent account deletion (ADR-0007)
+
+/** Every row that belongs to one work. Runs inside the caller's transaction and never commits by itself. */
+function purgeWorkRows(workId: string): void {
+  const del = (sql: string): void => void store.db.prepare(sql).run(workId);
+  del("DELETE FROM invite_acceptances WHERE invite_id IN (SELECT id FROM invites WHERE work_id = ?)");
+  del("DELETE FROM invites WHERE work_id = ?");
+  del("DELETE FROM exhibits WHERE work_id = ?");
+  del("DELETE FROM snapshots WHERE work_id = ?");
+  del("DELETE FROM command_receipts WHERE work_id = ?");
+  del("DELETE FROM previous_work_states WHERE work_id = ?");
+  del("DELETE FROM work_states WHERE work_id = ?");
+  del("DELETE FROM memberships WHERE work_id = ?");
+  del("DELETE FROM works WHERE id = ?");
+}
+
+/** One-way: a restored backup can be matched and re-deleted without keeping the account's ID. */
+const deletionSubject = (userId: string): string => sha256(`stillwood.account-deletion\0${userId}`);
+
+const accountFault = (at: string): void => {
+  if (opts.testHooks && testState.accountDeleteFault === at) throw new Error(`injected account-deletion fault at ${at}`);
+};
+
+const replaceAuthor = (sticks: { authorId: string }[], userId: string): boolean => {
+  let changed = false;
+  for (const s of sticks) {
+    if (s.authorId !== userId) continue;
+    s.authorId = DELETED_USER_ID;
+    changed = true;
+  }
+  return changed;
+};
+
+/**
+ * Structured copies of the account's identity inside works it doesn't own:
+ * stick authors in world, recovery and version metadata, version creators, and
+ * exhibits' frozen attribution. Free text (titles, descriptions) is not touched.
+ */
+function deidentify(userId: string, name: string): { states: number; versions: number; exhibits: number } {
+  let states = 0;
+  let exhibits = 0;
+  for (const table of ["work_states", "previous_work_states"] as const) {
+    const rows = store.db.prepare<[string], { work_id: string; blob: Buffer; meta: string }>(`SELECT work_id, blob, meta FROM ${table} WHERE instr(meta, ?) > 0`).all(userId);
+    const update = store.db.prepare(`UPDATE ${table} SET meta = ?, checksum = ? WHERE work_id = ?`);
+    for (const r of rows) {
+      const meta = JSON.parse(r.meta) as EnvelopeMeta;
+      if (!replaceAuthor(meta.sticks, userId)) continue;
+      const text = JSON.stringify(meta);
+      update.run(text, checksum(r.blob, text), r.work_id);
+      states++;
+    }
+  }
+  const creators = store.db.prepare("UPDATE snapshots SET creator_id = NULL WHERE creator_id = ?").run(userId).changes;
+  const snaps = store.db
+    .prepare<[string, string], { id: string; blob: Buffer; meta: string; geometry: string }>("SELECT id, blob, meta, geometry FROM snapshots WHERE instr(meta, ?) > 0 OR instr(geometry, ?) > 0")
+    .all(userId, userId);
+  const exhibitsOf = store.db.prepare<[string], { id: string; attribution: string; geometry: string }>("SELECT id, attribution, geometry FROM exhibits WHERE snapshot_id = ?");
+  const setAttribution = store.db.prepare("UPDATE exhibits SET attribution = ? WHERE id = ?");
+  const setSnapshot = store.db.prepare("UPDATE snapshots SET meta = ?, geometry = ?, checksum = ? WHERE id = ?");
+  for (const s of snaps) {
+    const geometry = JSON.parse(s.geometry) as { sticks: { authorId: string }[] };
+    const mine = geometry.sticks.map((st) => st.authorId === userId);
+    for (const e of exhibitsOf.all(s.id)) {
+      // Attribution is names by index; each public stick keeps its index, in the snapshot's stick order.
+      const names = JSON.parse(e.attribution) as string[];
+      const pub = JSON.parse(e.geometry) as { sticks: { a: number }[] };
+      const before = JSON.stringify(names);
+      if (pub.sticks.length === mine.length) {
+        mine.forEach((m, i) => m && (names[pub.sticks[i]!.a] = DELETED_USER_NAME));
+      } else {
+        log({ event: "account.delete.attribution", level: "warn", exhibitId: e.id, outcome: "name-match" });
+        names.forEach((n, i) => n === name && (names[i] = DELETED_USER_NAME));
+      }
+      if (JSON.stringify(names) !== before) {
+        setAttribution.run(JSON.stringify(names), e.id);
+        exhibits++;
+      }
+    }
+    const meta = JSON.parse(s.meta) as EnvelopeMeta;
+    replaceAuthor(meta.sticks, userId);
+    replaceAuthor(geometry.sticks, userId);
+    const metaText = JSON.stringify(meta);
+    setSnapshot.run(metaText, JSON.stringify(geometry), checksum(s.blob, metaText), s.id);
+  }
+  return { states, versions: creators + snaps.length, exhibits };
+}
+
+/**
+ * The live-database side of deleting one account, inside the caller's
+ * transaction. Children go before parents and the users row goes last, so any
+ * reference this misses makes the final DELETE fail its foreign key and the
+ * whole transaction roll back.
+ */
+function deleteAccountRows(userId: string, name: string) {
+  const run = (sql: string, ...args: unknown[]): number => store.db.prepare(sql).run(...args).changes;
+  const owned = store.db.prepare<[string], { id: string }>("SELECT id FROM works WHERE owner_id = ?").all(userId).map((w) => w.id);
+  // Other people's favorites of these exhibits go too, instead of staying as id-only rows.
+  const favoritesOfOwned = run("DELETE FROM favorites WHERE exhibit_id IN (SELECT e.id FROM exhibits e JOIN works w ON w.id = e.work_id WHERE w.owner_id = ?)", userId);
+  for (const workId of owned) purgeWorkRows(workId);
+  accountFault("after-owned-works");
+  const memberships = run("DELETE FROM memberships WHERE user_id = ?", userId);
+  run("DELETE FROM invite_acceptances WHERE user_id = ?", userId);
+  run("DELETE FROM invite_acceptances WHERE invite_id IN (SELECT id FROM invites WHERE issuer_id = ?)", userId);
+  run("DELETE FROM invites WHERE issuer_id = ?", userId);
+  run("DELETE FROM favorites WHERE user_id = ?", userId);
+  run("DELETE FROM command_receipts WHERE actor_id = ?", userId);
+  run("DELETE FROM work_tombstones WHERE owner_id = ?", userId);
+  const deidentified = deidentify(userId, name);
+  accountFault("after-deidentify");
+  const sessions = run("DELETE FROM sessions WHERE user_id = ?", userId);
+  run("INSERT OR IGNORE INTO account_deletions (subject_digest, deleted_at) VALUES (?, ?)", deletionSubject(userId), now());
+  if (run("DELETE FROM users WHERE id = ?", userId) !== 1) throw new Error("account row vanished during deletion");
+  return { owned, favoritesOfOwned, memberships, sessions, deidentified };
+}
+
+/** One transaction with deleted content overwritten in the database file (secure_delete). */
+const commitAccountDeletion = (userId: string, name: string): ReturnType<typeof deleteAccountRows> => {
+  const previous = store.db.pragma("secure_delete", { simple: true }) as number;
+  store.db.pragma("secure_delete = ON");
+  try {
+    return store.tx(() => {
+      if (testState.failWrites) throw new Error("injected write failure");
+      return deleteAccountRows(userId, name);
+    });
+  } finally {
+    store.db.pragma(`secure_delete = ${previous}`);
+  }
+};
+
+/**
+ * After commit, bring memory in line with the database: end the account's
+ * windows, close rooms of works that no longer exist, and de-identify live
+ * rooms of other works exactly as their saved rows were. Never throws: the
+ * deletion has already happened, and a failed notification is caught later by
+ * the heartbeat check and by every authorization reading the database.
+ */
+function afterAccountDeleted(userId: string, owned: string[]): { sent: number; failed: number } {
+  let sent = 0;
+  let failed = 0;
+  const notify = (f: () => void): void => {
+    try {
+      if (opts.testHooks && testState.failNotify) throw new Error("injected notification failure");
+      f();
+      sent++;
+    } catch {
+      failed++;
+    }
+  };
+  for (const c of [...conns.values()]) {
+    if (c.userId !== userId) continue;
+    if (c.workId) rooms.get(c.workId)?.pendingSaves.delete(userId);
+    leaveRoom(c, "ACCOUNT_DELETED");
+    conns.delete(c.connId);
+    notify(() => {
+      send([c.connId], { type: "access.ended", reason: "ACCOUNT_DELETED" });
+      closeConn(c.connId, 4401, "account deleted");
+    });
+  }
+  for (const workId of owned) {
+    const room = rooms.get(workId);
+    if (room) {
+      room.pendingSaves.clear();
+      // Discarded without a save: the rows are gone and the foreign keys refuse a write.
+      rooms.delete(workId);
+      room.pw.free();
+      overloadEvents += room.overloads;
+    }
+    for (const c of conns.values()) {
+      if (c.workId !== workId) continue;
+      notify(() => {
+        send([c.connId], { type: "access.ended", reason: "WORK_DELETED", message: "This work was deleted, so it's no longer available." });
+        // Only once told: a window that missed it keeps its workId, so its next heartbeat finds the work gone.
+        c.workId = null;
+        c.role = null;
+        c.leaseId = null;
+      });
+    }
+  }
+  for (const room of rooms.values()) {
+    room.pendingSaves.delete(userId);
+    room.leases.delete(userId);
+    room.memberColors.delete(userId);
+    const named = room.authorNames.delete(userId);
+    const authored = [...room.pw.sticks.values()].filter((s) => s.authorId === userId);
+    for (const s of authored) s.authorId = DELETED_USER_ID;
+    if (!named && !authored.length) continue;
+    refreshNames(room);
+    for (const c of room.conns.values()) notify(() => send([c.connId], room.snapshotFor(c)));
+  }
+  commandBuckets.delete(userId);
+  return { sent, failed };
+}
+
+/**
+ * A restored backup can hold accounts deleted after it was taken. Startup
+ * deletes them again before the server accepts requests (docs/runbook.md).
+ */
+function reapplyAccountDeletions(): number {
+  const subjects = new Set(store.db.prepare<[], { subject_digest: string }>("SELECT subject_digest FROM account_deletions").all().map((r) => r.subject_digest));
+  if (!subjects.size) return 0;
+  let n = 0;
+  for (const u of store.db.prepare<[], { id: string; display_name: string }>("SELECT id, display_name FROM users").all()) {
+    if (!subjects.has(deletionSubject(u.id))) continue;
+    commitAccountDeletion(u.id, u.display_name);
+    n++;
+  }
+  if (n) log({ event: "account.delete.reapplied", outcome: "accepted", count: n });
+  return n;
+}
+
 const methods: Record<string, (...args: any[]) => unknown> = {
   health: () => {
     store.db.prepare("SELECT 1").get();
@@ -1056,6 +1271,53 @@ const methods: Record<string, (...args: any[]) => unknown> = {
   "user.rotateRecovery": (userId: string, newRecoveryDigest: string) => {
     durable(() => store.db.prepare("UPDATE users SET recovery_digest = ? WHERE id = ?").run(newRecoveryDigest, userId));
     log({ event: "account.recovery.rotate", actorId: userId, outcome: "accepted" });
+  },
+  // The hash is checked on the main thread; the fingerprint lets account.delete
+  // see whether it changed (a recovery) while that slow check ran.
+  "account.credential": (userId: string) => {
+    const u = store.q.userById.get(userId)!;
+    return { pwHash: u.pw_hash, fingerprint: sha256(u.pw_hash) };
+  },
+  "account.delete": (userId: string, sessionDigest: string, fingerprint: string) => {
+    const u = store.q.userById.get(userId);
+    const s = store.q.session.get(sessionDigest);
+    if (!u || !s || s.user_id !== userId || !sessionValid(sessionDigest)) {
+      throw new AppError("UNAUTHENTICATED", "You're signed out, so this request didn't delete anything. Sign in again to continue.");
+    }
+    if (sha256(u.pw_hash) !== fingerprint) {
+      throw new AppError("BAD_CREDENTIALS", "Your password changed while this request was being checked, so nothing was deleted.");
+    }
+    const t0 = performance.now();
+    let result: ReturnType<typeof deleteAccountRows>;
+    try {
+      result = commitAccountDeletion(userId, u.display_name);
+    } catch (e) {
+      // No account ID or name in this line: it would outlive the account in the platform's logs.
+      log({ event: "account.delete", level: "error", outcome: "failed", error: String(e) });
+      throw new AppError("SAVE_FAILED", "Your account couldn't be deleted because the database write failed. Nothing was deleted; try again later.");
+    }
+    crashPoint("account-delete-after-commit");
+    const notifications = afterAccountDeleted(userId, result.owned);
+    let walTruncated = false;
+    try {
+      walTruncated = (store.db.pragma("wal_checkpoint(TRUNCATE)") as { busy: number }[])[0]?.busy === 0;
+    } catch {
+      // the next checkpoint does it; reported below
+    }
+    log({
+      event: "account.delete",
+      outcome: "accepted",
+      worksDeleted: result.owned.length,
+      membershipsRemoved: result.memberships,
+      sessionsRevoked: result.sessions,
+      favoritesOfOwnedExhibits: result.favoritesOfOwned,
+      deidentified: result.deidentified,
+      notified: notifications.sent,
+      notifyFailed: notifications.failed,
+      walTruncated,
+      durationMs: r4(performance.now() - t0),
+    });
+    return { deleted: true, worksDeleted: result.owned.length, notifications, storage: { walTruncated } };
   },
 
   // --- works
@@ -1191,17 +1453,8 @@ const methods: Record<string, (...args: any[]) => unknown> = {
     };
     try {
       durable(() => {
-        const del = (sql: string): void => void store.db.prepare(sql).run(workId);
-        del("DELETE FROM invite_acceptances WHERE invite_id IN (SELECT id FROM invites WHERE work_id = ?)");
-        del("DELETE FROM invites WHERE work_id = ?");
         // favorites keep an id-only row and render as "no longer available"
-        del("DELETE FROM exhibits WHERE work_id = ?");
-        del("DELETE FROM snapshots WHERE work_id = ?");
-        del("DELETE FROM command_receipts WHERE work_id = ?");
-        del("DELETE FROM previous_work_states WHERE work_id = ?");
-        del("DELETE FROM work_states WHERE work_id = ?");
-        del("DELETE FROM memberships WHERE work_id = ?");
-        del("DELETE FROM works WHERE id = ?");
+        purgeWorkRows(workId);
         store.db.prepare("INSERT INTO work_tombstones (work_id, owner_id, deleted_at) VALUES (?, ?, ?)").run(workId, userId, now());
       });
     } catch (e) {
@@ -1487,6 +1740,11 @@ const methods: Record<string, (...args: any[]) => unknown> = {
 
   // --- WebSocket connections
   "conn.open": (connId: string, userId: string, sessionDigest: string) => {
+    // Authorised at the upgrade; the session or the whole account may have ended since.
+    if (!sessionValid(sessionDigest) || !store.q.userById.get(userId)) {
+      closeConn(connId, 4401, "session ended");
+      return;
+    }
     conns.set(connId, {
       connId,
       userId,
@@ -1525,6 +1783,14 @@ const methods: Record<string, (...args: any[]) => unknown> = {
     testState.failWrites = on;
     if (!on) for (const r of rooms.values()) if (r.paused === "SAVE_FAILED") r.paused = null;
   },
+  "test.accountFault": (at: string | null) => {
+    if (!opts.testHooks) throw new AppError("NOT_FOUND", "Not found");
+    testState.accountDeleteFault = at;
+  },
+  "test.failNotify": (on: boolean) => {
+    if (!opts.testHooks) throw new AppError("NOT_FOUND", "Not found");
+    testState.failNotify = on;
+  },
   "test.roomInfo": (workId: string) => {
     if (!opts.testHooks) throw new AppError("NOT_FOUND", "Not found");
     const room = rooms.get(workId);
@@ -1539,10 +1805,25 @@ const methods: Record<string, (...args: any[]) => unknown> = {
   },
 };
 
+/**
+ * Methods whose first argument is the session's account. The main thread read
+ * the session earlier; the account must still exist when the call runs, so a
+ * request that raced a deletion (or carries an old ID) can't act for it.
+ */
+const ACCOUNT_SCOPED = new Set([
+  "user.rotateRecovery", "session.create", "account.credential",
+  "works.list", "works.create", "works.get", "works.rename", "works.archive", "works.trash", "works.untrash", "works.purge",
+  "works.unavailable", "works.trashList", "works.state",
+  "invite.create", "invite.status", "invite.revoke", "invite.accept", "members.remove", "members.leave",
+  "command.submit", "command.query", "versions.list", "versions.delete", "versions.geometry",
+  "exhibits.publish", "exhibits.setWithdrawn", "exhibits.forWork", "favorites.list", "favorites.set", "favorites.has",
+]);
+
 port.on("message", (m: { kind: "rpc"; id: number; method: string; args: unknown[] }) => {
   const f = methods[m.method];
   try {
     if (!f) throw new AppError("NOT_FOUND", `no method ${m.method}`);
+    if (ACCOUNT_SCOPED.has(m.method) && !store.q.userById.get(m.args[0] as string)) throw new AppError("UNAUTHENTICATED", "Sign in to continue.");
     const result = f(...m.args);
     port.postMessage({ kind: "reply", id: m.id, ok: true, result });
   } catch (e) {
@@ -1556,5 +1837,6 @@ port.on("message", (m: { kind: "rpc"; id: number; method: string; args: unknown[
   }
 });
 
+reapplyAccountDeletions();
 log({ event: "coordinator.ready", dataDir: opts.dataDir, testHooks: opts.testHooks });
 port.postMessage({ kind: "ready" });

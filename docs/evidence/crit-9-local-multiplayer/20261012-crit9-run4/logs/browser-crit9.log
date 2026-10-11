@@ -1,0 +1,51 @@
+
+Running 8 tests using 1 worker
+
+  ✓  1 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:181:3 › Crit 9 local multiplayer (browser) › M01 separate identities join one work through the invitation; an outsider can't open it (3.2s)
+  ✓  2 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:218:3 › Crit 9 local multiplayer (browser) › M03 a partner's held stick shows as a ghost, apart from real sticks, and clears on cancel, place and leave (2.1s)
+  ✓  3 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:244:3 › Crit 9 local multiplayer (browser) › M02 + timing: placements from A, B and C appear in every other open session without reload (23.9s)
+  ✓  4 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:315:3 › Crit 9 local multiplayer (browser) › M05 a placement that conflicts with a partner's just-committed stick is refused with a reason and the draft is kept (1.1s)
+  ✓  5 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates (12.1s)
+  ✓  6 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:436:3 › Crit 9 local multiplayer (browser) › M09 a hidden tab draws nothing, then shows the latest state on return without interaction (simulated visibility) (2.8s)
+  ✓  7 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:462:3 › Crit 9 local multiplayer (browser) › M10 a window on another work sees nothing from this one (2.2s)
+  ✘  8 [desktop] › tests/e2e/crit9-multiplayer.spec.ts:483:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload (1.0m)
+
+
+  1) [desktop] › tests/e2e/crit9-multiplayer.spec.ts:483:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Exhibit…' }).first()
+    Expected: visible
+    Timeout: 60000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Exhibit…' }).first() with timeout 60000ms
+      - waiting for getByRole('button', { name: 'Exhibit…' }).first()
+
+
+      487 |     // "Save version" when settled, "Save when settled" while the pile still moves; both are the product's real flow
+      488 |     await A.getByRole("button", { name: /^Save (version|when settled)$/ }).click();
+    > 489 |     await expect(A.getByRole("button", { name: "Exhibit…" }).first()).toBeVisible({ timeout: 60_000 });
+          |                                                                       ^
+      490 |     await A.getByRole("button", { name: "Exhibit…" }).first().click();
+      491 |     await A.getByLabel("Title").fill(label("exhibit"));
+      492 |     await A.getByRole("button", { name: "Publish" }).click();
+        at /home/zyw2004/comp4020_agentic_coding/comp4020-final-easton-yi/tests/e2e/crit9-multiplayer.spec.ts:489:71
+
+    Error Context: ../../../../tmp/stillwood-crit9-20261012-crit9-run4-SaIF/pw-crit9/crit9-multiplayer-Crit-9-l-437f8-es-the-withdrawal-on-reload-desktop/error-context.md
+
+    Error Context: ../../../../tmp/stillwood-crit9-20261012-crit9-run4-SaIF/pw-crit9/crit9-multiplayer-Crit-9-l-437f8-es-the-withdrawal-on-reload-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../../tmp/stillwood-crit9-20261012-crit9-run4-SaIF/pw-crit9/crit9-multiplayer-Crit-9-l-437f8-es-the-withdrawal-on-reload-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../../tmp/stillwood-crit9-20261012-crit9-run4-SaIF/pw-crit9/crit9-multiplayer-Crit-9-l-437f8-es-the-withdrawal-on-reload-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › tests/e2e/crit9-multiplayer.spec.ts:483:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload 
+  7 passed (1.8m)

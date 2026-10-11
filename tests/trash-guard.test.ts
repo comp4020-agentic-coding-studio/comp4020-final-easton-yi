@@ -55,7 +55,7 @@ afterAll(() => {
 
 describe("trash guard triggers", () => {
   it("are installed by the migrations", () => {
-    expect(db.pragma("user_version", { simple: true })).toBe(2);
+    expect(db.pragma("user_version", { simple: true })).toBe(3);
     const names = db.prepare("SELECT name FROM sqlite_master WHERE type = 'trigger' ORDER BY name").all().map((r) => (r as { name: string }).name);
     expect(names).toEqual(["exhibits_guard_insert", "snapshots_guard_insert", "work_states_guard_insert", "work_states_guard_update"]);
   });
@@ -70,6 +70,17 @@ describe("trash guard triggers", () => {
     expect(db.prepare("SELECT tick, saved_at FROM work_states WHERE work_id = ?").get(W)).toEqual(before);
     expect(db.prepare("SELECT COUNT(*) AS n FROM snapshots WHERE work_id = ?").get(W)).toEqual({ n: 1 });
     expect(db.prepare("SELECT COUNT(*) AS n FROM exhibits WHERE work_id = ?").get(W)).toEqual({ n: 1 });
+  });
+
+  it("let only a metadata rewrite through (account de-identification), never a checkpoint", () => {
+    const row = () => db.prepare("SELECT meta, checksum, tick, saved_at FROM work_states WHERE work_id = ?").get(W) as Record<string, unknown>;
+    const before = row();
+    db.prepare("UPDATE work_states SET meta = ?, checksum = ? WHERE work_id = ?").run('{"sticks":[]}', "c2", W);
+    expect(row()).toEqual({ ...before, meta: '{"sticks":[]}', checksum: "c2" });
+    // a real checkpoint always writes a new saved_at, even with an identical world
+    expect(() => db.prepare("UPDATE work_states SET meta = ?, saved_at = ? WHERE work_id = ?").run("{}", t + 1, W)).toThrow(/WORK_TRASHED/);
+    expect(() => db.prepare("UPDATE work_states SET blob = x'01' WHERE work_id = ?").run(W)).toThrow(/WORK_TRASHED/);
+    db.prepare("UPDATE work_states SET meta = ?, checksum = ? WHERE work_id = ?").run(before.meta, before.checksum, W);
   });
 
   it("abort the whole transaction, not just the statement", () => {

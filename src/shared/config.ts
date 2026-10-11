@@ -14,6 +14,13 @@ export interface PhysicsConfig {
    * a regular `segments`-gon, which the renderer draws identically (M-005).
    */
   readonly tableRim: { readonly innerRadius: number; readonly segments: number } | null;
+  /**
+   * v3: the area inside the rim is a stack of flat square cuboids instead of a
+   * cylinder. Rapier 0.19's cylinder supports a resting box only inside the
+   * square |x|+|z| ≤ r, so a stick resting near the edge on a diagonal sank
+   * ~0.28 u and vibrated forever (Crit 9 follow-up, M-009b).
+   */
+  readonly tableCore?: { readonly squares: number; readonly radius: number } | null;
   readonly gravity: readonly [number, number, number];
   readonly fixedStep: number;
   readonly maxCatchUpSteps: number;
@@ -85,9 +92,25 @@ export const PHYSICS_CONFIGS: Readonly<Record<number, PhysicsConfig>> = ({
   physicsConfigVersion: 2,
   tableRim: Object.freeze({ innerRadius: 16.5, segments: 128 }),
 });
+/**
+ * v3 (2026-10-12): v2's centre cylinder made a stick resting in its diagonal
+ * edge zones (outside |x|+|z| ≤ 16.5) sink ~0.28 u and vibrate at ~1 u/s
+ * indefinitely, so the room never settled and versions, exhibits and push
+ * waited forever. v3 replaces the cylinder with 8 flat square cuboids rotated
+ * in 11.25° steps, corners at radius 16.5. Their union is a 32-pointed star
+ * whose notches reach in to radius 15.09, so the flat triangle-mesh ring now
+ * starts at 14.5 and overlaps every notch (same top plane, same outer 128-gon
+ * as the rendered table). Never deployed: amended in place on 2026-10-12.
+ */
+(PHYSICS_CONFIGS as Record<number, PhysicsConfig>)[3] = Object.freeze({
+  ...PHYSICS_CONFIGS[2]!,
+  physicsConfigVersion: 3,
+  tableRim: Object.freeze({ innerRadius: 14.5, segments: 128 }),
+  tableCore: Object.freeze({ squares: 8, radius: 16.5 }),
+});
 Object.freeze(PHYSICS_CONFIGS);
 
-export const CURRENT_PHYSICS_CONFIG_VERSION = 2;
+export const CURRENT_PHYSICS_CONFIG_VERSION = 3;
 export const currentPhysicsConfig = (): PhysicsConfig => PHYSICS_CONFIGS[CURRENT_PHYSICS_CONFIG_VERSION]!;
 
 export const SNAPSHOT_SCHEMA_VERSION = 1;
@@ -213,6 +236,7 @@ export const AUTH = Object.freeze({
     failedLoginPerIp: [30, 30],
     registerPerIp: [60, 20],
     recoverPerHandle: [5, 5],
+    deleteAccountPerUser: [5, 5],
     invitePreviewPerIp: [60, 60],
   } as Record<string, [number, number]>,
 });
