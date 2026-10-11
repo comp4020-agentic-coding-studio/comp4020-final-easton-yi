@@ -794,3 +794,43 @@ running `pnpm test:unit` (about 25 s, no Docker needed) and
   mid-build (M07.3), invitation expiry (M11.5), the held-preview conflict
   message (F5), unlanded automated clicks (F2), the client's silent-failure
   detection time, and the browser mechanism behind the stalled close.
+
+---
+
+## User-performed manual production check — 2026-10-12
+
+**Who and when:** the author, by hand, on the live app
+(`comp4020-final-easton-yi.fly.dev`) after commit `a3fd33a` was deployed (Fly
+release v7, migration 3 applied).
+
+**Provenance:** reported to the agent. The agent didn't observe or measure
+these checks. They are separate from the agent's local automated results above
+and don't change any of them.
+
+| Check | What the author did | Reported observation | Status | Limits |
+| --- | --- | --- | --- | --- |
+| Bidirectional collaboration | built in one work from two sessions, each seeing the other's placements | no problems observed | PASS (manual, reported) | No latency measured; devices and browsers not recorded |
+| Settling | let the structure come to rest | no problems observed | PASS (manual, reported) | New works use physics v3; settling of existing v2 works wasn't covered |
+| Saving a version | saved a version of the settled structure | no problems observed | PASS (manual, reported) | — |
+| Reopening the work | reopened the work after saving | no problems observed | PASS (manual, reported) | — |
+| Exhibit publication and viewing | published an exhibit and viewed it | no problems observed | PASS (manual, reported) | — |
+| Same-location placement | two collaborators held sticks at the same location; one placed first | the other's interface updated in real time and immediately refreshed the held stick's validity check, with no manual refresh | PASS (manual, qualitative) | Sequential, not a synchronised concurrent submission. "Immediately" is qualitative; nothing was timed. No claim is made about a rejection message or that the second person submitted a command. Simultaneous submissions are still evidenced only by local protocol test M05 |
+
+**Relation to the concurrency policy** (ADR-0006: no turns, locks or ghost
+reservations; the server applies placements in arrival order against the
+current world). The same-location case is the policy as a user meets it. An
+accepted placement changes the shared scene, and with it the validity of
+another participant's pending placement. That participant's preview check
+updates on its own. The browser test M05.3 shows the same behaviour locally.
+
+**Not covered by this manual check, so still open:**
+- the runbook's account-deletion check on Fly;
+- any timing or capacity measurement on Fly or across devices (3-room capacity
+  not re-run for v3);
+- existing v2 works that hit the settling defect;
+- real background tabs (M09.3);
+- a browser joining mid-build (M07.3);
+- invitation expiry (M11.5);
+- how quickly a silent network failure is detected;
+- unlanded automated clicks (F2);
+- the conflict message's wording (F5).
