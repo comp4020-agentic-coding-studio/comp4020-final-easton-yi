@@ -10,6 +10,11 @@
 // Times are page-monotonic (performance.now) from an init script that records
 // socket events, readyState changes and indicator text changes; no product code
 // is involved in the measurement.
+// Methods A and M assume the page gets no `offline` event from setOffline(true),
+// which holds inside a loopback-only network namespace (`unshare --net`, as in
+// scripts/crit9/run.sh). On a host with a real network interface Chromium fires
+// `offline`, the client drops its own socket first (as it should), and "an open
+// socket existed" fails (docs/evidence/crit-10-verification.md, D-2).
 import { expect, test, type Page } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
