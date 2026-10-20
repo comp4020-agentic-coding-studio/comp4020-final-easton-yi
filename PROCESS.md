@@ -259,13 +259,13 @@ editor and a stranger against a URL and deletes its accounts afterwards. It
 ran the probe against Fly while tailing `flyctl logs`, and matched log lines
 to actions by actor, work and command IDs.
 
-The server refused every attempt on someone else's work. But 12 of 14
+The server refused every attempt on someone else's work. But 11 of 13
 refusals left no log line, so nobody narrating from the logs could see one
 person trying to change another's work: the crit's own finding. The fix
 logs each refusal with actor, action and work
 ([`a9d4a97`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a9d4a97)),
 with a test that failed before it. After CI deployed it, the same probe on
-Fly showed 14 of 14.
+Fly showed 13 of 13.
 
 Two other failures were not product defects, and the product was not changed
 for them:

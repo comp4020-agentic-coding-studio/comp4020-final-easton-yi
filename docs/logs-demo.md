@@ -121,7 +121,8 @@ command.restore                 bd24b068  NOT_OWNER
 ```
 
 No title, invitation token or request body is logged. A request for a work
-ID that doesn't exist logs nothing, because there is no one's work to protect.
+ID that doesn't exist logs the same `access.denied ... NOT_FOUND` line: the
+server answers "missing" and "not yours" alike, so its logs do too.
 
 ```sh
 # who tried what on whose work

@@ -1,0 +1,27 @@
+# Shortened excerpt from flyctl logs at 731f264 (Fly v10; product code = ffa5830): lines whose workId or actorId is one of this probe's IDs,
+# reduced to time, event, actorId[0:8], workId[0:8], commandId[0:8], action, outcome, code. Full IDs are in probe-fly-v10.json.
+# avery=cdf4fafc blake=fc2cfc38 casey=31e8cfeb work=8a13ab5b
+23:27:17.938	session.login	cdf4fafc	-	-	-	accepted	-
+23:27:18.600	account.create	31e8cfeb	-	-	-	accepted	-
+23:27:18.955	work.create	cdf4fafc	8a13ab5b	-	-	accepted	-
+23:27:19.026	invite.create	cdf4fafc	8a13ab5b	-	-	accepted	-
+23:27:19.545	room.activate	-	8a13ab5b	-	-	-	-
+23:27:19.870	command.place	cdf4fafc	8a13ab5b	f0ac04a3	-	accepted	-
+23:27:19.919	command.place	fc2cfc38	8a13ab5b	3b45b6e6	-	accepted	-
+23:27:20.082	access.denied	31e8cfeb	8a13ab5b	-	works.state	rejected	NOT_FOUND
+23:27:20.122	access.denied	31e8cfeb	9f4c91eb	-	works.state	rejected	NOT_FOUND
+23:27:20.163	access.denied	31e8cfeb	8a13ab5b	-	works.get	rejected	NOT_FOUND
+23:27:20.224	access.denied	31e8cfeb	8a13ab5b	-	works.rename	rejected	NOT_FOUND
+23:27:20.290	access.denied	31e8cfeb	8a13ab5b	-	invite.create	rejected	NOT_FOUND
+23:27:20.374	command.place	31e8cfeb	8a13ab5b	156955bc	-	rejected	NOT_FOUND
+23:27:20.661	ws.connect	31e8cfeb	-	-	-	-	-
+23:27:20.701	room.join	31e8cfeb	8a13ab5b	-	-	rejected	NOT_FOUND
+23:27:21.021	access.denied	fc2cfc38	8a13ab5b	-	works.rename	rejected	NOT_OWNER
+23:27:21.064	access.denied	fc2cfc38	8a13ab5b	-	invite.create	rejected	NOT_OWNER
+23:27:21.123	access.denied	fc2cfc38	8a13ab5b	-	invite.revoke	rejected	NOT_OWNER
+23:27:21.182	access.denied	fc2cfc38	8a13ab5b	-	members.remove	rejected	NOT_OWNER
+23:27:21.244	access.denied	fc2cfc38	8a13ab5b	-	works.archive	rejected	NOT_OWNER
+23:27:21.316	access.denied	fc2cfc38	8a13ab5b	-	works.trash	rejected	NOT_OWNER
+23:27:21.365	command.restore	fc2cfc38	8a13ab5b	f49ae9b9	-	rejected	NOT_OWNER
+23:27:21.446	world.save	-	8a13ab5b	-	-	-	-
+23:27:22.258	room.leave	cdf4fafc	8a13ab5b	-	-	-	-

@@ -52,19 +52,19 @@ column and in the diagnoses below.
 | C10-02 | Joining the same work: an anonymous preview names the inviter; accepting makes the second account an editor | Probe · Fly v8, Fly v9; browser · local fixed | Anonymous preview: `inviterName` = Avery. Accept returned the work ID. The member list read back as owner Avery + editor Blake. Log: `invite.create` by Avery, `invite.accept` by Blake, same `workId` | PASS | probe JSON `C10-02`; log excerpt | — |
 | C10-03 | Both edit the same work: each placement is accepted, and a fresh state read shows both sticks with the right authors | Probe over two live sockets · Fly v8, Fly v9 | Both `command.result` accepted (seq 1, 2). A fresh `/state` read listed exactly those two `stickId`s, each with its placer's `authorId`. Log: two `command.place accepted` lines whose `commandId` and `actorId` match the probe's | PASS | probe JSON `placements`, `C10-03`; log excerpt | — |
 | C10-04 | Real-time propagation: one person's placement arrives at the other's open socket within about 1 s, with no action by the viewer | Probe (send → other socket's `sticks.added`) · Fly v9; real UI in two contexts · local | Fly v9: 46 ms and 35 ms from send to the other socket receiving it (v8: 25 ms, 22 ms), with the right `authorId`. Browser: Bo's stick appeared in Ada's open stick list ("#1 · placed by Bo") about 35 ms after Bo's Place click returned | PASS | probe JSON `placements.sendToOtherMs`; [owner-sees-partner.png](crit-10/owner-sees-partner.png) | — |
-| C10-05 | A non-member is refused by the server: the same 404 as for a missing work for reads, writes, commands and socket join; the work is unchanged | Probe, direct HTTP/WS · Fly v8, Fly v9 | All 7 attempts (state, get, rename, invite, place, WS join) answered `404 NOT_FOUND` / `error NOT_FOUND`, identical to a random missing ID. Stick count and title unchanged afterwards | PASS | probe JSON `stranger`, `C10-05` | — |
+| C10-05 | A non-member is refused by the server: the same 404 as for a missing work for reads, writes, commands and socket join; the work is unchanged | Probe, direct HTTP/WS · Fly v8, Fly v9 | All 6 attempts on the work (state, get, rename, invite, place, WS join) answered `404 NOT_FOUND` / `error NOT_FOUND`, identical to a control read of a random missing ID. Stick count and title unchanged afterwards | PASS | probe JSON `stranger`, `C10-05` | — |
 | C10-06 | Owner/editor permissions enforced by the server: an editor calling owner-only endpoints directly (not via the UI) is refused, and nothing changes | Probe, direct HTTP · Fly v8, Fly v9 | rename, invite create/revoke, remove owner, archive, trash, restore: all `403 NOT_OWNER`. Title, archived, trashed, members, active invite ID and stick count were all unchanged afterwards | PASS | probe JSON `editor`, `C10-06` | — |
 | C10-07 | The logs tell who did what: every action in C10-01..06 is a server line whose actor, work and command IDs match the probe's own | `flyctl logs` correlated by IDs · Fly v8, Fly v9 | Every accepted action has its line, with the correct actor and work; placements match by `commandId` | PASS | [fly-baseline-log-excerpt.tsv](crit-10/fly-baseline-log-excerpt.tsv), [fly-postfix-log-excerpt.tsv](crit-10/fly-postfix-log-excerpt.tsv) | — |
-| C10-08 | Refusals are attributable: each refused attempt in C10-05/06 leaves a line naming the actor and the work | `flyctl logs` · Fly v8 (baseline), local, Fly v9 (retest) | **v8: 2 of 14 refusals logged** (the stranger's `command.place`, the editor's `command.restore`). The other 12 left no line. **v9: 14 of 14 logged**: 12 `access.denied` lines plus the stranger's rejected `room.join` and `command.place`, each with the right `actorId` and code | **PASS after fix** (FAIL on v8) | baseline: [fly-baseline-log-excerpt.tsv](crit-10/fly-baseline-log-excerpt.tsv); retest: [fly-postfix-log-excerpt.tsv](crit-10/fly-postfix-log-excerpt.tsv) | D-1 → [`a9d4a97`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a9d4a97); regression test fails before, passes after |
+| C10-08 | Refusals are attributable: each refused attempt in C10-05/06 leaves a line naming the actor and the work | `flyctl logs` · Fly v8 (baseline), local, Fly v9 (retest) | **v8: 2 of 13 refusals logged** (the stranger's `command.place`, the editor's `command.restore`). The other 11 left no line. **v9: 13 of 13 logged**: 11 `access.denied` lines plus the stranger's rejected `room.join` and `command.place`, each with the right `actorId` and code. **v10 re-run: 13 of 13** ([excerpt](crit-10/fly-v10-log-excerpt.tsv)). The stranger's control read of a missing work also logs `access.denied` (with that other ID), because the server answers missing and not-yours alike | **PASS after fix** (FAIL on v8) | baseline: [fly-baseline-log-excerpt.tsv](crit-10/fly-baseline-log-excerpt.tsv); retest: [fly-postfix-log-excerpt.tsv](crit-10/fly-postfix-log-excerpt.tsv) | D-1 → [`a9d4a97`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a9d4a97); regression test fails before, passes after |
 | C10-09 | Logging outlives the crit and excludes secrets: structured stdout, readable later with `flyctl logs`; no password, cookie, CSRF, recovery code or invite token | Scan of 1,944 lines from local and Fly (v8, v9) | Fly lines were read back with `flyctl logs` after the requests finished. Secret-named keys: 0. Probe password literal: 0. `sw_session`: 0. `token=`: 0. Refusal lines carry no titles or tokens (asserted by the regression test) | PASS | scan results in this report; [`src/server/log.ts`](../../src/server/log.ts) key filter | Retention length on Fly is unknown; not measured |
 | C10-10 | Entry from the URL alone: `/` leads to registration, a work, an invitation link; an invitee at the link registers and comes back to confirm | Playwright walk-through, two fresh contexts, no test hooks or test flag · local fixed production build; route probe · Fly v9 | Ada: `/` → "Start building" → register → create work → People → invitation link. Bo (no cookies) → link → "Ada invited you to build" → Create an account → back to the invitation → "Join as Bo" → workshop. Fly v9: `/`, `/register/`, `/join/` answer 200 with the app shell | PASS (full flow local; Fly checked by route only) | [invite-landing.png](crit-10/invite-landing.png), [owner-sees-partner.png](crit-10/owner-sees-partner.png), [url-alone.spec.ts](../../scripts/crit10/diag/url-alone.spec.ts) | The full browser flow wasn't run on Fly: the diag spec refuses non-local URLs so it can't leave test accounts in production |
 | C10-11 | Separate Chrome profiles share nothing, and each sees the other | Playwright, isolated browser contexts · local | URL-alone run: Bo's context had 0 cookies before the link, the two sessions reported different account IDs, and each saw the other in presence. `together.spec.ts` (ghosts, simultaneous placement, own cameras, reconnect) passed in the full suite | PASS (local) | [url-alone.spec.ts](../../scripts/crit10/diag/url-alone.spec.ts); suite result below | — |
 | C10-12 | The permission decision is documented with reasons | Doc review | [ADR-0005](../adr/0005-identity-and-permissions.md): opaque server sessions, owner/editor roles re-checked in the coordinator, the same 404 for non-members, rejected alternatives and their costs. BRIEF AUTH-02 lists exactly what each role may do and states "hidden frontend buttons are not a security boundary". The new refusal logging is documented in [`logs-demo.md`](../logs-demo.md) | PASS | linked docs | — |
 | C10-13 | `reflections/crit-10.md` present and answering both prompts | File check | Present; both prompts answered; 281 words in the body. Marked as an agent draft for the author to revise | PASS (draft) | [`reflections/crit-10.md`](../../reflections/crit-10.md) | Author must revise it into their own account |
-| C10-14 | `PROCESS.md` describes this crit's working method and agrees with the verified state | Doc review + `pnpm check:evidence` | Crit 10 section added; "What's verified" updated to this run. `check:evidence` passes | PASS (draft) | [`PROCESS.md`](../../PROCESS.md) | It is still about 2,300 words against the final 900–1,100; the rewrite is the author's |
+| C10-14 | `PROCESS.md` describes this crit's working method and agrees with the verified state | Doc review + `pnpm check:evidence` | Crit 10 section added; "What's verified" updated to this run. `check:evidence` passes | PASS (draft) | [`PROCESS.md`](../../PROCESS.md) | It is about 2,450 words against the final 900–1,100; the rewrite is the author's |
 | C10-15 | Local checks | `pnpm` scripts · local | Pre-fix: typecheck 0, build 0, unit 123/123, contract 53/53. Fixed: typecheck 0, unit **124/124** (+1 regression), contract 53/53, integration 13/13, browser **28/29**: the only failure is F3 method A (D-2). F3 then passed 10/10 in a loopback-only namespace on the same build | PASS with one environment-dependent browser failure (D-2) | logs summarised in this report | D-2: test comment only, no assertion changed |
 | C10-16 | Shipped checks against the deployed app | Read-only invariants against Fly v9; full spec in CI on the deployed image | `spec/invariants.test.ts` against Fly v9: 2/2. CI run 39513661519 ran all 53 specs against the Docker image Fly deployed: 53/53; `check:evidence` passed | PASS (invariants on Fly; contract specs in CI on the same image) | [CI run 39513661519](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/actions/runs/39513661519) | The full `pnpm check` was **deliberately not run against Fly**: the specs publish exhibits and create accounts they don't all remove, and those would appear in the public gallery classmates browse at the crit |
-| C10-17 | Deployment: the deployed revision equals the tested commit; health answers; CI green | GitHub deployments API, `flyctl releases`, curl | Latest deployment record: `ffa5830`. Fly release v9 completed. CI check + deploy: success. `/healthz` `{"ok":true}`; `/readyz` 200, `rooms:0`, `rssMiB:105` | PASS | [fly-readyz-ffa5830.json](crit-10/fly-readyz-ffa5830.json) | Report/PROCESS/reflection commit after `ffa5830` is docs-only; its deploy is checked again by CI |
+| C10-17 | Deployment: the deployed revision equals the tested commit; health answers; CI green | GitHub deployments API, `flyctl releases`, curl | Deployment record `ffa5830` → Fly v9, then the docs-only `731f264` → Fly v10 (CI run [39514740283](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/actions/runs/39514740283)); both CI check + deploy: success. Probe re-run on v10: 15/15. `/healthz` `{"ok":true}`; `/readyz` 200, `rooms:0`, `rssMiB:105` | PASS | [fly-readyz-ffa5830.json](crit-10/fly-readyz-ffa5830.json) | — |
 | C10-18 | Live crit: two classmates use the app from the URL in separate Chrome profiles while the author narrates from the logs | Human session · Fly | — | NOT RUN (human activity) | — | Not automatable; nothing here claims it happened |
 
 ## Diagnoses
@@ -72,7 +72,7 @@ column and in the diagnoses below.
 ### D-1 · C10-08: refusals invisible in the logs, a product defect
 
 - **Symptom.** On Fly v8, the probe's editor made 7 owner-only attempts and
-  its stranger made 7 attempts on the work. The server refused all 14
+  its stranger made 6 attempts on the work. The server refused all 13
   correctly (C10-05, C10-06). Only 2 left a log line, both through the
   command pipeline, which logs every outcome.
 - **Evidence.**
@@ -104,8 +104,8 @@ column and in the diagnoses below.
     [prefix output](crit-10/access-log-test-prefix.txt)) and passed after
     ([postfix](crit-10/access-log-test-postfix.txt)).
   - Probe re-run locally ([excerpt](crit-10/local-postfix-log-excerpt.tsv))
-    and on Fly v9 ([excerpt](crit-10/fly-postfix-log-excerpt.tsv)): 14 of 14
-    refusals logged with the correct actor.
+    and on Fly v9 ([excerpt](crit-10/fly-postfix-log-excerpt.tsv)): 13 of 13
+    refusals logged with the correct actor (and 13 of 13 again on v10).
   - Affected regressions: unit 124/124, contract 53/53, integration 13/13,
     browser suite as below. No other behaviour changed: responses and status
     codes are the same.
@@ -152,6 +152,23 @@ sticks are 8 u long along X, and the probe placed them at x = ±3, so they
 really did overlap; spec/collaboration.test.ts uses ±6. The probe was
 corrected to ±6; the product was not changed. All later probe runs used the
 corrected probe.
+
+### D-4 · Two wrong claims in this report's first version: a documentation defect, caught by the audit
+
+The first committed version
+([`731f264`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/731f264))
+counted 14 refusals ("2 of 14", then "14 of 14"). The correct count is 13. The
+stranger's seventh probe entry was a control read of a random missing work,
+not an attempt on this one.
+
+The same version said in `logs-demo.md` that a request for a missing work ID
+logs nothing. The v9 and v10 Fly logs show it does log `access.denied …
+NOT_FOUND` with that other ID. That is consistent with the server answering
+"missing" and "not yours" alike, so the code needed no change.
+
+The audit found both errors while comparing the v10 re-run's rejected-line
+count (13) with the report. Corrected here, in `PROCESS.md` and in
+`logs-demo.md`.
 
 ### Not defects, recorded to avoid misreading
 
