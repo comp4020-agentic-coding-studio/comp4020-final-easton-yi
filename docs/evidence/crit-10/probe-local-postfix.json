@@ -1,0 +1,218 @@
+{
+  "base": "http://localhost:18080",
+  "run": "9217eb",
+  "startedAt": "2026-10-20T22:59:48.304Z",
+  "accounts": {
+    "avery": "769e8923-fcea-4341-9e59-212220e78782",
+    "blake": "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7",
+    "casey": "6a151d8a-5ba2-4330-a1f2-a00ba59a216d"
+  },
+  "workId": "8f776beb-94d7-41e5-bc4e-7f14e2859ae4",
+  "placements": [
+    {
+      "who": "avery",
+      "commandId": "934b4934-94b4-4932-851f-7efc59fafe74",
+      "outcome": "accepted",
+      "stickId": "f4d4cb3c-b207-4cb5-bfca-4b598f08342d",
+      "seq": 1,
+      "authorIdSeenByOther": "769e8923-fcea-4341-9e59-212220e78782",
+      "sendToOtherMs": 2
+    },
+    {
+      "who": "blake",
+      "commandId": "6037f8c8-1d1f-4587-bac1-a2c5d9e26826",
+      "outcome": "accepted",
+      "stickId": "9fcb7a61-5dd9-4237-b7a9-11e06c5a2763",
+      "seq": 2,
+      "authorIdSeenByOther": "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7",
+      "sendToOtherMs": 2
+    }
+  ],
+  "stranger": {
+    "stateOfWork": "404 NOT_FOUND",
+    "stateOfMissingWork": "404 NOT_FOUND",
+    "getWork": "404 NOT_FOUND",
+    "rename": "404 NOT_FOUND",
+    "inviteCreate": "404 NOT_FOUND",
+    "place": "404 NOT_FOUND",
+    "wsJoin": "error NOT_FOUND"
+  },
+  "editor": {
+    "rename": "403 NOT_OWNER",
+    "inviteCreate": "403 NOT_OWNER",
+    "inviteRevoke": "403 NOT_OWNER",
+    "removeOwner": "403 NOT_OWNER",
+    "archive": "403 NOT_OWNER",
+    "trash": "403 NOT_OWNER",
+    "restoreVersion": "403 NOT_OWNER"
+  },
+  "cleanup": {
+    "avery": 200,
+    "blake": 200,
+    "casey": 200
+  },
+  "finishedAt": "2026-10-20T22:59:49.487Z",
+  "checks": [
+    {
+      "id": "C10-01",
+      "what": "session identities",
+      "expected": [
+        "769e8923-fcea-4341-9e59-212220e78782",
+        "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7",
+        "6a151d8a-5ba2-4330-a1f2-a00ba59a216d"
+      ],
+      "actual": [
+        "769e8923-fcea-4341-9e59-212220e78782",
+        "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7",
+        "6a151d8a-5ba2-4330-a1f2-a00ba59a216d"
+      ],
+      "pass": true
+    },
+    {
+      "id": "C10-01",
+      "what": "identities distinct",
+      "expected": 3,
+      "actual": 3,
+      "pass": true
+    },
+    {
+      "id": "C10-02",
+      "what": "anonymous preview names the inviter",
+      "expected": "C10 Avery 9217eb",
+      "actual": "C10 Avery 9217eb",
+      "pass": true
+    },
+    {
+      "id": "C10-02",
+      "what": "accept → member of the work",
+      "expected": "8f776beb-94d7-41e5-bc4e-7f14e2859ae4",
+      "actual": "8f776beb-94d7-41e5-bc4e-7f14e2859ae4",
+      "pass": true
+    },
+    {
+      "id": "C10-02",
+      "what": "members after accept",
+      "expected": [
+        "769e8923-fcea-4341-9e59-212220e78782:owner",
+        "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7:editor"
+      ],
+      "actual": [
+        "769e8923-fcea-4341-9e59-212220e78782:owner",
+        "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7:editor"
+      ],
+      "pass": true
+    },
+    {
+      "id": "C10-03",
+      "what": "both windows live with an editing lease",
+      "expected": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "pass": true
+    },
+    {
+      "id": "C10-03",
+      "what": "avery's placement accepted",
+      "expected": "accepted",
+      "actual": "accepted",
+      "pass": true
+    },
+    {
+      "id": "C10-04",
+      "what": "avery's stick reaches the other window with author avery (≤1000 ms send→receive)",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "C10-03",
+      "what": "blake's placement accepted",
+      "expected": "accepted",
+      "actual": "accepted",
+      "pass": true
+    },
+    {
+      "id": "C10-04",
+      "what": "blake's stick reaches the other window with author blake (≤1000 ms send→receive)",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "C10-03",
+      "what": "fresh state read has both sticks with their authors",
+      "expected": [
+        "9fcb7a61-5dd9-4237-b7a9-11e06c5a2763:bd24b068-51b1-4c80-8ec0-2cb3ae511bd7",
+        "f4d4cb3c-b207-4cb5-bfca-4b598f08342d:769e8923-fcea-4341-9e59-212220e78782"
+      ],
+      "actual": [
+        "9fcb7a61-5dd9-4237-b7a9-11e06c5a2763:bd24b068-51b1-4c80-8ec0-2cb3ae511bd7",
+        "f4d4cb3c-b207-4cb5-bfca-4b598f08342d:769e8923-fcea-4341-9e59-212220e78782"
+      ],
+      "pass": true
+    },
+    {
+      "id": "C10-05",
+      "what": "stranger refused everywhere, same as a missing work",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "C10-05",
+      "what": "work unchanged after the stranger's attempts",
+      "expected": {
+        "sticks": 2,
+        "title": "C10 probe 9217eb"
+      },
+      "actual": {
+        "sticks": 2,
+        "title": "C10 probe 9217eb"
+      },
+      "pass": true
+    },
+    {
+      "id": "C10-06",
+      "what": "every owner-only call refused with 403 NOT_OWNER",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "id": "C10-06",
+      "what": "protected state unchanged after the editor's attempts",
+      "expected": {
+        "title": "C10 probe 9217eb",
+        "archived": false,
+        "trashed": false,
+        "members": [
+          "769e8923-fcea-4341-9e59-212220e78782:owner",
+          "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7:editor"
+        ],
+        "inviteId": "23d123b1-8bfe-4c84-9c7c-f63180e77566",
+        "sticks": 2
+      },
+      "actual": {
+        "title": "C10 probe 9217eb",
+        "archived": false,
+        "trashed": false,
+        "members": [
+          "769e8923-fcea-4341-9e59-212220e78782:owner",
+          "bd24b068-51b1-4c80-8ec0-2cb3ae511bd7:editor"
+        ],
+        "inviteId": "23d123b1-8bfe-4c84-9c7c-f63180e77566",
+        "sticks": 2
+      },
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+# Shortened excerpt: JSON log lines whose workId or actorId is one of this probe's IDs, reduced to
+# time, event, actorId[0:8], workId[0:8], commandId[0:8], action, outcome, code. Full IDs are in the probe JSON.
+# avery=ce9bdccb blake=834b4028 casey=b6c8a0c1 work=6ff06e5e
+22:54:35.439	account.create	ce9bdccb	-	-	-	accepted	-
+22:54:35.442	session.login	ce9bdccb	-	-	-	accepted	-
+22:54:35.728	account.create	834b4028	-	-	-	accepted	-
+22:54:35.730	session.login	834b4028	-	-	-	accepted	-
+22:54:36.015	account.create	b6c8a0c1	-	-	-	accepted	-
+22:54:36.017	session.login	b6c8a0c1	-	-	-	accepted	-
+22:54:36.109	work.create	ce9bdccb	6ff06e5e	-	-	accepted	-
+22:54:36.125	invite.create	ce9bdccb	6ff06e5e	-	-	accepted	-
+22:54:36.155	invite.accept	834b4028	6ff06e5e	-	-	accepted	-
+22:54:36.225	ws.connect	ce9bdccb	-	-	-	-	-
+22:54:36.249	room.activate	-	6ff06e5e	-	-	-	-
+22:54:36.251	room.join	ce9bdccb	6ff06e5e	-	-	editor	-
+22:54:36.308	ws.connect	834b4028	-	-	-	-	-
+22:54:36.317	room.join	834b4028	6ff06e5e	-	-	editor	-
+22:54:36.343	command.place	ce9bdccb	6ff06e5e	5b1985cd	-	accepted	-
+22:54:36.365	command.place	834b4028	6ff06e5e	9cc3029e	-	accepted	-
+22:54:36.490	command.place	b6c8a0c1	6ff06e5e	87a56aec	-	rejected	NOT_FOUND
+22:54:36.554	ws.connect	b6c8a0c1	-	-	-	-	-
+22:54:36.720	command.restore	834b4028	6ff06e5e	4c4469fa	-	rejected	NOT_OWNER
+22:54:37.417	room.leave	ce9bdccb	6ff06e5e	-	-	-	-

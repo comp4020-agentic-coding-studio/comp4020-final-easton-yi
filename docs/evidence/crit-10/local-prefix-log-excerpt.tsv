@@ -1,0 +1,27 @@
+# Shortened excerpt: JSON log lines whose workId or actorId is one of this probe's IDs, reduced to
+# time, event, actorId[0:8], workId[0:8], commandId[0:8], action, outcome, code. Full IDs are in the probe JSON.
+# avery=2d114aca blake=854fe666 casey=43a8d26d work=a8da7185
+22:53:38.441	account.create	2d114aca	-	-	-	accepted	-
+22:53:38.442	session.login	2d114aca	-	-	-	accepted	-
+22:53:38.580	account.create	854fe666	-	-	-	accepted	-
+22:53:38.582	session.login	854fe666	-	-	-	accepted	-
+22:53:38.718	account.create	43a8d26d	-	-	-	accepted	-
+22:53:38.719	session.login	43a8d26d	-	-	-	accepted	-
+22:53:38.726	work.create	2d114aca	a8da7185	-	-	accepted	-
+22:53:38.728	invite.create	2d114aca	a8da7185	-	-	accepted	-
+22:53:38.731	invite.accept	854fe666	a8da7185	-	-	accepted	-
+22:53:38.736	ws.connect	2d114aca	-	-	-	-	-
+22:53:38.738	room.activate	-	a8da7185	-	-	-	-
+22:53:38.738	room.join	2d114aca	a8da7185	-	-	editor	-
+22:53:38.739	ws.connect	854fe666	-	-	-	-	-
+22:53:38.739	room.join	854fe666	a8da7185	-	-	editor	-
+22:53:38.741	command.place	2d114aca	a8da7185	a7774d9c	-	accepted	-
+22:53:38.744	command.place	854fe666	a8da7185	b1382899	-	accepted	-
+22:53:38.751	command.place	43a8d26d	a8da7185	1b3190c1	-	rejected	NOT_FOUND
+22:53:38.753	ws.connect	43a8d26d	-	-	-	-	-
+22:53:38.763	command.restore	854fe666	a8da7185	a814251f	-	rejected	NOT_OWNER
+22:53:38.766	room.leave	2d114aca	a8da7185	-	-	-	-
+22:53:38.766	ws.disconnect	2d114aca	-	-	-	-	-
+22:53:38.766	ws.disconnect	43a8d26d	-	-	-	-	-
+22:53:38.766	room.leave	854fe666	a8da7185	-	-	-	-
+22:53:38.766	ws.disconnect	854fe666	-	-	-	-	-

@@ -1,0 +1,106 @@
+{
+  "playwright": "1.63.0",
+  "results": [
+    {
+      "n": 1,
+      "triggerAfterSetOfflineMs": 2,
+      "readyStatesAtTrigger": [
+        3
+      ],
+      "events": [
+        [
+          1,
+          "window-offline"
+        ],
+        [
+          1,
+          "close() called, readyState 1, stack at Gf.drop (http://localhost:8099/assets/index-CCUOtKIq.js:4268:87337)"
+        ],
+        [
+          2,
+          "ws0-close 4000"
+        ],
+        [
+          576,
+          "ws1-construct"
+        ],
+        [
+          576,
+          "ws1-close 1006"
+        ]
+      ]
+    },
+    {
+      "n": 2,
+      "triggerAfterSetOfflineMs": 1,
+      "readyStatesAtTrigger": [
+        3,
+        3,
+        3
+      ],
+      "events": [
+        [
+          1,
+          "window-offline"
+        ],
+        [
+          1,
+          "close() called, readyState 1, stack at Gf.drop (http://localhost:8099/assets/index-CCUOtKIq.js:4268:87337)"
+        ],
+        [
+          1,
+          "ws2-close 4000"
+        ],
+        [
+          522,
+          "ws3-construct"
+        ],
+        [
+          523,
+          "ws3-close 1006"
+        ]
+      ]
+    },
+    {
+      "n": 3,
+      "triggerAfterSetOfflineMs": 2,
+      "readyStatesAtTrigger": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "events": [
+        [
+          1,
+          "window-offline"
+        ],
+        [
+          1,
+          "close() called, readyState 1, stack at Gf.drop (http://localhost:8099/assets/index-CCUOtKIq.js:4268:87337)"
+        ],
+        [
+          2,
+          "ws4-close 4000"
+        ],
+        [
+          456,
+          "ws5-construct"
+        ],
+        [
+          458,
+          "ws5-close 1006"
+        ],
+        [
+          1263,
+          "ws6-construct"
+        ],
+        [
+          1264,
+          "ws6-close 1006"
+        ]
+      ]
+    }
+  ]
+}

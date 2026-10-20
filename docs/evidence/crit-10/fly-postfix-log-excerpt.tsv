@@ -1,0 +1,33 @@
+# Shortened excerpt from flyctl logs at ffa5830 (Fly v9): lines whose workId or actorId is one of this probe's IDs,
+# reduced to time, event, actorId[0:8], workId[0:8], commandId[0:8], action, outcome, code. Full IDs are in probe-fly-postfix.json.
+# avery=2ae22b12 blake=b73ade73 casey=35fdb7ce work=e89089fb
+23:18:29.811	account.create	2ae22b12	-	-	-	accepted	-
+23:18:29.814	session.login	2ae22b12	-	-	-	accepted	-
+23:18:30.489	session.login	35fdb7ce	-	-	-	accepted	-
+23:18:30.976	work.create	2ae22b12	e89089fb	-	-	accepted	-
+23:18:31.013	invite.create	2ae22b12	e89089fb	-	-	accepted	-
+23:18:31.090	invite.accept	b73ade73	e89089fb	-	-	accepted	-
+23:18:31.334	ws.connect	2ae22b12	-	-	-	-	-
+23:18:31.374	room.activate	-	e89089fb	-	-	-	-
+23:18:31.375	room.join	2ae22b12	e89089fb	-	-	editor	-
+23:18:31.540	ws.connect	b73ade73	-	-	-	-	-
+23:18:31.565	room.join	b73ade73	e89089fb	-	-	editor	-
+23:18:31.611	command.place	2ae22b12	e89089fb	fc2ed1d0	-	accepted	-
+23:18:31.641	command.place	b73ade73	e89089fb	32c780eb	-	accepted	-
+23:18:31.750	access.denied	35fdb7ce	e89089fb	-	works.state	rejected	NOT_FOUND
+23:18:31.804	access.denied	35fdb7ce	8039cc19	-	works.state	rejected	NOT_FOUND
+23:18:31.843	access.denied	35fdb7ce	e89089fb	-	works.get	rejected	NOT_FOUND
+23:18:31.884	access.denied	35fdb7ce	e89089fb	-	works.rename	rejected	NOT_FOUND
+23:18:31.927	access.denied	35fdb7ce	e89089fb	-	invite.create	rejected	NOT_FOUND
+23:18:31.975	command.place	35fdb7ce	e89089fb	46f6db99	-	rejected	NOT_FOUND
+23:18:32.177	ws.connect	35fdb7ce	-	-	-	-	-
+23:18:32.237	room.join	35fdb7ce	e89089fb	-	-	rejected	NOT_FOUND
+23:18:32.443	access.denied	b73ade73	e89089fb	-	works.rename	rejected	NOT_OWNER
+23:18:32.486	access.denied	b73ade73	e89089fb	-	invite.create	rejected	NOT_OWNER
+23:18:32.543	access.denied	b73ade73	e89089fb	-	invite.revoke	rejected	NOT_OWNER
+23:18:32.574	access.denied	b73ade73	e89089fb	-	members.remove	rejected	NOT_OWNER
+23:18:32.603	access.denied	b73ade73	e89089fb	-	works.archive	rejected	NOT_OWNER
+23:18:32.645	access.denied	b73ade73	e89089fb	-	works.trash	rejected	NOT_OWNER
+23:18:32.694	command.restore	b73ade73	e89089fb	f99b66ef	-	rejected	NOT_OWNER
+23:18:33.174	world.save	-	e89089fb	-	-	-	-
+23:18:33.526	room.leave	2ae22b12	e89089fb	-	-	-	-

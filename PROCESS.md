@@ -241,15 +241,76 @@ point inside the rendered table and no supported point outside it. The same
 pass scoped the test-only socket hook to the caller's own session, and
 confirmed it doesn't exist in production builds.
 
+## Verifying Crit 10 against the deployed app
+
+On 2026-10-21 the author gave
+[`docs/CRIT10.md`](docs/CRIT10.md): a bounded verification-and-repair cycle,
+not new features. The author set the terms in advance:
+
+- acceptance checks with IDs, written down before any code changed;
+- every failure classified (product, test, environment or unclear evidence)
+  before any fix;
+- minimal fixes only, each with a retest, with original failures kept;
+- local, deployed and human results kept apart;
+- a closing audit of the evidence.
+
+The agent wrote the matrix, then a probe that plays an owner, an invited
+editor and a stranger against a URL and deletes its accounts afterwards. It
+ran the probe against Fly while tailing `flyctl logs`, and matched log lines
+to actions by actor, work and command IDs.
+
+The server refused every attempt on someone else's work. But 12 of 14
+refusals left no log line, so nobody narrating from the logs could see one
+person trying to change another's work: the crit's own finding. The fix
+logs each refusal with actor, action and work
+([`a9d4a97`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a9d4a97)),
+with a test that failed before it. After CI deployed it, the same probe on
+Fly showed 14 of 14.
+
+Two other failures were not product defects, and the product was not changed
+for them:
+
+- the probe's own two sticks overlapped, so the server's rejection was
+  correct;
+- an older reconnect test assumes the browser never fires `offline`, which
+  holds only inside the isolated network Crit 9 used. On a normal host the
+  app closes its socket first, as designed. The assumption is now written in
+  the test; no assertion changed.
+
+The full contract suite was not run against Fly, because it would leave test
+exhibits in the public gallery. CI runs it against the same image instead.
+The record is
+[`docs/evidence/crit-10-verification.md`](docs/evidence/crit-10-verification.md).
+
+This changed how the agent was directed more than what it built: the author
+set what counted as done and the limits of autonomous work, then reviewed one
+report instead of rechecking each step. That doesn't make the result
+correct by itself. The audit lists what stays unverified, and the live crit is
+still the author's to run.
+
 ## What's verified and what isn't
 
-The app is deployed to `comp4020-final-easton-yi.fly.dev` and serves its
-pages and assets; that deployment predates the deletion, graphics and
-account-deletion changes. Locally: 99 unit and restart tests pass, 53 HTTP and
-WebSocket checks (`pnpm check`) pass against a production build, and 20 browser
-tests pass against a local server with test hooks.
-Not yet done: re-running the latency and capacity measurements on the Fly
-machine, and any session with people who didn't build it. The protocol for
-those sessions is in [`acceptance-report.md`](docs/acceptance-report.md). The
-README's "what good means" section is still a draft awaiting the author's own
-reading and position.
+The app is deployed to `comp4020-final-easton-yi.fly.dev` at
+[`ffa5830`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/ffa5830)
+(Fly v9, CI green). On Fly:
+
+- two identities, invitation, shared editing, sub-second propagation and
+  server-side refusals pass;
+- `flyctl logs` attributes every action and refusal;
+- the shipped invariants pass.
+
+Locally:
+
+- 124 unit and restart tests, 53 contract checks against a production build
+  and 13 integration tests pass;
+- 28 of 29 browser tests pass. The exception is the reconnect test above,
+  which passes in its isolated network.
+
+Not yet done:
+
+- latency and capacity measurements on the Fly machine;
+- any session with people who didn't build it, including the Crit 10 demo
+  itself. The protocol is in [`acceptance-report.md`](docs/acceptance-report.md).
+
+The README's "what good means" section is still a draft awaiting the author's
+own reading and position.

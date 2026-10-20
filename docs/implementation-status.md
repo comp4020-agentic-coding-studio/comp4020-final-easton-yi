@@ -5,8 +5,8 @@ The resume record for implementing `docs/BRIEF.md` (product rules) under
 Nothing here is a grade claim. Human-judgement items stay **pending** until a
 real person has tried the app.
 
-- **Current stage:** P9 (permanent account deletion, user-directed change of 2026-10-12, ADR-0007) passes locally and is **not committed or deployed**; it adds migration 3 (runbook). P8 (graphics quality and idle rendering, user-directed change of 2026-10-06) passes locally, on top of P7 (owner-controlled work deletion) and P6 (audit and handoff). P8 is **not committed or deployed**. P0–P5 gates pass **locally**; deployment-dependent gates are blocked (see Blockers). The P7 change is **not committed or deployed** yet.
-- **Next action:** deploy to Fly, then re-run `pnpm check`, `scripts/measure/visibility.ts` and `scripts/measure/capacity.ts` against the live URL; run the human sessions in `acceptance-report.md`.
+- **Current stage:** Crit 10 verification (2026-10-21, `docs/CRIT10.md`): P0–P9 are committed and deployed; Fly v9 runs `ffa5830`. Two identities, invitation, shared editing, propagation and server-side refusals pass on Fly with `flyctl logs` attributing each; refusals are now logged (`access.denied`). Record: `docs/evidence/crit-10-verification.md`. Older stage notes below are kept as written at the time.
+- **Next action:** the live Crit 10 demo (two classmates, separate Chrome profiles, narrated from `flyctl logs`); re-run `scripts/measure/visibility.ts` and `scripts/measure/capacity.ts` against the live URL; run the human sessions in `acceptance-report.md`.
 
 ## Baseline (P0, 2026-10-05)
 
@@ -51,6 +51,7 @@ real person has tried the app.
 | Command | Result |
 | --- | --- |
 | `pnpm typecheck` | clean |
+| Crit 10, 2026-10-21, fixed tree (= `a9d4a97` product code) | unit 124 passed (12 files, +`tests/access-log.test.ts`); `pnpm test` 53 passed against a fresh production build; `pnpm test:integration` 13 passed; `pnpm test:e2e` 28 of 29 (F3 method A fails on a host network, passes 10/10 in a loopback-only namespace: crit-10 report D-2) |
 | `pnpm test:unit` (2026-10-12, after P9) | 99 passed in 9 files, including account deletion (7 restart/hook scenarios, 3 database) and trash guard (6) |
 | `APP_URL=http://localhost:8090 pnpm test` against a fresh `NODE_ENV=production COOKIE_SECURE=0` build (2026-10-12, after P9) | 53 passed (49 earlier + 4 account deletion); the new spec registers 4 accounts, within the 40-signup budget |
 | `APP_URL=http://localhost:8099 pnpm test:e2e` against a fresh `ENABLE_TEST_HOOKS=1` build (2026-10-12, after P9) | 20 passed (18 earlier + 2 account deletion) |

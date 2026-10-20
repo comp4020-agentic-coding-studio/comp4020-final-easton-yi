@@ -1,0 +1,39 @@
+# Shortened excerpt: JSON log lines whose workId or actorId is one of this probe's IDs, reduced to
+# time, event, actorId[0:8], workId[0:8], commandId[0:8], action, outcome, code. Full IDs are in the probe JSON.
+# avery=769e8923 blake=bd24b068 casey=6a151d8a work=8f776beb
+22:59:48.451	account.create	769e8923	-	-	-	accepted	-
+22:59:48.452	session.login	769e8923	-	-	-	accepted	-
+22:59:48.589	account.create	bd24b068	-	-	-	accepted	-
+22:59:48.591	session.login	bd24b068	-	-	-	accepted	-
+22:59:48.723	account.create	6a151d8a	-	-	-	accepted	-
+22:59:48.724	session.login	6a151d8a	-	-	-	accepted	-
+22:59:48.731	work.create	769e8923	8f776beb	-	-	accepted	-
+22:59:48.733	invite.create	769e8923	8f776beb	-	-	accepted	-
+22:59:48.736	invite.accept	bd24b068	8f776beb	-	-	accepted	-
+22:59:48.741	ws.connect	769e8923	-	-	-	-	-
+22:59:48.744	room.activate	-	8f776beb	-	-	-	-
+22:59:48.744	room.join	769e8923	8f776beb	-	-	editor	-
+22:59:48.745	ws.connect	bd24b068	-	-	-	-	-
+22:59:48.745	room.join	bd24b068	8f776beb	-	-	editor	-
+22:59:48.748	command.place	769e8923	8f776beb	934b4934	-	accepted	-
+22:59:48.750	command.place	bd24b068	8f776beb	6037f8c8	-	accepted	-
+22:59:48.753	access.denied	6a151d8a	8f776beb	-	works.state	rejected	NOT_FOUND
+22:59:48.754	access.denied	6a151d8a	11409683	-	works.state	rejected	NOT_FOUND
+22:59:48.755	access.denied	6a151d8a	8f776beb	-	works.get	rejected	NOT_FOUND
+22:59:48.756	access.denied	6a151d8a	8f776beb	-	works.rename	rejected	NOT_FOUND
+22:59:48.757	access.denied	6a151d8a	8f776beb	-	invite.create	rejected	NOT_FOUND
+22:59:48.758	command.place	6a151d8a	8f776beb	256cbeaf	-	rejected	NOT_FOUND
+22:59:48.759	ws.connect	6a151d8a	-	-	-	-	-
+22:59:48.759	room.join	6a151d8a	8f776beb	-	-	rejected	NOT_FOUND
+22:59:48.763	access.denied	bd24b068	8f776beb	-	works.rename	rejected	NOT_OWNER
+22:59:48.764	access.denied	bd24b068	8f776beb	-	invite.create	rejected	NOT_OWNER
+22:59:48.765	access.denied	bd24b068	8f776beb	-	invite.revoke	rejected	NOT_OWNER
+22:59:48.765	access.denied	bd24b068	8f776beb	-	members.remove	rejected	NOT_OWNER
+22:59:48.767	access.denied	bd24b068	8f776beb	-	works.archive	rejected	NOT_OWNER
+22:59:48.768	access.denied	bd24b068	8f776beb	-	works.trash	rejected	NOT_OWNER
+22:59:48.770	command.restore	bd24b068	8f776beb	f7d144db	-	rejected	NOT_OWNER
+22:59:48.774	room.leave	769e8923	8f776beb	-	-	-	-
+22:59:48.774	ws.disconnect	769e8923	-	-	-	-	-
+22:59:48.774	room.leave	bd24b068	8f776beb	-	-	-	-
+22:59:48.774	ws.disconnect	bd24b068	-	-	-	-	-
+22:59:48.774	ws.disconnect	6a151d8a	-	-	-	-	-

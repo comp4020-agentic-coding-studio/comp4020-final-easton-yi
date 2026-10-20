@@ -1,0 +1,1 @@
+{"ok":true,"rooms":0,"conns":0,"sticks":0,"rssMiB":107,"workerHeapMiB":17,"workerHeapTotalMiB":19,"externalMiB":9,"arrayBuffersMiB":0,"tick":{"passes":1200,"p50Ms":0.0103,"p95Ms":0.0132,"maxMs":0.1132,"overloadEvents":0},"mainHeapMiB":20,"eventLoopDelayMs":{"p50":10.16,"p99":10.62,"max":38.5},"sockets":0}
