@@ -306,6 +306,7 @@ const joinRoom = (conn: Conn, workId: string): void => {
   try {
     access = requireMember(workId, conn.userId);
   } catch (e) {
+    if (isAppError(e)) log({ event: "room.join", level: "warn", actorId: conn.userId, workId, outcome: "rejected", code: e.code });
     if (isAppError(e) && e.code === "TRASHED") {
       send([conn.connId], { type: "access.ended", reason: "TRASHED", message: e.message });
       return;
@@ -1819,6 +1820,19 @@ const ACCOUNT_SCOPED = new Set([
   "exhibits.publish", "exhibits.setWithdrawn", "exhibits.forWork", "favorites.list", "favorites.set", "favorites.has",
 ]);
 
+/**
+ * Account-scoped methods whose second argument is a work ID (exhibit ID for
+ * setWithdrawn). A permission refusal of one is logged with actor and work, so
+ * an attempt on someone else's work shows in the logs (OPS-03, OPS-04).
+ * Commands log their own outcome; invite.accept's argument is a token digest.
+ */
+const WORK_SCOPED = new Set([
+  "works.get", "works.rename", "works.archive", "works.trash", "works.untrash", "works.purge", "works.state",
+  "invite.create", "invite.status", "invite.revoke", "members.remove", "members.leave",
+  "versions.list", "versions.delete", "versions.geometry", "exhibits.publish", "exhibits.setWithdrawn", "exhibits.forWork",
+]);
+const DENIED: ErrorCode[] = ["NOT_OWNER", "NOT_FOUND", "TRASHED"];
+
 port.on("message", (m: { kind: "rpc"; id: number; method: string; args: unknown[] }) => {
   const f = methods[m.method];
   try {
@@ -1828,6 +1842,10 @@ port.on("message", (m: { kind: "rpc"; id: number; method: string; args: unknown[
     port.postMessage({ kind: "reply", id: m.id, ok: true, result });
   } catch (e) {
     if (!isAppError(e)) log({ event: "rpc.error", level: "error", method: m.method, error: String(e), stack: (e as Error).stack });
+    else if (WORK_SCOPED.has(m.method) && DENIED.includes(e.code)) {
+      const target = m.method === "exhibits.setWithdrawn" ? { exhibitId: m.args[1] as string } : { workId: m.args[1] as string };
+      log({ event: "access.denied", level: "warn", actorId: m.args[0] as string, action: m.method, ...target, outcome: "rejected", code: e.code });
+    }
     port.postMessage({
       kind: "reply",
       id: m.id,

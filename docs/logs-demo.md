@@ -91,3 +91,39 @@ answers `alreadyDeleted`.
 ```sh
 flyctl logs -a comp4020-final-easton-yi | grep -o '{.*}' | jq -c 'select(.event | test("^work\\.(trash|untrash|purge)$|^member\\.leave$"))'
 ```
+
+## Refused attempts on someone else's work (added 2026-10-21, Crit 10)
+
+The server refused these before Crit 10 too, but some refusals left no log
+line. Commands (`command.place`, `command.restore`) logged `rejected` with
+their code; owner-only HTTP calls by an editor (rename, invite, remove a
+member, archive, trash) and a stranger's HTTP calls and room join logged
+nothing ([C10-08](evidence/crit-10-verification.md)). From the logs you
+couldn't see that one person had tried to change what belongs to another. Each
+refusal is now one `warn` line with the actor, the action and the work:
+
+- `access.denied` for an HTTP call: `action` is the server method, `code` is
+  `NOT_OWNER` for a member who isn't the owner, `NOT_FOUND` for someone who
+  isn't a member, and `TRASHED` for a work in the trash
+- `room.join` with `outcome: "rejected"` for a socket join
+
+These lines are real, from the Crit 10 probe against a local production build,
+with IDs shortened to 8 characters. Blake (`bd24b068`) is an editor and Casey
+(`6a151d8a`) is a stranger:
+
+```text
+access.denied   works.rename    6a151d8a  NOT_FOUND
+room.join                       6a151d8a  NOT_FOUND
+access.denied   works.rename    bd24b068  NOT_OWNER
+access.denied   works.trash     bd24b068  NOT_OWNER
+access.denied   members.remove  bd24b068  NOT_OWNER
+command.restore                 bd24b068  NOT_OWNER
+```
+
+No title, invitation token or request body is logged. A request for a work
+ID that doesn't exist logs nothing, because there is no one's work to protect.
+
+```sh
+# who tried what on whose work
+flyctl logs -a comp4020-final-easton-yi | grep -o '{.*}' | jq -r 'select(.outcome == "rejected") | [.time[11:19], .event, (.action // ""), .actorId[0:8], (.workId // "")[0:8], .code] | @tsv'
+```
