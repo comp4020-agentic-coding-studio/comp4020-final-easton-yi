@@ -44,46 +44,30 @@ one workshop).
 
 ## Using it
 
-- **Exhibition** (`/`): public frozen exhibits, newest first. No account needed.
-- **My works** (`/works/`): create a work, or open one you were invited to.
-- **Workshop** (`/works/<id>/`): **Add** holds a ghost; drag its middle, the
-  height arrows, an end ball (swing) or an end cone (tilt), or use the panel
-  and keys (arrows, PgUp/PgDn, Q/E, R/F, H, V, G, Enter, Esc). **Place**
-  submits it. The status line reads "Placement saved; structure moving" and
-  then "Structure saved".
-- **Versions** saves settled structures; the owner can restore one (a recovery
-  point is saved first) or exhibit it. **People** manages invitation links.
-  **Push** lets the owner give one bounded push.
-
-Accounts use a handle and password. There's no email: the recovery code you're
-shown once is the only way back if you forget your password. **Account** (your
-name in the header) can also delete the account permanently, with every work
-and exhibit it owns. Works you only helped build stay with their owners, with
-your sticks credited to "Deleted user".
+The **exhibition** (`/`, below the island) shows public frozen exhibits without an account. In **My works**
+(`/works/`) you create or open a work; in its workshop, **Add** holds a ghost stick, **Place** submits it, **Versions**
+saves settled structures to restore or exhibit, and **People** manages invitations. Accounts use a handle, a password
+and a one-time recovery code, and can be deleted with everything they own.
 
 ## How it's built
 
-One Node process on one Fly machine (256 MB) with one volume. A coordinator
-worker thread owns SQLite and every live Rapier physics world. Each accepted
-placement commits a full world snapshot and its receipt in one transaction
-before anyone is told it succeeded. Decisions and their costs are recorded in
-[`docs/adr/`](docs/adr/0001-stack.md); measurements are in
-[`docs/measurements.md`](docs/measurements.md); rule-by-rule progress is in
-[`docs/implementation-status.md`](docs/implementation-status.md).
+One Node process and one SQLite volume on one 256 MB Fly machine, deployed at
+`comp4020-final-easton-yi.fly.dev`. A worker thread owns the database and every live Rapier world, and each accepted
+placement is saved in one transaction before anyone is told it succeeded. Decisions: [`docs/adr/`](docs/adr/0001-stack.md);
+measurements: [`docs/measurements.md`](docs/measurements.md).
+
+## The island (local, not yet deployed)
+
+In the working tree, the home page opens on an explorable island of 20 generated timber landmarks, with the header,
+gallery and works pages unchanged ([protection matrix](docs/evidence/world/protection-matrix.md)). Status and
+evidence: [requirements-status.md](docs/evidence/world/requirements-status.md). Frame rate on a real GPU is unverified.
 
 ## Running and testing
 
-```sh
-pnpm install
-pnpm build && pnpm start           # http://localhost:8080, data in ./.data
-APP_URL=http://localhost:8080 pnpm check   # course invariants + HTTP/WebSocket contract specs
-pnpm test:unit                     # physics fixtures, placement maths, kill/restart tests (no build needed)
-pnpm test:integration              # builds, then runs suites against the production bundle
-pnpm test:e2e                      # Playwright, against APP_URL (some specs need ENABLE_TEST_HOOKS=1)
-```
+`pnpm install`, `pnpm build && pnpm start` (http://localhost:8080), then `APP_URL=http://localhost:8080 pnpm check`.
+The full set of suites, and the supervised commands for the island, are in [docs/running.md](docs/running.md).
 
 ## Known limits
 
-Capacity (3 live rooms, 4 editors per room, 200 sticks per work) is a
-starting design and has not yet been measured on the Fly machine. Placement
-feel and the look of the wood still need people who didn't build it to try it.
+Capacity (3 live rooms, 4 editors each, 200 sticks per work) hasn't been measured on the Fly machine, and placement
+feel still needs people who didn't build it to try it.

@@ -1,0 +1,714 @@
+{
+"label": "gpu30a",
+"stage": "gpu",
+"cycles": 30,
+"pair": [
+"L03",
+"L09"
+],
+"quality": "high",
+"viewport": "1280x720",
+"note": "world \u2192 /login/ cycles; checkpoints 8 s after leaving the world (no WebGL on the page). In-tour process figures are zero in gpu30a (its reader missed Chromium's rewritten argv); use supervisorRss there. Cleanup checkpoints of both runs were read without their hold (fixed afterwards).",
+"end": {
+"peakGroupMiB": 662,
+"peakRssSumMiB": 1077,
+"elapsedS": 503.6,
+"cgroupEvents": "low 0, high 0, max 0, oom 0, oom_kill 0, oom_group_kill 0",
+"minAvailMiB": 8179
+},
+"checkpoints": [
+{
+"checkpoint": "baseline (no world yet)",
+"s": 9.4,
+"groupMiB": 292,
+"supervisorRss": {
+"gpu": 148,
+"renderer": 121
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 1",
+"s": 25.9,
+"groupMiB": 526,
+"supervisorRss": {
+"gpu": 286,
+"renderer": 213
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 2",
+"s": 42.5,
+"groupMiB": 582,
+"supervisorRss": {
+"gpu": 289,
+"renderer": 255
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 3",
+"s": 58.2,
+"groupMiB": 566,
+"supervisorRss": {
+"gpu": 285,
+"renderer": 241
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 4",
+"s": 74.9,
+"groupMiB": 582,
+"supervisorRss": {
+"gpu": 292,
+"renderer": 237
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 5",
+"s": 90.7,
+"groupMiB": 585,
+"supervisorRss": {
+"gpu": 294,
+"renderer": 237
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 6",
+"s": 107.4,
+"groupMiB": 592,
+"supervisorRss": {
+"gpu": 298,
+"renderer": 239
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 7",
+"s": 123.6,
+"groupMiB": 515,
+"supervisorRss": {
+"gpu": 297,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 8",
+"s": 140.3,
+"groupMiB": 459,
+"supervisorRss": {
+"gpu": 300,
+"renderer": 178
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 9",
+"s": 156.3,
+"groupMiB": 522,
+"supervisorRss": {
+"gpu": 301,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 10",
+"s": 173.4,
+"groupMiB": 515,
+"supervisorRss": {
+"gpu": 307,
+"renderer": 224
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 11",
+"s": 189.8,
+"groupMiB": 520,
+"supervisorRss": {
+"gpu": 305,
+"renderer": 230
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 12",
+"s": 206.6,
+"groupMiB": 517,
+"supervisorRss": {
+"gpu": 292,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 13",
+"s": 222.9,
+"groupMiB": 532,
+"supervisorRss": {
+"gpu": 310,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 14",
+"s": 240.1,
+"groupMiB": 476,
+"supervisorRss": {
+"gpu": 305,
+"renderer": 186
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 15",
+"s": 256.6,
+"groupMiB": 539,
+"supervisorRss": {
+"gpu": 315,
+"renderer": 239
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 16",
+"s": 273.4,
+"groupMiB": 542,
+"supervisorRss": {
+"gpu": 316,
+"renderer": 241
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 17",
+"s": 289.8,
+"groupMiB": 545,
+"supervisorRss": {
+"gpu": 320,
+"renderer": 240
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 18",
+"s": 306.9,
+"groupMiB": 534,
+"supervisorRss": {
+"gpu": 314,
+"renderer": 234
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 19",
+"s": 322.9,
+"groupMiB": 536,
+"supervisorRss": {
+"gpu": 315,
+"renderer": 234
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 20",
+"s": 339.2,
+"groupMiB": 491,
+"supervisorRss": {
+"gpu": 324,
+"renderer": 180
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 21",
+"s": 356.5,
+"groupMiB": 549,
+"supervisorRss": {
+"gpu": 324,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 22",
+"s": 372.5,
+"groupMiB": 497,
+"supervisorRss": {
+"gpu": 328,
+"renderer": 180
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 23",
+"s": 389.3,
+"groupMiB": 554,
+"supervisorRss": {
+"gpu": 327,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 24",
+"s": 405.2,
+"groupMiB": 500,
+"supervisorRss": {
+"gpu": 331,
+"renderer": 181
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 25",
+"s": 421.8,
+"groupMiB": 547,
+"supervisorRss": {
+"gpu": 321,
+"renderer": 236
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 26",
+"s": 438.3,
+"groupMiB": 561,
+"supervisorRss": {
+"gpu": 335,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 27",
+"s": 454.9,
+"groupMiB": 566,
+"supervisorRss": {
+"gpu": 336,
+"renderer": 239
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 28",
+"s": 470.8,
+"groupMiB": 571,
+"supervisorRss": {
+"gpu": 342,
+"renderer": 238
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 29",
+"s": 487.6,
+"groupMiB": 503,
+"supervisorRss": {
+"gpu": 327,
+"renderer": 184
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "after cycle 30",
+"s": 503.3,
+"groupMiB": 572,
+"supervisorRss": {
+"gpu": 342,
+"renderer": 239
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "page closed",
+"s": 503.4,
+"groupMiB": 572,
+"supervisorRss": {
+"gpu": 342,
+"renderer": 239
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+},
+{
+"checkpoint": "context closed",
+"s": 503.4,
+"groupMiB": 572,
+"supervisorRss": {
+"gpu": 342,
+"renderer": 239
+},
+"inTour": {
+"gpu": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+}
+]
+}

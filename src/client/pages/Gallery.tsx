@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api.ts";
 import { useSession } from "../session.ts";
 import { signInLink } from "../router.ts";
+import { WorldStage } from "../world/WorldStage.tsx";
 
 export interface ExhibitCard {
   id: string;
@@ -49,6 +50,9 @@ export function Gallery() {
   };
 
   return (
+    <>
+    {/* The island opens with the page (its own region, above the existing exhibition, which is unchanged below). */}
+    <WorldStage mode="home" />
     <main className="page">
       <section className="intro">
         <h1>A quiet table and one kind of stick.</h1>
@@ -139,5 +143,6 @@ export function Gallery() {
         )}
       </section>
     </main>
+    </>
   );
 }

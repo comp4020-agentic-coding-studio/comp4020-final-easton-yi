@@ -10,6 +10,12 @@ import { AuthPage, AccountPage } from "./pages/Auth.tsx";
 import { Join } from "./pages/Join.tsx";
 import { ExhibitPage } from "./pages/Exhibit.tsx";
 import { Workshop } from "./workshop/Workshop.tsx";
+import { WorldPage } from "./world/WorldPage.tsx";
+import { ReturnToWorld } from "./world/ReturnToWorld.tsx";
+import { lazy, Suspense } from "react";
+
+// development-only inspector (test flag); loaded on demand so it adds nothing to the app bundle
+const InspectPage = lazy(() => import("./world/inspect/InspectPage.tsx").then((m) => ({ default: m.InspectPage })));
 
 const UUID = "[0-9a-f-]{36}";
 
@@ -69,6 +75,17 @@ function App() {
   let m: RegExpMatchArray | null;
   if (!loaded) page = <main className="page" aria-busy="true" />;
   else if (path === "/") page = <Gallery />;
+  else if (path === "/world/") {
+    compact = true;
+    page = <WorldPage />;
+  } else if (path === "/world/inspect/") {
+    compact = true;
+    page = (
+      <Suspense fallback={<main className="page" aria-busy="true" />}>
+        <InspectPage />
+      </Suspense>
+    );
+  }
   else if (path === "/works/") page = <Works />;
   else if ((m = path.match(new RegExp(`^/works/(${UUID})/$`)))) {
     compact = true;
@@ -93,6 +110,7 @@ function App() {
         <div className="notice-region" role="status" aria-live="polite">
           {notice && notice.path === path && <p className="notice">{notice.text}</p>}
         </div>
+        {loaded && <ReturnToWorld path={path} />}
         {page}
       </div>
     </div>

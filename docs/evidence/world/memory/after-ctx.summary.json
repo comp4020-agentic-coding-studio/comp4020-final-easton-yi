@@ -1,0 +1,186 @@
+{
+ "label": "ctx",
+ "env": {
+  "stage": "context",
+  "viewport": "1280x720",
+  "quality": "high",
+  "browser": "153.0.8010.12",
+  "headless": true,
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "context": [
+   {
+    "cycle": 1,
+    "resumeButtonAfterRestore": true,
+    "lost": true,
+    "rendersStoppedWhileLost": true,
+    "noticeShown": true,
+    "restored": true,
+    "rendersAfterRestore": true,
+    "movedAfterRestore": 15.3,
+    "contextRestores": 1
+   },
+   {
+    "cycle": 2,
+    "resumeButtonAfterRestore": true,
+    "lost": true,
+    "rendersStoppedWhileLost": true,
+    "noticeShown": true,
+    "restored": true,
+    "rendersAfterRestore": true,
+    "movedAfterRestore": 15.4,
+    "contextRestores": 2
+   },
+   {
+    "cycle": 3,
+    "resumeButtonAfterRestore": true,
+    "lost": true,
+    "rendersStoppedWhileLost": true,
+    "noticeShown": true,
+    "restored": true,
+    "rendersAfterRestore": true,
+    "movedAfterRestore": 15.3,
+    "contextRestores": 3
+   }
+  ]
+ },
+ "elapsedS": 52.2,
+ "steps": [
+  {
+   "step": "home: load",
+   "start": 0.5,
+   "groupStart": 248,
+   "groupPeak": 511,
+   "end": 1.9,
+   "groupEnd": 514,
+   "ok": true
+  },
+  {
+   "step": "home: settle (exploring)",
+   "start": 1.9,
+   "groupStart": 514,
+   "groupPeak": 566,
+   "end": 7.2,
+   "groupEnd": 579,
+   "ok": true
+  },
+  {
+   "step": "cycle 1: explore + walk",
+   "start": 7.2,
+   "groupStart": 579,
+   "groupPeak": 590,
+   "end": 9.4,
+   "groupEnd": 589,
+   "ok": true
+  },
+  {
+   "step": "cycle 1: lose context",
+   "start": 9.4,
+   "groupStart": 589,
+   "groupPeak": 589,
+   "end": 11.4,
+   "groupEnd": 510,
+   "ok": true
+  },
+  {
+   "step": "cycle 1: restore",
+   "start": 11.4,
+   "groupStart": 510,
+   "groupPeak": 592,
+   "end": 13.6,
+   "groupEnd": 592,
+   "ok": true
+  },
+  {
+   "step": "cycle 1: input after restore",
+   "start": 13.6,
+   "groupStart": 592,
+   "groupPeak": 594,
+   "end": 20.4,
+   "groupEnd": 594,
+   "ok": true
+  },
+  {
+   "step": "cycle 2: explore + walk",
+   "start": 20.4,
+   "groupStart": 594,
+   "groupPeak": 595,
+   "end": 22.4,
+   "groupEnd": 593,
+   "ok": true
+  },
+  {
+   "step": "cycle 2: lose context",
+   "start": 22.4,
+   "groupStart": 593,
+   "groupPeak": 593,
+   "end": 24.6,
+   "groupEnd": 574,
+   "ok": true
+  },
+  {
+   "step": "cycle 2: restore",
+   "start": 24.6,
+   "groupStart": 574,
+   "groupPeak": 598,
+   "end": 26.8,
+   "groupEnd": 596,
+   "ok": true
+  },
+  {
+   "step": "cycle 2: input after restore",
+   "start": 26.8,
+   "groupStart": 596,
+   "groupPeak": 599,
+   "end": 32.9,
+   "groupEnd": 570,
+   "ok": true
+  },
+  {
+   "step": "cycle 3: explore + walk",
+   "start": 32.9,
+   "groupStart": 570,
+   "groupPeak": 571,
+   "end": 34.9,
+   "groupEnd": 568,
+   "ok": true
+  },
+  {
+   "step": "cycle 3: lose context",
+   "start": 34.9,
+   "groupStart": 568,
+   "groupPeak": 568,
+   "end": 37.2,
+   "groupEnd": 551,
+   "ok": true
+  },
+  {
+   "step": "cycle 3: restore",
+   "start": 37.2,
+   "groupStart": 551,
+   "groupPeak": 576,
+   "end": 39.5,
+   "groupEnd": 575,
+   "ok": true
+  },
+  {
+   "step": "cycle 3: input after restore",
+   "start": 39.5,
+   "groupStart": 575,
+   "groupPeak": 583,
+   "end": 45.5,
+   "groupEnd": 583,
+   "ok": true
+  },
+  {
+   "step": "leave world (/readme/)",
+   "start": 45.5,
+   "groupStart": 583,
+   "groupPeak": 583,
+   "end": 52.2,
+   "groupEnd": 497,
+   "ok": true
+  }
+ ],
+ "lastWorld": null,
+ "errors": []
+}

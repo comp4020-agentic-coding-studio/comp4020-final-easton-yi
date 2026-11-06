@@ -1,0 +1,558 @@
+{
+ "label": "t-medium",
+ "env": {
+  "stage": "tris",
+  "viewport": "1280x720",
+  "quality": "medium",
+  "browser": "153.0.8010.12",
+  "headless": true,
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "tris": [
+   {
+    "view": "home",
+    "lods": {
+     "L01": 1,
+     "L02": 2,
+     "L03": 1,
+     "L04": 2,
+     "L05": 2,
+     "L06": 2,
+     "L07": 2,
+     "L08": 3,
+     "L09": 3,
+     "L10": 3,
+     "L11": 3,
+     "L12": 3,
+     "L13": 3,
+     "L14": 3,
+     "L15": 3,
+     "L16": 3,
+     "L17": 3,
+     "L18": 3,
+     "L19": 3,
+     "L20": 3
+    },
+    "breakdown": {
+     "total": 687939,
+     "calls": 128,
+     "byCategory": {
+      "portals": {
+       "camera": 1626,
+       "shadow": 1620,
+       "calls": 15
+      },
+      "shells": {
+       "camera": 118248,
+       "shadow": 10448,
+       "calls": 45
+      },
+      "rocks": {
+       "camera": 81600,
+       "shadow": 15360,
+       "calls": 10
+      },
+      "far:L1": {
+       "camera": 48000,
+       "shadow": 69072,
+       "calls": 3
+      },
+      "terrain": {
+       "camera": 117696,
+       "shadow": 0,
+       "calls": 23
+      },
+      "far:L2": {
+       "camera": 76984,
+       "shadow": 0,
+       "calls": 4
+      },
+      "far:L3": {
+       "camera": 113824,
+       "shadow": 0,
+       "calls": 13
+      },
+      "sky": {
+       "camera": 12,
+       "shadow": 0,
+       "calls": 1
+      },
+      "other": {
+       "camera": 94,
+       "shadow": 0,
+       "calls": 1
+      },
+      "grass": {
+       "camera": 32985,
+       "shadow": 0,
+       "calls": 1
+      },
+      "water": {
+       "camera": 14,
+       "shadow": 0,
+       "calls": 7
+      },
+      "sea": {
+       "camera": 2,
+       "shadow": 0,
+       "calls": 1
+      },
+      "clouds": {
+       "camera": 348,
+       "shadow": 0,
+       "calls": 1
+      }
+     }
+    }
+   },
+   {
+    "view": "L01 ground",
+    "lods": {
+     "L01": 0,
+     "L02": 1,
+     "L03": 1,
+     "L04": 2,
+     "L05": 2,
+     "L06": 2,
+     "L07": 2,
+     "L08": 3,
+     "L09": 3,
+     "L10": 3,
+     "L11": 3,
+     "L12": 3,
+     "L13": 3,
+     "L14": 3,
+     "L15": 3,
+     "L16": 3,
+     "L17": 3,
+     "L18": 3,
+     "L19": 3,
+     "L20": 3
+    },
+    "breakdown": {
+     "total": 714233,
+     "calls": 66,
+     "byCategory": {
+      "portals": {
+       "camera": 0,
+       "shadow": 816,
+       "calls": 2
+      },
+      "shells": {
+       "camera": 9028,
+       "shadow": 9704,
+       "calls": 15
+      },
+      "rocks": {
+       "camera": 39300,
+       "shadow": 26760,
+       "calls": 7
+      },
+      "far:L0": {
+       "camera": 21072,
+       "shadow": 21072,
+       "calls": 2
+      },
+      "far:L1": {
+       "camera": 48000,
+       "shadow": 96000,
+       "calls": 3
+      },
+      "detail:M": {
+       "camera": 46176,
+       "shadow": 46176,
+       "calls": 12
+      },
+      "terrain": {
+       "camera": 76096,
+       "shadow": 0,
+       "calls": 11
+      },
+      "far:L2": {
+       "camera": 40000,
+       "shadow": 0,
+       "calls": 2
+      },
+      "far:L3": {
+       "camera": 9600,
+       "shadow": 0,
+       "calls": 1
+      },
+      "sky": {
+       "camera": 12,
+       "shadow": 0,
+       "calls": 1
+      },
+      "detail:D": {
+       "camera": 190992,
+       "shadow": 0,
+       "calls": 6
+      },
+      "other": {
+       "camera": 94,
+       "shadow": 0,
+       "calls": 1
+      },
+      "grass": {
+       "camera": 32985,
+       "shadow": 0,
+       "calls": 1
+      },
+      "sea": {
+       "camera": 2,
+       "shadow": 0,
+       "calls": 1
+      },
+      "clouds": {
+       "camera": 348,
+       "shadow": 0,
+       "calls": 1
+      }
+     }
+    }
+   },
+   {
+    "view": "L03 ground",
+    "lods": {
+     "L01": 1,
+     "L02": 1,
+     "L03": 0,
+     "L04": 1,
+     "L05": 1,
+     "L06": 1,
+     "L07": 2,
+     "L08": 2,
+     "L09": 2,
+     "L10": 2,
+     "L11": 3,
+     "L12": 3,
+     "L13": 3,
+     "L14": 3,
+     "L15": 3,
+     "L16": 3,
+     "L17": 3,
+     "L18": 3,
+     "L19": 3,
+     "L20": 3
+    },
+    "breakdown": {
+     "total": 2117671,
+     "calls": 130,
+     "byCategory": {
+      "shells": {
+       "camera": 10400,
+       "shadow": 43824,
+       "calls": 16
+      },
+      "rocks": {
+       "camera": 32740,
+       "shadow": 44140,
+       "calls": 7
+      },
+      "far:L0": {
+       "camera": 48000,
+       "shadow": 48000,
+       "calls": 2
+      },
+      "far:L1": {
+       "camera": 69072,
+       "shadow": 112984,
+       "calls": 5
+      },
+      "detail:M": {
+       "camera": 205212,
+       "shadow": 153804,
+       "calls": 40
+      },
+      "terrain": {
+       "camera": 110784,
+       "shadow": 0,
+       "calls": 8
+      },
+      "detail:chains": {
+       "camera": 239120,
+       "shadow": 0,
+       "calls": 16
+      },
+      "sky": {
+       "camera": 12,
+       "shadow": 0,
+       "calls": 1
+      },
+      "detail:D": {
+       "camera": 968328,
+       "shadow": 0,
+       "calls": 19
+      },
+      "other": {
+       "camera": 94,
+       "shadow": 0,
+       "calls": 1
+      },
+      "portals": {
+       "camera": 1626,
+       "shadow": 0,
+       "calls": 9
+      },
+      "grass": {
+       "camera": 29175,
+       "shadow": 0,
+       "calls": 1
+      },
+      "sea": {
+       "camera": 2,
+       "shadow": 0,
+       "calls": 1
+      },
+      "clouds": {
+       "camera": 348,
+       "shadow": 0,
+       "calls": 1
+      }
+     }
+    }
+   },
+   {
+    "view": "home again",
+    "lods": {
+     "L01": 1,
+     "L02": 2,
+     "L03": 1,
+     "L04": 2,
+     "L05": 2,
+     "L06": 2,
+     "L07": 2,
+     "L08": 2,
+     "L09": 2,
+     "L10": 3,
+     "L11": 3,
+     "L12": 3,
+     "L13": 3,
+     "L14": 3,
+     "L15": 3,
+     "L16": 3,
+     "L17": 3,
+     "L18": 3,
+     "L19": 3,
+     "L20": 3
+    },
+    "breakdown": {
+     "total": 740965,
+     "calls": 133,
+     "byCategory": {
+      "portals": {
+       "camera": 1626,
+       "shadow": 1620,
+       "calls": 15
+      },
+      "shells": {
+       "camera": 122700,
+       "shadow": 10448,
+       "calls": 48
+      },
+      "rocks": {
+       "camera": 81600,
+       "shadow": 15360,
+       "calls": 10
+      },
+      "far:L1": {
+       "camera": 48000,
+       "shadow": 69072,
+       "calls": 3
+      },
+      "terrain": {
+       "camera": 129280,
+       "shadow": 0,
+       "calls": 24
+      },
+      "far:L2": {
+       "camera": 136984,
+       "shadow": 0,
+       "calls": 7
+      },
+      "far:L3": {
+       "camera": 94624,
+       "shadow": 0,
+       "calls": 11
+      },
+      "sky": {
+       "camera": 12,
+       "shadow": 0,
+       "calls": 1
+      },
+      "other": {
+       "camera": 94,
+       "shadow": 0,
+       "calls": 1
+      },
+      "grass": {
+       "camera": 29175,
+       "shadow": 0,
+       "calls": 1
+      },
+      "water": {
+       "camera": 14,
+       "shadow": 0,
+       "calls": 7
+      },
+      "sea": {
+       "camera": 2,
+       "shadow": 0,
+       "calls": 1
+      },
+      "clouds": {
+       "camera": 348,
+       "shadow": 0,
+       "calls": 1
+      }
+     }
+    }
+   }
+  ]
+ },
+ "elapsedS": 17.5,
+ "steps": [
+  {
+   "step": "home: load",
+   "start": 0.5,
+   "groupStart": 244,
+   "groupPeak": 495,
+   "end": 1.9,
+   "groupEnd": 498,
+   "ok": true
+  },
+  {
+   "step": "home: settle (exploring)",
+   "start": 1.9,
+   "groupStart": 498,
+   "groupPeak": 556,
+   "end": 7.3,
+   "groupEnd": 587,
+   "ok": true
+  },
+  {
+   "step": "home view",
+   "start": 7.3,
+   "groupStart": 587,
+   "groupPeak": 648,
+   "end": 9.4,
+   "groupEnd": 648,
+   "ok": true
+  },
+  {
+   "step": "L01 ground",
+   "start": 9.4,
+   "groupStart": 648,
+   "groupPeak": 663,
+   "end": 12.5,
+   "groupEnd": 658,
+   "ok": true
+  },
+  {
+   "step": "L03 ground",
+   "start": 12.5,
+   "groupStart": 658,
+   "groupPeak": 702,
+   "end": 15.5,
+   "groupEnd": 700,
+   "ok": true
+  },
+  {
+   "step": "home again",
+   "start": 15.5,
+   "groupStart": 700,
+   "groupPeak": 702,
+   "end": 17.5,
+   "groupEnd": 700,
+   "ok": true
+  }
+ ],
+ "lastWorld": {
+  "renders": 24,
+  "tier": "medium",
+  "mode": "medium",
+  "drawCalls": 133,
+  "triangles": 740965,
+  "geometries": 149,
+  "textures": 4,
+  "programs": 20,
+  "landmarksReady": [
+   "L01",
+   "L02",
+   "L03",
+   "L04",
+   "L05",
+   "L06",
+   "L07",
+   "L08",
+   "L09",
+   "L10",
+   "L11",
+   "L12",
+   "L13",
+   "L14",
+   "L15",
+   "L16",
+   "L17",
+   "L18",
+   "L19",
+   "L20"
+  ],
+  "residency": {
+   "detailed": [
+    "L01",
+    "L03"
+   ],
+   "detailBytes": 9269912,
+   "farReady": 20,
+   "pending": 0,
+   "detailLoads": 2,
+   "detailEvictions": 0,
+   "detailCancels": 0,
+   "cellMeshes": 74,
+   "framesHeld": 863,
+   "fencePending": true,
+   "contextRestores": 0
+  },
+  "lods": {
+   "L01": 1,
+   "L02": 2,
+   "L03": 1,
+   "L04": 2,
+   "L05": 2,
+   "L06": 2,
+   "L07": 2,
+   "L08": 2,
+   "L09": 2,
+   "L10": 3,
+   "L11": 3,
+   "L12": 3,
+   "L13": 3,
+   "L14": 3,
+   "L15": 3,
+   "L16": 3,
+   "L17": 3,
+   "L18": 3,
+   "L19": 3,
+   "L20": 3
+  },
+  "terrainChunks": 28,
+  "colliders": 7230,
+  "feet": [
+   -1105,
+   128.00022888183594,
+   -275
+  ],
+  "yaw": -1.693,
+  "pitch": -0.03,
+  "flying": false,
+  "control": "exploring",
+  "phase": "ready",
+  "fov": 55,
+  "near": 0.15,
+  "far": 5600,
+  "raf": true,
+  "grass": 1945,
+  "pixelRatio": 1
+ },
+ "errors": []
+}

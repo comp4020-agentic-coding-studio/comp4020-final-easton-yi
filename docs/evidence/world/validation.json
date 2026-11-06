@@ -1,0 +1,3482 @@
+[
+ {
+  "id": "L01",
+  "title": "First Lintel Ring",
+  "pieces": 19764,
+  "B": 0,
+  "M": 3848,
+  "D": 15916,
+  "size": [
+   72.30299064080583,
+   56.071381639053214,
+   32.25921991500538
+  ],
+  "target": [
+   72,
+   56,
+   32
+  ],
+  "dev": [
+   0.00420820334452543,
+   0.001274672125950227,
+   0.008100622343918173
+  ],
+  "bytes": 440152,
+  "farBytes": 44812,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "19764 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.2e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/3848/15916)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 72.3 × 56.1 × 32.3 vs 72 × 56 × 32 (0.4%, 0.1%, 0.8%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.00"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "6 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 19764 = pieces 19764"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 62 %, interior 63 %, high 24 %, detail 73 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "2 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "inner portal 1; inner portal 2; highest inner portal reaches 32 m; inner portal 4; inner portal 5; bundled L-shaped corner posts with alternating ties; staggered outer lintels seated on posts; two spatial layers: outer ring and inner horseshoe"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "85 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 38,
+     "mem": {
+      "rssMiB": 114,
+      "heapUsedMiB": 21,
+      "heapTotalMiB": 35,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 59,
+     "mem": {
+      "rssMiB": 142,
+      "heapUsedMiB": 40,
+      "heapTotalMiB": 62,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 9,
+     "mem": {
+      "rssMiB": 143,
+      "heapUsedMiB": 34,
+      "heapTotalMiB": 63,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 143,
+      "heapUsedMiB": 34,
+      "heapTotalMiB": 63,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 143,
+      "heapUsedMiB": 35,
+      "heapTotalMiB": 63,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 143,
+    "heapUsedMiB": 35,
+    "heapTotalMiB": 63,
+    "externalMiB": 13,
+    "arrayBuffersMiB": 3
+   }
+  }
+ },
+ {
+  "id": "L02",
+  "title": "Lotus Column Forest",
+  "pieces": 66553,
+  "B": 1536,
+  "M": 26361,
+  "D": 38656,
+  "size": [
+   144.015,
+   104.015,
+   44.015
+  ],
+  "target": [
+   144,
+   104,
+   44
+  ],
+  "dev": [
+   0.00010416666666657193,
+   0.00014423076923075762,
+   0.0003409090909090029
+  ],
+  "bytes": 1761768,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "66553 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.7e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (1536/26361/38656)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 144.0 × 104.0 × 44.0 vs 144 × 104 × 44 (0.0%, 0.0%, 0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "12 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 66553 = pieces 66553"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "3 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 90 %, interior 93 %, high 32 %, detail 91 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "bundled lotus stems with open flower crowns on the central high columns; closed bud capitals on the low side columns; clerestory bars between the low and high roofs"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "104 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 117,
+     "mem": {
+      "rssMiB": 177,
+      "heapUsedMiB": 56,
+      "heapTotalMiB": 97,
+      "externalMiB": 22,
+      "arrayBuffersMiB": 12
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 165,
+     "mem": {
+      "rssMiB": 290,
+      "heapUsedMiB": 86,
+      "heapTotalMiB": 202,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 28,
+     "mem": {
+      "rssMiB": 294,
+      "heapUsedMiB": 134,
+      "heapTotalMiB": 205,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 294,
+      "heapUsedMiB": 134,
+      "heapTotalMiB": 205,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 294,
+      "heapUsedMiB": 134,
+      "heapTotalMiB": 205,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 294,
+    "heapUsedMiB": 134,
+    "heapTotalMiB": 205,
+    "externalMiB": 14,
+    "arrayBuffersMiB": 4
+   }
+  }
+ },
+ {
+  "id": "L03",
+  "title": "Ridge Doric Temple",
+  "pieces": 131619,
+  "B": 0,
+  "M": 30207,
+  "D": 101412,
+  "size": [
+   96.27602859212698,
+   184.015,
+   52.261438525684056
+  ],
+  "target": [
+   96,
+   184,
+   52
+  ],
+  "dev": [
+   0.00287529783465601,
+   0.00008152173913034133,
+   0.0050276639554627245
+  ],
+  "bytes": 3073984,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "131619 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.9e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/30207/101412)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 96.3 × 184.0 × 52.3 vs 96 × 184 × 52 (0.3%, 0.0%, 0.5%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "16 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 131619 = pieces 131619"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "252 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "3 marked routes (2 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 54 %, interior 74 %, high 9 %, detail 62 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "20 flutes with entasis on 46 peristyle columns; triglyph and metope rhythm in the frieze; triangular pediments with raking cornices"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "130 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 223,
+     "mem": {
+      "rssMiB": 242,
+      "heapUsedMiB": 112,
+      "heapTotalMiB": 184,
+      "externalMiB": 29,
+      "arrayBuffersMiB": 19
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 248,
+     "mem": {
+      "rssMiB": 404,
+      "heapUsedMiB": 107,
+      "heapTotalMiB": 234,
+      "externalMiB": 29,
+      "arrayBuffersMiB": 5
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 49,
+     "mem": {
+      "rssMiB": 407,
+      "heapUsedMiB": 122,
+      "heapTotalMiB": 237,
+      "externalMiB": 18,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 407,
+      "heapUsedMiB": 122,
+      "heapTotalMiB": 237,
+      "externalMiB": 18,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 2,
+     "mem": {
+      "rssMiB": 407,
+      "heapUsedMiB": 122,
+      "heapTotalMiB": 237,
+      "externalMiB": 18,
+      "arrayBuffersMiB": 8
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 407,
+    "heapUsedMiB": 122,
+    "heapTotalMiB": 237,
+    "externalMiB": 18,
+    "arrayBuffersMiB": 8
+   }
+  }
+ },
+ {
+  "id": "L04",
+  "title": "Volute Terrace Palace",
+  "pieces": 62118,
+  "B": 0,
+  "M": 20646,
+  "D": 41472,
+  "size": [
+   112.015,
+   128.015,
+   56.25178594924801
+  ],
+  "target": [
+   112,
+   128,
+   56
+  ],
+  "dev": [
+   0.0001339285714285765,
+   0.00011718749999989342,
+   0.004496177665143097
+  ],
+  "bytes": 1534360,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "62118 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.9e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/20646/41472)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 112.0 × 128.0 × 56.3 vs 112 × 128 × 56 (0.0%, 0.0%, 0.4%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "22 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 62118 = pieces 62118"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "3 marked routes (3 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 68 %, interior 80 %, high 14 %, detail 73 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "2 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "four mirrored volutes on every Ionic capital; two terrace levels with a 12 m connecting flight; three-band projecting architrave"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "76 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 116,
+     "mem": {
+      "rssMiB": 160,
+      "heapUsedMiB": 43,
+      "heapTotalMiB": 94,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 136,
+     "mem": {
+      "rssMiB": 304,
+      "heapUsedMiB": 126,
+      "heapTotalMiB": 221,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 30,
+     "mem": {
+      "rssMiB": 308,
+      "heapUsedMiB": 113,
+      "heapTotalMiB": 223,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 308,
+      "heapUsedMiB": 113,
+      "heapTotalMiB": 223,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 309,
+      "heapUsedMiB": 113,
+      "heapTotalMiB": 223,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 309,
+    "heapUsedMiB": 114,
+    "heapTotalMiB": 223,
+    "externalMiB": 16,
+    "arrayBuffersMiB": 6
+   }
+  }
+ },
+ {
+  "id": "L05",
+  "title": "Triple Aqueduct",
+  "pieces": 23151,
+  "B": 312,
+  "M": 11457,
+  "D": 11382,
+  "size": [
+   302.01500000000004,
+   20.015,
+   68.01499999999999
+  ],
+  "target": [
+   300,
+   20,
+   68
+  ],
+  "dev": [
+   0.006716666666666704,
+   0.0007500000000000284,
+   0.00022058823529391702
+  ],
+  "bytes": 499208,
+  "farBytes": 36124,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "23151 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.9e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (312/11457/11382)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 302.0 × 20.0 × 68.0 vs 300 × 20 × 68 (0.7%, 0.1%, 0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "14 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 23151 = pieces 23151"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "102 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "3 marked routes (2 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 59 %, interior 86 %, high 29 %, detail 53 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "three unequal arcade tiers 6/11/35; water channel on top with a maintenance walk; middle tier extends over the bank terraces"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "175 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 48,
+     "mem": {
+      "rssMiB": 117,
+      "heapUsedMiB": 25,
+      "heapTotalMiB": 51,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 67,
+     "mem": {
+      "rssMiB": 189,
+      "heapUsedMiB": 43,
+      "heapTotalMiB": 108,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 10,
+     "mem": {
+      "rssMiB": 190,
+      "heapUsedMiB": 55,
+      "heapTotalMiB": 108,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 190,
+      "heapUsedMiB": 56,
+      "heapTotalMiB": 108,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 191,
+      "heapUsedMiB": 56,
+      "heapTotalMiB": 108,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 191,
+    "heapUsedMiB": 56,
+    "heapTotalMiB": 108,
+    "externalMiB": 14,
+    "arrayBuffersMiB": 4
+   }
+  }
+ },
+ {
+  "id": "L06",
+  "title": "Ring Theatre",
+  "pieces": 170092,
+  "B": 0,
+  "M": 27904,
+  "D": 142188,
+  "size": [
+   240.51384712300091,
+   196.51465641261555,
+   78.08264133518625
+  ],
+  "target": [
+   240,
+   196,
+   78
+  ],
+  "dev": [
+   0.002141029679170403,
+   0.0026257980235486755,
+   0.0010595042972596502
+  ],
+  "bytes": 3629800,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "170092 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.1e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/27904/142188)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 240.5 × 196.5 × 78.1 vs 240 × 196 × 78 (0.2%, 0.3%, 0.1%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "7 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 170092 = pieces 170092"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 47 %, interior 74 %, high 13 %, detail 77 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "2 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "three superposed arcades with plain / Ionic / Corinthian half-columns; upper attic wall with rectangular windows; 24 seating steps around an open arena"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "2420 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 315,
+     "mem": {
+      "rssMiB": 297,
+      "heapUsedMiB": 131,
+      "heapTotalMiB": 198,
+      "externalMiB": 31,
+      "arrayBuffersMiB": 21
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 249,
+     "mem": {
+      "rssMiB": 413,
+      "heapUsedMiB": 119,
+      "heapTotalMiB": 227,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 43,
+     "mem": {
+      "rssMiB": 416,
+      "heapUsedMiB": 162,
+      "heapTotalMiB": 231,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 10
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 416,
+      "heapUsedMiB": 162,
+      "heapTotalMiB": 231,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 10
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 2,
+     "mem": {
+      "rssMiB": 416,
+      "heapUsedMiB": 162,
+      "heapTotalMiB": 231,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 10
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 416,
+    "heapUsedMiB": 162,
+    "heapTotalMiB": 231,
+    "externalMiB": 20,
+    "arrayBuffersMiB": 10
+   }
+  }
+ },
+ {
+  "id": "L07",
+  "title": "Oculus Hall",
+  "pieces": 52986,
+  "B": 0,
+  "M": 17810,
+  "D": 35176,
+  "size": [
+   112.51437965994566,
+   144.26468982997284,
+   85.9575
+  ],
+  "target": [
+   112,
+   144,
+   86
+  ],
+  "dev": [
+   0.004592675535229018,
+   0.0018381238192557436,
+   -0.0004941860465116354
+  ],
+  "bytes": 1341692,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "52986 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.2e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/17810/35176)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 112.5 × 144.3 × 86.0 vs 112 × 144 × 86 (0.5%, 0.2%, -0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "17 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 52986 = pieces 52986"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (2 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 37 %, interior 100 %, high 17 %, detail 78 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "coffered dome with five latitude bands; open oculus 10 m across; Corinthian portico with triangular roof"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "370 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 97,
+     "mem": {
+      "rssMiB": 148,
+      "heapUsedMiB": 42,
+      "heapTotalMiB": 94,
+      "externalMiB": 17,
+      "arrayBuffersMiB": 7
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 128,
+     "mem": {
+      "rssMiB": 260,
+      "heapUsedMiB": 55,
+      "heapTotalMiB": 168,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 23,
+     "mem": {
+      "rssMiB": 262,
+      "heapUsedMiB": 94,
+      "heapTotalMiB": 171,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 262,
+      "heapUsedMiB": 94,
+      "heapTotalMiB": 171,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 262,
+      "heapUsedMiB": 94,
+      "heapTotalMiB": 171,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 3
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 262,
+    "heapUsedMiB": 94,
+    "heapTotalMiB": 171,
+    "externalMiB": 14,
+    "arrayBuffersMiB": 3
+   }
+  }
+ },
+ {
+  "id": "L08",
+  "title": "Floating Dome Hall",
+  "pieces": 43511,
+  "B": 576,
+  "M": 31493,
+  "D": 11442,
+  "size": [
+   136.015,
+   176.015,
+   96.24786188737629
+  ],
+  "target": [
+   136,
+   176,
+   96
+  ],
+  "dev": [
+   0.00011029411764695851,
+   0.00008522727272719521,
+   0.00258189466016967
+  ],
+  "bytes": 936176,
+  "farBytes": 65892,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "43511 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.4e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (576/31493/11442)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 136.0 × 176.0 × 96.2 vs 136 × 176 × 96 (0.0%, 0.0%, 0.3%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "18 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 43511 = pieces 43511"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "342 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "3 marked routes (2 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 44 %, interior 69 %, high 16 %, detail 100 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "four pendentives turning the square into the drum's circle; a ring of 32 clerestory windows under the dome; two half-domes extending the central space"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "539 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 77,
+     "mem": {
+      "rssMiB": 143,
+      "heapUsedMiB": 34,
+      "heapTotalMiB": 59,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 84,
+     "mem": {
+      "rssMiB": 196,
+      "heapUsedMiB": 46,
+      "heapTotalMiB": 106,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 17,
+     "mem": {
+      "rssMiB": 197,
+      "heapUsedMiB": 38,
+      "heapTotalMiB": 106,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 197,
+      "heapUsedMiB": 38,
+      "heapTotalMiB": 106,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 197,
+      "heapUsedMiB": 39,
+      "heapTotalMiB": 106,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 197,
+    "heapUsedMiB": 39,
+    "heapTotalMiB": 106,
+    "externalMiB": 13,
+    "arrayBuffersMiB": 3
+   }
+  }
+ },
+ {
+  "id": "L09",
+  "title": "Double-Ring Sea Castle",
+  "pieces": 65465,
+  "B": 1236,
+  "M": 61233,
+  "D": 2996,
+  "size": [
+   176.015,
+   152.015,
+   107.8171923076923
+  ],
+  "target": [
+   176,
+   152,
+   108
+  ],
+  "dev": [
+   0.00008522727272719521,
+   0.0000986842105261676,
+   -0.0016926638176639752
+  ],
+  "bytes": 1585256,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "65465 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.8e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (1236/61233/2996)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 176.0 × 152.0 × 107.8 vs 176 × 152 × 108 (0.0%, 0.0%, -0.2%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "26 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 65465 = pieces 65465"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "6 marked routes (5 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 70 %, interior 49 %, high 13 %, detail 71 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "two concentric wall rings with offset gates; crenellated wall walks; conical tower roofs and a six-storey keep with galleries"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "118 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 100,
+     "mem": {
+      "rssMiB": 163,
+      "heapUsedMiB": 61,
+      "heapTotalMiB": 95,
+      "externalMiB": 17,
+      "arrayBuffersMiB": 7
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 120,
+     "mem": {
+      "rssMiB": 266,
+      "heapUsedMiB": 91,
+      "heapTotalMiB": 171,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 27,
+     "mem": {
+      "rssMiB": 267,
+      "heapUsedMiB": 78,
+      "heapTotalMiB": 177,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 267,
+      "heapUsedMiB": 78,
+      "heapTotalMiB": 177,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 267,
+      "heapUsedMiB": 78,
+      "heapTotalMiB": 177,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 267,
+    "heapUsedMiB": 78,
+    "heapTotalMiB": 177,
+    "externalMiB": 14,
+    "arrayBuffersMiB": 4
+   }
+  }
+ },
+ {
+  "id": "L10",
+  "title": "Pointed-Arch Cloud Nave",
+  "pieces": 72972,
+  "B": 0,
+  "M": 35640,
+  "D": 37332,
+  "size": [
+   112.015,
+   216.015,
+   128.53290455458233
+  ],
+  "target": [
+   112,
+   216,
+   128
+  ],
+  "dev": [
+   0.0001339285714285765,
+   0.0000694444444444553,
+   0.004163316832674457
+  ],
+  "bytes": 1632492,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "72972 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.3e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/35640/37332)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 112.0 × 216.0 × 128.5 vs 112 × 216 × 128 (0.0%, 0.0%, 0.4%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "19 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 72972 = pieces 72972"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "4 marked routes (4 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 30 %, interior 91 %, high 25 %, detail 75 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "pointed arcades, gallery and clerestory in three tiers; sixteen flying buttresses with pinnacles; rose window between twin west towers"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "265 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 126,
+     "mem": {
+      "rssMiB": 189,
+      "heapUsedMiB": 53,
+      "heapTotalMiB": 101,
+      "externalMiB": 22,
+      "arrayBuffersMiB": 12
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 135,
+     "mem": {
+      "rssMiB": 296,
+      "heapUsedMiB": 112,
+      "heapTotalMiB": 208,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 27,
+     "mem": {
+      "rssMiB": 300,
+      "heapUsedMiB": 92,
+      "heapTotalMiB": 212,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 300,
+      "heapUsedMiB": 92,
+      "heapTotalMiB": 212,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 300,
+      "heapUsedMiB": 92,
+      "heapTotalMiB": 212,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 4
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 300,
+    "heapUsedMiB": 93,
+    "heapTotalMiB": 212,
+    "externalMiB": 15,
+    "arrayBuffersMiB": 4
+   }
+  }
+ },
+ {
+  "id": "L11",
+  "title": "Eight-Lobed Dome Palace",
+  "pieces": 46319,
+  "B": 576,
+  "M": 29875,
+  "D": 15868,
+  "size": [
+   128.015,
+   185.16636581552137,
+   144.65090568842967
+  ],
+  "target": [
+   128,
+   184,
+   144
+  ],
+  "dev": [
+   0.00011718749999989342,
+   0.006338944649572742,
+   0.004520178391872687
+  ],
+  "bytes": 1025128,
+  "farBytes": 98684,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "46319 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.4e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (576/29875/15868)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 128.0 × 185.2 × 144.7 vs 128 × 184 × 144 (0.0%, 0.6%, 0.5%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "25 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 46319 = pieces 46319"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 43 %, interior 100 %, high 14 %, detail 40 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "pointed eight-lobed dome with eight main and sixteen secondary ribs; a local reveal of the double shell (ties across the 2 m cavity); lantern above the broad viewing ring"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "355 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 86,
+     "mem": {
+      "rssMiB": 146,
+      "heapUsedMiB": 33,
+      "heapTotalMiB": 93,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 116,
+     "mem": {
+      "rssMiB": 258,
+      "heapUsedMiB": 51,
+      "heapTotalMiB": 163,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 17,
+     "mem": {
+      "rssMiB": 259,
+      "heapUsedMiB": 75,
+      "heapTotalMiB": 164,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 259,
+      "heapUsedMiB": 75,
+      "heapTotalMiB": 164,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 2,
+     "mem": {
+      "rssMiB": 259,
+      "heapUsedMiB": 75,
+      "heapTotalMiB": 164,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 259,
+    "heapUsedMiB": 76,
+    "heapTotalMiB": 164,
+    "externalMiB": 13,
+    "arrayBuffersMiB": 3
+   }
+  }
+ },
+ {
+  "id": "L12",
+  "title": "Embrace Square",
+  "pieces": 74230,
+  "B": 0,
+  "M": 41768,
+  "D": 32462,
+  "size": [
+   280.504607688925,
+   240.015,
+   154.2344810922824
+  ],
+  "target": [
+   280,
+   240,
+   154
+  ],
+  "dev": [
+   0.0018021703175892245,
+   0.00006249999999985434,
+   0.0015226044953402518
+  ],
+  "bytes": 1829860,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "74230 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.9e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/41768/32462)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 280.5 × 240.0 × 154.2 vs 280 × 240 × 154 (0.2%, 0.0%, 0.2%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.26"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "17 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 74230 = pieces 74230"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "3 marked routes (2 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 39 %, interior 94 %, high 10 %, detail 90 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "four-deep curved colonnades (128 columns); nine-bay central facade with deep doors; authored elliptical dome with lantern over a 32-sided drum"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "549 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 150,
+     "mem": {
+      "rssMiB": 191,
+      "heapUsedMiB": 41,
+      "heapTotalMiB": 105,
+      "externalMiB": 22,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 141,
+     "mem": {
+      "rssMiB": 327,
+      "heapUsedMiB": 156,
+      "heapTotalMiB": 238,
+      "externalMiB": 18,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 34,
+     "mem": {
+      "rssMiB": 332,
+      "heapUsedMiB": 149,
+      "heapTotalMiB": 243,
+      "externalMiB": 19,
+      "arrayBuffersMiB": 9
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 332,
+      "heapUsedMiB": 149,
+      "heapTotalMiB": 243,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 9
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 332,
+      "heapUsedMiB": 149,
+      "heapTotalMiB": 243,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 9
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 332,
+    "heapUsedMiB": 149,
+    "heapTotalMiB": 243,
+    "externalMiB": 20,
+    "arrayBuffersMiB": 9
+   }
+  }
+ },
+ {
+  "id": "L13",
+  "title": "Lattice Conservatory",
+  "pieces": 76890,
+  "B": 0,
+  "M": 51976,
+  "D": 24914,
+  "size": [
+   321.515,
+   161,
+   95.9593917997989
+  ],
+  "target": [
+   320,
+   160,
+   96
+  ],
+  "dev": [
+   0.004734374999999957,
+   0.006250000000000089,
+   -0.0004230020854282257
+  ],
+  "bytes": 1729636,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "76890 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.2e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/51976/24914)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 321.5 × 161.0 × 96.0 vs 320 × 160 × 96 (0.5%, 0.6%, -0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "16 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 76890 = pieces 76890"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "2082 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 63 %, interior 80 %, high 12 %, detail 36 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "modular 16 m bays (216 columns) and folded glazed wing roofs; a 56 m transverse barrel vault with radial end windows; a high central hall with edge galleries"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "247 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 128,
+     "mem": {
+      "rssMiB": 191,
+      "heapUsedMiB": 60,
+      "heapTotalMiB": 102,
+      "externalMiB": 22,
+      "arrayBuffersMiB": 12
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 157,
+     "mem": {
+      "rssMiB": 291,
+      "heapUsedMiB": 61,
+      "heapTotalMiB": 185,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 21,
+     "mem": {
+      "rssMiB": 293,
+      "heapUsedMiB": 89,
+      "heapTotalMiB": 188,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 293,
+      "heapUsedMiB": 89,
+      "heapTotalMiB": 188,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 293,
+      "heapUsedMiB": 89,
+      "heapTotalMiB": 188,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 293,
+    "heapUsedMiB": 89,
+    "heapTotalMiB": 188,
+    "externalMiB": 15,
+    "arrayBuffersMiB": 5
+   }
+  }
+ },
+ {
+  "id": "L14",
+  "title": "Four-Leg Wind Tower",
+  "pieces": 12654,
+  "B": 800,
+  "M": 9430,
+  "D": 2424,
+  "size": [
+   100.01500000000001,
+   100.01500000000001,
+   187.8687209080443
+  ],
+  "target": [
+   100,
+   100,
+   188
+  ],
+  "dev": [
+   0.0001500000000000945,
+   0.0001500000000000945,
+   -0.0006982930423174993
+  ],
+  "bytes": 293156,
+  "farBytes": 40016,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "12654 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.0e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (800/9430/2424)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 100.0 × 100.0 × 187.9 vs 100 × 100 × 188 (0.0%, 0.0%, -0.1%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "8 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 12654 = pieces 12654"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (2 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 60 %, interior 65 %, high 6 %, detail 20 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "4 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "four curved tapering lattice legs; two platforms with central apertures; converging upper shaft and summit ring"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "142 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 33,
+     "mem": {
+      "rssMiB": 110,
+      "heapUsedMiB": 21,
+      "heapTotalMiB": 30,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 46,
+     "mem": {
+      "rssMiB": 140,
+      "heapUsedMiB": 28,
+      "heapTotalMiB": 60,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 7,
+     "mem": {
+      "rssMiB": 140,
+      "heapUsedMiB": 39,
+      "heapTotalMiB": 60,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 140,
+      "heapUsedMiB": 39,
+      "heapTotalMiB": 60,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 140,
+      "heapUsedMiB": 39,
+      "heapTotalMiB": 60,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 140,
+    "heapUsedMiB": 39,
+    "heapTotalMiB": 60,
+    "externalMiB": 12,
+    "arrayBuffersMiB": 2
+   }
+  }
+ },
+ {
+  "id": "L15",
+  "title": "Setback Crown",
+  "pieces": 41748,
+  "B": 8,
+  "M": 19440,
+  "D": 22300,
+  "size": [
+   112.015,
+   88.765,
+   212.09628628408814
+  ],
+  "target": [
+   112,
+   88,
+   212
+  ],
+  "dev": [
+   0.0001339285714285765,
+   0.008693181818181905,
+   0.00045418058532131766
+  ],
+  "bytes": 942084,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "41748 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.8e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (8/19440/22300)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 112.0 × 88.8 × 212.1 vs 112 × 88 × 212 (0.0%, 0.9%, 0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "8 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 41748 = pieces 41748"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 64 %, interior 56 %, high 10 %, detail 47 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "5 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "three principal setbacks at 40, 120 and 168 m; continuous face spines and recessed windows; a multi-stage crown and bundled mast"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "274 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 67,
+     "mem": {
+      "rssMiB": 142,
+      "heapUsedMiB": 38,
+      "heapTotalMiB": 59,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 113,
+     "mem": {
+      "rssMiB": 193,
+      "heapUsedMiB": 58,
+      "heapTotalMiB": 103,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 16,
+     "mem": {
+      "rssMiB": 194,
+      "heapUsedMiB": 51,
+      "heapTotalMiB": 104,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 194,
+      "heapUsedMiB": 51,
+      "heapTotalMiB": 104,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 194,
+      "heapUsedMiB": 51,
+      "heapTotalMiB": 104,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 194,
+    "heapUsedMiB": 51,
+    "heapTotalMiB": 104,
+    "externalMiB": 13,
+    "arrayBuffersMiB": 3
+   }
+  }
+ },
+ {
+  "id": "L16",
+  "title": "Curved Gorge Dam",
+  "pieces": 93102,
+  "B": 0,
+  "M": 45306,
+  "D": 47796,
+  "size": [
+   355.8607293113785,
+   159.75727243987942,
+   160.0522627240188
+  ],
+  "target": [
+   360,
+   160,
+   160
+  ],
+  "dev": [
+   -0.011497974135059708,
+   -0.0015170472507536337,
+   0.00032664202511734075
+  ],
+  "bytes": 2110556,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "93102 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 4.3e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (0/45306/47796)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 355.9 × 159.8 × 160.1 vs 360 × 160 × 160 (-1.1%, -0.2%, 0.0%; tolerance ±2.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.26"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "15 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 93102 = pieces 93102"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "10 marked routes (10 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, side, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 61 %, interior 74 %, high 8 %, side 28 %, detail 31 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "3 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "five fin buttresses, bottom-wide and top-narrow; four recessed gate bays with continuous chute faces spreading to the toe; curved plan with a thick base tapering to a 12 m crest; a 12 m crest road with rails; four intake towers upstream"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "1007 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 310,
+     "mem": {
+      "rssMiB": 203,
+      "heapUsedMiB": 49,
+      "heapTotalMiB": 178,
+      "externalMiB": 23,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 170,
+     "mem": {
+      "rssMiB": 316,
+      "heapUsedMiB": 141,
+      "heapTotalMiB": 224,
+      "externalMiB": 18,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 36,
+     "mem": {
+      "rssMiB": 320,
+      "heapUsedMiB": 128,
+      "heapTotalMiB": 228,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 10
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 320,
+      "heapUsedMiB": 128,
+      "heapTotalMiB": 228,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 10
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 2,
+     "mem": {
+      "rssMiB": 320,
+      "heapUsedMiB": 128,
+      "heapTotalMiB": 228,
+      "externalMiB": 20,
+      "arrayBuffersMiB": 10
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 320,
+    "heapUsedMiB": 129,
+    "heapTotalMiB": 228,
+    "externalMiB": 20,
+    "arrayBuffersMiB": 10
+   }
+  }
+ },
+ {
+  "id": "L17",
+  "title": "Vertical Court Tower",
+  "pieces": 73730,
+  "B": 160,
+  "M": 13786,
+  "D": 59784,
+  "size": [
+   79.995,
+   55.995000000000005,
+   244
+  ],
+  "target": [
+   80,
+   56,
+   244
+  ],
+  "dev": [
+   -0.00006249999999996536,
+   -0.00008928571428568066,
+   0
+  ],
+  "bytes": 1600664,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "73730 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 2.1e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (160/13786/59784)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 80.0 × 56.0 × 244.0 vs 80 × 56 × 244 (-0.0%, -0.0%, 0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = 0.00"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "6 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 73730 = pieces 73730"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 38 %, interior 41 %, high 15 %, detail 55 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "5 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "120 continuous mullions projecting 0.4 m with recessed windows; an open lobby of 20 bundled columns; three edge-viewing terraces and a louvred crown"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "246 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 119,
+     "mem": {
+      "rssMiB": 182,
+      "heapUsedMiB": 60,
+      "heapTotalMiB": 97,
+      "externalMiB": 22,
+      "arrayBuffersMiB": 12
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 171,
+     "mem": {
+      "rssMiB": 302,
+      "heapUsedMiB": 98,
+      "heapTotalMiB": 212,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 19,
+     "mem": {
+      "rssMiB": 304,
+      "heapUsedMiB": 121,
+      "heapTotalMiB": 214,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 304,
+      "heapUsedMiB": 121,
+      "heapTotalMiB": 214,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 4
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 304,
+      "heapUsedMiB": 121,
+      "heapTotalMiB": 214,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 4
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 304,
+    "heapUsedMiB": 121,
+    "heapTotalMiB": 214,
+    "externalMiB": 15,
+    "arrayBuffersMiB": 4
+   }
+  }
+ },
+ {
+  "id": "L18",
+  "title": "Nine-Bundle Cloud Tower",
+  "pieces": 36220,
+  "B": 16,
+  "M": 32908,
+  "D": 3296,
+  "size": [
+   90.015,
+   90.015,
+   276.96527181433385
+  ],
+  "target": [
+   90,
+   90,
+   276
+  ],
+  "dev": [
+   0.0001666666666666483,
+   0.0001666666666666483,
+   0.0034973616461371204
+  ],
+  "bytes": 900052,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "36220 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 2.1e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (16/32908/3296)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 90.0 × 90.0 × 277.0 vs 90 × 90 × 276 (0.0%, 0.0%, 0.3%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "6 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 36220 = pieces 36220"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "0 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "11 marked routes (11 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 66 %, interior 97 %, high 19 %, detail 98 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "5 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "nine square tubes ending at four different heights; the cross of five tubes above floor 42; antenna bundles on the two full-height tubes"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "51 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 67,
+     "mem": {
+      "rssMiB": 139,
+      "heapUsedMiB": 32,
+      "heapTotalMiB": 56,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 142,
+     "mem": {
+      "rssMiB": 221,
+      "heapUsedMiB": 51,
+      "heapTotalMiB": 170,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 1
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 18,
+     "mem": {
+      "rssMiB": 225,
+      "heapUsedMiB": 76,
+      "heapTotalMiB": 171,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 225,
+      "heapUsedMiB": 76,
+      "heapTotalMiB": 171,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 225,
+      "heapUsedMiB": 76,
+      "heapTotalMiB": 171,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 2
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 225,
+    "heapUsedMiB": 76,
+    "heapTotalMiB": 171,
+    "externalMiB": 13,
+    "arrayBuffersMiB": 2
+   }
+  }
+ },
+ {
+  "id": "L19",
+  "title": "Prismatic Brace Tower",
+  "pieces": 27776,
+  "B": 1808,
+  "M": 25135,
+  "D": 833,
+  "size": [
+   87.87,
+   87.87,
+   303.97176376001914
+  ],
+  "target": [
+   88,
+   88,
+   304
+  ],
+  "dev": [
+   -0.001477272727272716,
+   -0.001477272727272716,
+   -0.0000928823683580271
+  ],
+  "bytes": 720820,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "27776 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.8e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (1808/25135/833)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 87.9 × 87.9 × 304.0 vs 88 × 88 × 304 (-0.1%, -0.1%, -0.0%; tolerance ±1.0%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "6 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 27776 = pieces 27776"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "184 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "2 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 46 %, interior 63 %, high 10 %, detail 75 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "5 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "four triangular prisms ending at 40/48/56/64 floors; eight-floor X brace modules standing 1 m proud of the facade; sloping prism crowns and twin spires"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "32 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 55,
+     "mem": {
+      "rssMiB": 125,
+      "heapUsedMiB": 22,
+      "heapTotalMiB": 52,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 100,
+     "mem": {
+      "rssMiB": 191,
+      "heapUsedMiB": 45,
+      "heapTotalMiB": 97,
+      "externalMiB": 11,
+      "arrayBuffersMiB": 1
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 20,
+     "mem": {
+      "rssMiB": 192,
+      "heapUsedMiB": 54,
+      "heapTotalMiB": 99,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 192,
+      "heapUsedMiB": 54,
+      "heapTotalMiB": 99,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 192,
+      "heapUsedMiB": 54,
+      "heapTotalMiB": 99,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 192,
+    "heapUsedMiB": 54,
+    "heapTotalMiB": 99,
+    "externalMiB": 12,
+    "arrayBuffersMiB": 2
+   }
+  }
+ },
+ {
+  "id": "L20",
+  "title": "Three-Wing Skyline Peak",
+  "pieces": 38388,
+  "B": 6,
+  "M": 34224,
+  "D": 4158,
+  "size": [
+   145.65150572225252,
+   129.64000000000001,
+   339.98192747319655
+  ],
+  "target": [
+   144,
+   132,
+   340
+  ],
+  "dev": [
+   0.011468789737864693,
+   -0.017878787878787716,
+   -0.000053154490598394943
+  ],
+  "bytes": 1118428,
+  "farBytes": 102032,
+  "ok": true,
+  "checks": [
+   {
+    "name": "pieces",
+    "ok": true,
+    "detail": "38388 pieces"
+   },
+   {
+    "name": "finite transforms",
+    "ok": true,
+    "detail": "all positions and quaternions finite"
+   },
+   {
+    "name": "valid rotations",
+    "ok": true,
+    "detail": "max |‖q‖ − 1| = 3.8e-8"
+   },
+   {
+    "name": "allowed stock only",
+    "ok": true,
+    "detail": "B/M/D only (6/34224/4158)"
+   },
+   {
+    "name": "envelope",
+    "ok": true,
+    "detail": "W×D×H 145.7 × 129.6 × 340.0 vs 144 × 132 × 340 (1.1%, -1.8%, -0.0%; tolerance ±3.5%)"
+   },
+   {
+    "name": "foundation at 0",
+    "ok": true,
+    "detail": "lowest core piece at y = -0.01"
+   },
+   {
+    "name": "planned courses present",
+    "ok": true,
+    "detail": "7 planned bands all present"
+   },
+   {
+    "name": "BOM covers every piece",
+    "ok": true,
+    "detail": "BOM 38388 = pieces 38388"
+   },
+   {
+    "name": "no exact duplicates",
+    "ok": true,
+    "detail": "360 coincident duplicates removed at build; 0 remaining"
+   },
+   {
+    "name": "entries",
+    "ok": true,
+    "detail": "23 marked routes (1 main)"
+   },
+   {
+    "name": "viewpoints",
+    "ok": true,
+    "detail": "ground, interior, high, detail"
+   },
+   {
+    "name": "viewpoint content",
+    "ok": true,
+    "detail": "ground 43 %, interior 60 %, high 13 %, detail 57 %"
+   },
+   {
+    "name": "safe points",
+    "ok": true,
+    "detail": "14 safe points"
+   },
+   {
+    "name": "identity features",
+    "ok": true,
+    "detail": "three wings around a hexagonal core; twelve setback terraces rotating A → B → C; crown bands shrinking to the core and a spire"
+   },
+   {
+    "name": "colliders",
+    "ok": true,
+    "detail": "39 proxies (0 invalid)"
+   },
+   {
+    "name": "finite outputs",
+    "ok": true,
+    "detail": "entries, viewpoints and safe points finite"
+   }
+  ],
+  "generator": {
+   "stages": [
+    {
+     "stage": "build",
+     "ms": 71,
+     "mem": {
+      "rssMiB": 147,
+      "heapUsedMiB": 28,
+      "heapTotalMiB": 59,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "validate",
+     "ms": 108,
+     "mem": {
+      "rssMiB": 206,
+      "heapUsedMiB": 81,
+      "heapTotalMiB": 166,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 30,
+     "mem": {
+      "rssMiB": 230,
+      "heapUsedMiB": 65,
+      "heapTotalMiB": 173,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode far",
+     "ms": 0,
+     "mem": {
+      "rssMiB": 230,
+      "heapUsedMiB": 66,
+      "heapTotalMiB": 173,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "write",
+     "ms": 1,
+     "mem": {
+      "rssMiB": 230,
+      "heapUsedMiB": 66,
+      "heapTotalMiB": 173,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    }
+   ],
+   "peak": {
+    "rssMiB": 230,
+    "heapUsedMiB": 66,
+    "heapTotalMiB": 173,
+    "externalMiB": 13,
+    "arrayBuffersMiB": 3
+   }
+  }
+ }
+]

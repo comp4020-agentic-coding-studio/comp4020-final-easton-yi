@@ -1,0 +1,33 @@
+{
+  "label": "B",
+  "env": {
+    "stage": "B",
+    "viewport": "1280x720",
+    "quality": "high",
+    "browser": "153.0.8010.12",
+    "headless": true
+  },
+  "elapsedS": 23.8,
+  "steps": [
+    {
+      "step": "home: load",
+      "start": 0.7,
+      "groupStart": 570,
+      "groupPeak": 1105,
+      "end": 1.8,
+      "groupEnd": 1112,
+      "ok": true
+    },
+    {
+      "step": "home: settle (exploring)",
+      "start": 1.8,
+      "groupStart": 1112,
+      "groupPeak": 1362,
+      "end": 23.8,
+      "groupEnd": 584,
+      "ok": false,
+      "note": "interrupted"
+    }
+  ],
+  "errors": []
+}

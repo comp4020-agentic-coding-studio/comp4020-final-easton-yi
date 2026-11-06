@@ -10,5 +10,9 @@ export default defineConfig({
     exclude: ["tests/integration/**"],
     testTimeout: 60_000,
     hookTimeout: 60_000,
+    // Bounded concurrency (docs/evidence/world/memory-incident.md): the default is one worker per core,
+    // and every world suite builds all twenty landmarks in its own worker. Two forks keep the peak near 1 GiB.
+    pool: "forks",
+    maxWorkers: 2,
   },
 });

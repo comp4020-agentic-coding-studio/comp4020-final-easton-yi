@@ -1,0 +1,231 @@
+{
+  "label": "E",
+  "env": {
+    "stage": "E",
+    "viewport": "1280x720",
+    "quality": "high",
+    "browser": "153.0.8010.12",
+    "headless": true,
+    "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "elapsedS": 103.7,
+  "steps": [
+    {
+      "step": "register + create work",
+      "start": 0.5,
+      "groupStart": 249,
+      "groupPeak": 249,
+      "end": 0.9,
+      "groupEnd": 285,
+      "ok": true
+    },
+    {
+      "step": "home: load",
+      "start": 0.9,
+      "groupStart": 285,
+      "groupPeak": 529,
+      "end": 2.4,
+      "groupEnd": 530,
+      "ok": true
+    },
+    {
+      "step": "home: settle (exploring)",
+      "start": 2.4,
+      "groupStart": 530,
+      "groupPeak": 581,
+      "end": 8.1,
+      "groupEnd": 632,
+      "ok": true
+    },
+    {
+      "step": "round trip 1: workbench",
+      "start": 8.1,
+      "groupStart": 632,
+      "groupPeak": 632,
+      "end": 12.8,
+      "groupEnd": 607,
+      "ok": true
+    },
+    {
+      "step": "round trip 1: world",
+      "start": 12.8,
+      "groupStart": 607,
+      "groupPeak": 664,
+      "end": 16.8,
+      "groupEnd": 659,
+      "ok": true
+    },
+    {
+      "step": "round trip 2: workbench",
+      "start": 16.8,
+      "groupStart": 659,
+      "groupPeak": 659,
+      "end": 21.9,
+      "groupEnd": 623,
+      "ok": true
+    },
+    {
+      "step": "round trip 2: world",
+      "start": 21.9,
+      "groupStart": 623,
+      "groupPeak": 669,
+      "end": 25.9,
+      "groupEnd": 663,
+      "ok": true
+    },
+    {
+      "step": "round trip 3: workbench",
+      "start": 25.9,
+      "groupStart": 663,
+      "groupPeak": 663,
+      "end": 30.7,
+      "groupEnd": 625,
+      "ok": true
+    },
+    {
+      "step": "round trip 3: world",
+      "start": 30.7,
+      "groupStart": 625,
+      "groupPeak": 691,
+      "end": 34.7,
+      "groupEnd": 688,
+      "ok": true
+    },
+    {
+      "step": "round trip 4: workbench",
+      "start": 34.7,
+      "groupStart": 688,
+      "groupPeak": 688,
+      "end": 38.8,
+      "groupEnd": 647,
+      "ok": true
+    },
+    {
+      "step": "round trip 4: world",
+      "start": 38.8,
+      "groupStart": 647,
+      "groupPeak": 708,
+      "end": 42.9,
+      "groupEnd": 705,
+      "ok": true
+    },
+    {
+      "step": "round trip 5: workbench",
+      "start": 42.9,
+      "groupStart": 705,
+      "groupPeak": 705,
+      "end": 47,
+      "groupEnd": 678,
+      "ok": true
+    },
+    {
+      "step": "round trip 5: world",
+      "start": 47,
+      "groupStart": 678,
+      "groupPeak": 715,
+      "end": 51.1,
+      "groupEnd": 711,
+      "ok": true
+    },
+    {
+      "step": "round trip 6: workbench",
+      "start": 51.1,
+      "groupStart": 711,
+      "groupPeak": 711,
+      "end": 56.2,
+      "groupEnd": 696,
+      "ok": true
+    },
+    {
+      "step": "round trip 6: world",
+      "start": 56.2,
+      "groupStart": 696,
+      "groupPeak": 741,
+      "end": 60.3,
+      "groupEnd": 737,
+      "ok": true
+    },
+    {
+      "step": "round trip 7: workbench",
+      "start": 60.3,
+      "groupStart": 737,
+      "groupPeak": 737,
+      "end": 65.3,
+      "groupEnd": 686,
+      "ok": true
+    },
+    {
+      "step": "round trip 7: world",
+      "start": 65.3,
+      "groupStart": 686,
+      "groupPeak": 737,
+      "end": 69.4,
+      "groupEnd": 733,
+      "ok": true
+    },
+    {
+      "step": "round trip 8: workbench",
+      "start": 69.4,
+      "groupStart": 733,
+      "groupPeak": 733,
+      "end": 74.7,
+      "groupEnd": 697,
+      "ok": true
+    },
+    {
+      "step": "round trip 8: world",
+      "start": 74.7,
+      "groupStart": 697,
+      "groupPeak": 738,
+      "end": 78.8,
+      "groupEnd": 734,
+      "ok": true
+    },
+    {
+      "step": "round trip 9: workbench",
+      "start": 78.8,
+      "groupStart": 734,
+      "groupPeak": 734,
+      "end": 83.9,
+      "groupEnd": 693,
+      "ok": true
+    },
+    {
+      "step": "round trip 9: world",
+      "start": 83.9,
+      "groupStart": 693,
+      "groupPeak": 744,
+      "end": 88,
+      "groupEnd": 737,
+      "ok": true
+    },
+    {
+      "step": "round trip 10: workbench",
+      "start": 88,
+      "groupStart": 737,
+      "groupPeak": 737,
+      "end": 93.2,
+      "groupEnd": 714,
+      "ok": true
+    },
+    {
+      "step": "round trip 10: world",
+      "start": 93.2,
+      "groupStart": 714,
+      "groupPeak": 764,
+      "end": 97.2,
+      "groupEnd": 753,
+      "ok": true
+    },
+    {
+      "step": "leave world (/readme/)",
+      "start": 97.2,
+      "groupStart": 753,
+      "groupPeak": 753,
+      "end": 103.7,
+      "groupEnd": 648,
+      "ok": true
+    }
+  ],
+  "errors": []
+}

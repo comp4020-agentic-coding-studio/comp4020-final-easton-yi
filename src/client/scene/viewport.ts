@@ -32,6 +32,7 @@ import type { WireBody } from "../../shared/protocol.ts";
 import { GRAPHICS, TRANSPORT } from "../../shared/config.ts";
 import { AutoQuality, effectivePixelRatio, type QualityMode, type QualityTier } from "./quality.ts";
 import { getGraphicsState, reportAppliedTier, subscribeGraphics } from "../graphics-setting.ts";
+import { releaseShared, sharedTexturesOf } from "./release-shared.ts";
 
 export const PERSON_COLORS = ["#2F6FB2", "#B5532E", "#7A4FA3", "#2E8A6B", "#A8862A", "#B23A6E", "#4C6A1E", "#3D5A80"];
 export const PERSON_SHAPES = ["●", "▲", "■", "◆", "★", "✚", "⬟", "⬢"];
@@ -82,6 +83,7 @@ export class Viewport {
 
   private geometry: THREE.BufferGeometry;
   private sticks: THREE.InstancedMesh;
+  private controlsRoot: Node;
   private seedAttr: THREE.InstancedBufferAttribute;
   private ids: string[] = [];
   private index = new Map<string, number>();
@@ -159,6 +161,11 @@ export class Viewport {
     this.scene.background = new THREE.Color("#F4F1EA");
     this.camera = new THREE.PerspectiveCamera(35, 1, 0.2, 600);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // OrbitControls (three r186) adds capture key listeners to canvas.getRootNode() on connect and removes them from
+    // getRootNode() again on disconnect. React detaches this subtree before effect cleanup runs, so at dispose time the
+    // root is the detached subtree, the document keeps the listener, and it pins the controls, canvas and GL context
+    // of every closed workbench (docs/evidence/world/memory-incident.md, §8). Remember the root it really used.
+    this.controlsRoot = this.renderer.domElement.getRootNode();
     this.controls.enablePan = false;
     this.controls.minPolarAngle = 0.025;
     this.controls.maxPolarAngle = 1.5;
@@ -1001,8 +1008,15 @@ export class Viewport {
     this.unsubscribeGraphics();
     reportAppliedTier(this, null);
     this.controls.removeEventListener("change", this.invalidate);
+    const c = this.controls as unknown as { _interceptControlDown?: EventListener; _interceptControlUp?: EventListener };
+    if (c._interceptControlDown) this.controlsRoot.removeEventListener("keydown", c._interceptControlDown, { capture: true });
+    if (c._interceptControlUp) this.controlsRoot.removeEventListener("keyup", c._interceptControlUp, { capture: true });
     this.controls.dispose();
+    // the instanced mesh holds the renderer's own dispose listener (WebGLObjects) until it is disposed itself
+    this.sticks.dispose();
     this.sun.shadow.dispose();
+    // found before the materials go (their renderer properties name it); released after the renderer
+    const shared = sharedTexturesOf(this.renderer, this.scene);
     this.scene.traverse((o) => {
       const m = o as THREE.Mesh;
       m.geometry?.dispose();
@@ -1011,6 +1025,7 @@ export class Viewport {
       else mat?.dispose();
     });
     this.renderer.dispose();
+    releaseShared(shared);
     // release the context now rather than at garbage collection, so remounts can't pile them up
     this.renderer.forceContextLoss();
     this.renderer.domElement.remove();

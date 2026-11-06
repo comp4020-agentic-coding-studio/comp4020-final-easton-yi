@@ -1,0 +1,23 @@
+{
+  "about": "Provenance for everything the island draws (brief §8 'Sourcing and processing'). No external texture, model, HDRI, font or audio file was downloaded or shipped: the brief's Poly Haven / Kenney entries were candidates only, and every visual below is generated in this repository. The only third-party code the island adds is from the three.js package already pinned in package.json.",
+  "checked": "2026-11-04",
+  "checkedHow": "rg for TextureLoader / GLTFLoader / image, model and audio extensions under src/client/world and src/world (none); the world's only fetches are same-origin /world-data/ files written by scripts/world/build-world.ts",
+  "externalDownloads": [],
+  "generated": [
+    { "visual": "landmark timber (20 landmarks, B/M/D stock pieces)", "source": "src/world/recipes/*.ts, src/world/orders.ts, src/world/parts.ts (recipes authored from the brief's Appendix B; references explain inspiration only)", "output": "dist/client/world-data/landmarks/L??.<hash>.bin and L??.far.<hash>.bin (SWLM v3 / SWLF v1, src/world/format.ts)", "colourSpace": "n/a (geometry)", "compression": "brotli/gzip on the wire" },
+    { "visual": "timber grain and colour", "source": "src/client/world/materials.ts timberMaterial / chainMaterial (shader noise, no image)", "output": "shader code", "colourSpace": "linear, sRGB output", "compression": "n/a" },
+    { "visual": "rear shading shells (shade / plank / glass)", "source": "recipes via Builder.shell; src/client/world/materials.ts shellMaterials", "output": "manifest.json shells", "colourSpace": "linear, sRGB output", "compression": "n/a" },
+    { "visual": "terrain, coast and paths", "source": "src/world/terrain.ts and src/world/layout.ts; src/client/world/environment.ts tileGeometry", "output": "dist/client/world-data/terrain.<hash>.bin (heights, decoded into chunks on the client)", "colourSpace": "vertex colour (linear)", "compression": "brotli/gzip on the wire" },
+    { "visual": "rocks (11 shapes)", "source": "src/client/world/environment.ts rockGeometries (displaced icosahedra), materials.ts rockMaterial (triplanar shader noise)", "output": "runtime geometry", "colourSpace": "linear", "compression": "n/a" },
+    { "visual": "grass clumps", "source": "src/client/world/environment.ts createGrass", "output": "runtime instanced geometry", "colourSpace": "linear", "compression": "n/a" },
+    { "visual": "sea, river and spillway water", "source": "src/client/world/environment.ts createSea / createFlow (shader)", "output": "runtime", "colourSpace": "linear", "compression": "n/a" },
+    { "visual": "clouds", "source": "src/client/world/environment.ts createClouds (procedural sprites, seeded)", "output": "runtime", "colourSpace": "linear", "compression": "n/a" },
+    { "visual": "portals", "source": "src/client/world/environment.ts createPortal", "output": "runtime", "colourSpace": "linear", "compression": "n/a" }
+  ],
+  "thirdPartyCode": [
+    { "name": "three.js Sky (atmospheric scattering shader)", "import": "three/addons/objects/Sky.js", "package": "three@0.186.1", "license": "MIT", "licenseUrl": "https://github.com/mrdoob/three.js/blob/dev/LICENSE", "use": "sky dome on the island", "modifications": "none (uniforms set in environment.ts createSky)" },
+    { "name": "three.js OrbitControls", "import": "three/examples/jsm/controls/OrbitControls.js", "package": "three@0.186.1", "license": "MIT", "licenseUrl": "https://github.com/mrdoob/three.js/blob/dev/LICENSE", "use": "development inspector camera (/world/inspect/, test flag only)", "modifications": "none; its document key listener is removed explicitly on dispose (docs/evidence/world/memory-incident.md §8)" }
+  ],
+  "audio": "none added; the island has no sound",
+  "credits": "README.md 'Island' section credits the three.js authors (MIT) for the Sky shader and OrbitControls; architectural references are listed in the brief's Appendix H and are inspiration, not sources of geometry or images."
+}

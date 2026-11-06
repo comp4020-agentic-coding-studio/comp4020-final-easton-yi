@@ -1,0 +1,303 @@
+{
+ "placements": [
+  {
+   "id": "L01",
+   "position": [
+    -1090.935,
+    42.5,
+    -1.603
+   ],
+   "yaw": 0.327,
+   "routeDistance": 110,
+   "offset": 90,
+   "distanceToRoute": 90.001
+  },
+  {
+   "id": "L02",
+   "position": [
+    -873.723,
+    55.5,
+    132.649
+   ],
+   "yaw": -2.579,
+   "routeDistance": 230,
+   "offset": -125,
+   "distanceToRoute": 125.002
+  },
+  {
+   "id": "L03",
+   "position": [
+    -886.742,
+    63.5,
+    -185.973
+   ],
+   "yaw": -1.048,
+   "routeDistance": 345,
+   "offset": 160,
+   "distanceToRoute": 160
+  },
+  {
+   "id": "L04",
+   "position": [
+    -689.077,
+    53,
+    86.817
+   ],
+   "yaw": -3.127,
+   "routeDistance": 470,
+   "offset": -150,
+   "distanceToRoute": 150.007
+  },
+  {
+   "id": "L05",
+   "position": [
+    -591.95,
+    35.5,
+    -48.153
+   ],
+   "yaw": -0.326,
+   "routeDistance": 560,
+   "offset": 0,
+   "distanceToRoute": 0.516
+  },
+  {
+   "id": "L06",
+   "position": [
+    -353.866,
+    96.5,
+    -136.549
+   ],
+   "yaw": -0.553,
+   "routeDistance": 700,
+   "offset": 185,
+   "distanceToRoute": 185.001
+  },
+  {
+   "id": "L07",
+   "position": [
+    -454.941,
+    84,
+    201.143
+   ],
+   "yaw": 2.526,
+   "routeDistance": 790,
+   "offset": -150,
+   "distanceToRoute": 150.006
+  },
+  {
+   "id": "L08",
+   "position": [
+    -140.003,
+    82.5,
+    -2.998
+   ],
+   "yaw": -0.203,
+   "routeDistance": 980,
+   "offset": 170,
+   "distanceToRoute": 170.001
+  },
+  {
+   "id": "L09",
+   "position": [
+    -158.244,
+    97,
+    337.75
+   ],
+   "yaw": 3.04,
+   "routeDistance": 1010,
+   "offset": -170,
+   "distanceToRoute": 170.005
+  },
+  {
+   "id": "L10",
+   "position": [
+    75.611,
+    57.5,
+    -78.117
+   ],
+   "yaw": 0.627,
+   "routeDistance": 1315,
+   "offset": 170,
+   "distanceToRoute": 170.002
+  },
+  {
+   "id": "L11",
+   "position": [
+    225.446,
+    59.5,
+    225.849
+   ],
+   "yaw": -2.554,
+   "routeDistance": 1270,
+   "offset": -165,
+   "distanceToRoute": 165.005
+  },
+  {
+   "id": "L12",
+   "position": [
+    231.911,
+    97,
+    -250.08
+   ],
+   "yaw": 0.638,
+   "routeDistance": 1520,
+   "offset": 210,
+   "distanceToRoute": 210
+  },
+  {
+   "id": "L13",
+   "position": [
+    443.055,
+    81,
+    86.187
+   ],
+   "yaw": -0.887,
+   "routeDistance": 1485,
+   "offset": -185,
+   "distanceToRoute": 185.006
+  },
+  {
+   "id": "L14",
+   "position": [
+    463.813,
+    72,
+    -316.326
+   ],
+   "yaw": 0.328,
+   "routeDistance": 1680,
+   "offset": 160,
+   "distanceToRoute": 160
+  },
+  {
+   "id": "L15",
+   "position": [
+    660.21,
+    130.5,
+    255.908
+   ],
+   "yaw": -2.785,
+   "routeDistance": 1670,
+   "offset": -445,
+   "distanceToRoute": 398.207
+  },
+  {
+   "id": "L16",
+   "position": [
+    719.235,
+    20,
+    -164.404
+   ],
+   "yaw": -0.298,
+   "routeDistance": 1865,
+   "offset": 0,
+   "distanceToRoute": 0.769
+  },
+  {
+   "id": "L17",
+   "position": [
+    990.91,
+    56.5,
+    -150.261
+   ],
+   "yaw": -0.634,
+   "routeDistance": 2070,
+   "offset": 125,
+   "distanceToRoute": 125.002
+  },
+  {
+   "id": "L18",
+   "position": [
+    896.89,
+    68,
+    93.587
+   ],
+   "yaw": 2.429,
+   "routeDistance": 2140,
+   "offset": -125,
+   "distanceToRoute": 125.001
+  },
+  {
+   "id": "L19",
+   "position": [
+    1117.194,
+    58,
+    -40.307
+   ],
+   "yaw": -0.671,
+   "routeDistance": 2215,
+   "offset": 120,
+   "distanceToRoute": 120.001
+  },
+  {
+   "id": "L20",
+   "position": [
+    1109.169,
+    60.5,
+    241.096
+   ],
+   "yaw": 2.789,
+   "routeDistance": 2330,
+   "offset": -135,
+   "distanceToRoute": 135.002
+  }
+ ],
+ "home": {
+  "spawn": [
+   -1105,
+   128,
+   -275
+  ],
+  "yaw": -1.693,
+  "portals": [
+   {
+    "id": "works",
+    "label": "My Works",
+    "position": [
+     -1076.485,
+     128,
+     -256.482
+    ],
+    "yaw": 0.995,
+    "opening": [
+     6,
+     9
+    ]
+   },
+   {
+    "id": "explore",
+    "label": "Explore the World",
+    "position": [
+     -1071.253,
+     127.955,
+     -270.856
+    ],
+    "yaw": 1.449,
+    "opening": [
+     6,
+     9
+    ]
+   },
+   {
+    "id": "together",
+    "label": "Build Together",
+    "position": [
+     -1072.852,
+     128,
+     -286.069
+    ],
+    "yaw": 1.902,
+    "opening": [
+     6,
+     9
+    ]
+   }
+  ]
+ },
+ "boundary": {
+  "soft": 50,
+  "hard": 90,
+  "ceiling": 640,
+  "seaFloor": 8,
+  "highestTop": 400.474
+ }
+}

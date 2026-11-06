@@ -1,0 +1,420 @@
+{
+  "label": "FG2",
+  "env": {
+    "stage": "FG",
+    "viewport": "1280x720",
+    "quality": "high",
+    "browser": "153.0.8010.12",
+    "headless": true,
+    "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "elapsedS": 154.2,
+  "steps": [
+    {
+      "step": "home: load",
+      "start": 0.5,
+      "groupStart": 245,
+      "groupPeak": 507,
+      "end": 1.9,
+      "groupEnd": 511,
+      "ok": true
+    },
+    {
+      "step": "home: settle (exploring)",
+      "start": 1.9,
+      "groupStart": 511,
+      "groupPeak": 561,
+      "end": 8.6,
+      "groupEnd": 631,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L01: near",
+      "start": 8.6,
+      "groupStart": 631,
+      "groupPeak": 651,
+      "end": 11.6,
+      "groupEnd": 650,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L02: near",
+      "start": 11.6,
+      "groupStart": 650,
+      "groupPeak": 667,
+      "end": 14.6,
+      "groupEnd": 665,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L03: near",
+      "start": 14.6,
+      "groupStart": 665,
+      "groupPeak": 684,
+      "end": 17.6,
+      "groupEnd": 681,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L04: near",
+      "start": 17.6,
+      "groupStart": 681,
+      "groupPeak": 694,
+      "end": 20.6,
+      "groupEnd": 692,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L05: near",
+      "start": 20.6,
+      "groupStart": 692,
+      "groupPeak": 694,
+      "end": 23.7,
+      "groupEnd": 692,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L06: near",
+      "start": 23.7,
+      "groupStart": 692,
+      "groupPeak": 696,
+      "end": 26.7,
+      "groupEnd": 694,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L07: near",
+      "start": 26.7,
+      "groupStart": 694,
+      "groupPeak": 700,
+      "end": 29.7,
+      "groupEnd": 699,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L08: near",
+      "start": 29.7,
+      "groupStart": 699,
+      "groupPeak": 709,
+      "end": 32.7,
+      "groupEnd": 577,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L09: near",
+      "start": 32.7,
+      "groupStart": 577,
+      "groupPeak": 590,
+      "end": 35.7,
+      "groupEnd": 588,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L11: near",
+      "start": 35.7,
+      "groupStart": 588,
+      "groupPeak": 597,
+      "end": 38.7,
+      "groupEnd": 595,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L10: near",
+      "start": 38.7,
+      "groupStart": 595,
+      "groupPeak": 595,
+      "end": 40.8,
+      "groupEnd": 553,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L12: near",
+      "start": 40.8,
+      "groupStart": 553,
+      "groupPeak": 565,
+      "end": 43.8,
+      "groupEnd": 562,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L13: near",
+      "start": 43.8,
+      "groupStart": 562,
+      "groupPeak": 575,
+      "end": 46.8,
+      "groupEnd": 573,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L14: near",
+      "start": 46.8,
+      "groupStart": 573,
+      "groupPeak": 577,
+      "end": 49.8,
+      "groupEnd": 575,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L16: near",
+      "start": 49.8,
+      "groupStart": 575,
+      "groupPeak": 602,
+      "end": 52.8,
+      "groupEnd": 560,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L15: near",
+      "start": 52.8,
+      "groupStart": 560,
+      "groupPeak": 575,
+      "end": 55.8,
+      "groupEnd": 573,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L17: near",
+      "start": 55.8,
+      "groupStart": 573,
+      "groupPeak": 584,
+      "end": 58.9,
+      "groupEnd": 579,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L18: near",
+      "start": 58.9,
+      "groupStart": 579,
+      "groupPeak": 585,
+      "end": 61.9,
+      "groupEnd": 577,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L19: near",
+      "start": 61.9,
+      "groupStart": 577,
+      "groupPeak": 580,
+      "end": 64.9,
+      "groupEnd": 570,
+      "ok": true
+    },
+    {
+      "step": "pass 1 L20: near",
+      "start": 64.9,
+      "groupStart": 570,
+      "groupPeak": 575,
+      "end": 67.9,
+      "groupEnd": 572,
+      "ok": true
+    },
+    {
+      "step": "pass 1: home",
+      "start": 67.9,
+      "groupStart": 572,
+      "groupPeak": 572,
+      "end": 75.9,
+      "groupEnd": 569,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L01: near",
+      "start": 75.9,
+      "groupStart": 569,
+      "groupPeak": 573,
+      "end": 79,
+      "groupEnd": 569,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L02: near",
+      "start": 79,
+      "groupStart": 569,
+      "groupPeak": 584,
+      "end": 82,
+      "groupEnd": 577,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L03: near",
+      "start": 82,
+      "groupStart": 577,
+      "groupPeak": 610,
+      "end": 85,
+      "groupEnd": 602,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L04: near",
+      "start": 85,
+      "groupStart": 602,
+      "groupPeak": 609,
+      "end": 88,
+      "groupEnd": 607,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L05: near",
+      "start": 88,
+      "groupStart": 607,
+      "groupPeak": 607,
+      "end": 91,
+      "groupEnd": 605,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L06: near",
+      "start": 91,
+      "groupStart": 605,
+      "groupPeak": 623,
+      "end": 94,
+      "groupEnd": 616,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L07: near",
+      "start": 94,
+      "groupStart": 616,
+      "groupPeak": 625,
+      "end": 97,
+      "groupEnd": 620,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L08: near",
+      "start": 97,
+      "groupStart": 620,
+      "groupPeak": 628,
+      "end": 100.1,
+      "groupEnd": 626,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L09: near",
+      "start": 100.1,
+      "groupStart": 626,
+      "groupPeak": 629,
+      "end": 103.1,
+      "groupEnd": 626,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L11: near",
+      "start": 103.1,
+      "groupStart": 626,
+      "groupPeak": 629,
+      "end": 106.1,
+      "groupEnd": 570,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L10: near",
+      "start": 106.1,
+      "groupStart": 570,
+      "groupPeak": 574,
+      "end": 108.1,
+      "groupEnd": 574,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L12: near",
+      "start": 108.1,
+      "groupStart": 574,
+      "groupPeak": 583,
+      "end": 111.1,
+      "groupEnd": 581,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L13: near",
+      "start": 111.1,
+      "groupStart": 581,
+      "groupPeak": 595,
+      "end": 114.1,
+      "groupEnd": 560,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L14: near",
+      "start": 114.1,
+      "groupStart": 560,
+      "groupPeak": 564,
+      "end": 117.2,
+      "groupEnd": 551,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L16: near",
+      "start": 117.2,
+      "groupStart": 551,
+      "groupPeak": 574,
+      "end": 120.2,
+      "groupEnd": 572,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L15: near",
+      "start": 120.2,
+      "groupStart": 572,
+      "groupPeak": 576,
+      "end": 123.2,
+      "groupEnd": 575,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L17: near",
+      "start": 123.2,
+      "groupStart": 575,
+      "groupPeak": 587,
+      "end": 126.2,
+      "groupEnd": 570,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L18: near",
+      "start": 126.2,
+      "groupStart": 570,
+      "groupPeak": 577,
+      "end": 129.2,
+      "groupEnd": 570,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L19: near",
+      "start": 129.2,
+      "groupStart": 570,
+      "groupPeak": 570,
+      "end": 132.3,
+      "groupEnd": 568,
+      "ok": true
+    },
+    {
+      "step": "pass 2 L20: near",
+      "start": 132.3,
+      "groupStart": 568,
+      "groupPeak": 569,
+      "end": 135.3,
+      "groupEnd": 565,
+      "ok": true
+    },
+    {
+      "step": "pass 2: home",
+      "start": 135.3,
+      "groupStart": 565,
+      "groupPeak": 568,
+      "end": 143.3,
+      "groupEnd": 553,
+      "ok": true
+    },
+    {
+      "step": "leave world (/readme/)",
+      "start": 143.3,
+      "groupStart": 553,
+      "groupPeak": 553,
+      "end": 154.2,
+      "groupEnd": 371,
+      "ok": true
+    }
+  ],
+  "errors": []
+}

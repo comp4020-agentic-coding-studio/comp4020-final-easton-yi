@@ -1,0 +1,359 @@
+{
+"label": "gpuhome",
+"stage": "gpu --pair none",
+"note": "checkpoints 8 s after each cycle (no WebGL on the page), 10 s after page and context close",
+"end": {
+"peakGroupMiB": 610,
+"peakRssSumMiB": 1013,
+"elapsedS": 219.2,
+"cgroupEvents": "low 0, high 0, max 0, oom 0, oom_kill 0, oom_group_kill 0",
+"minAvailMiB": 8810
+},
+"checkpoints": [
+{
+"checkpoint": "baseline (no world yet)",
+"s": 8.6,
+"groupMiB": 274,
+"gpu": {
+"rss": 141,
+"pss": 101,
+"priv": 84
+},
+"renderer": {
+"rss": 106,
+"pss": 64,
+"priv": 44
+}
+},
+{
+"checkpoint": "after cycle 1",
+"s": 17.8,
+"groupMiB": 488,
+"gpu": {
+"rss": 266,
+"pss": 224,
+"priv": 206
+},
+"renderer": {
+"rss": 205,
+"pss": 160,
+"priv": 138
+}
+},
+{
+"checkpoint": "after cycle 2",
+"s": 27.9,
+"groupMiB": 518,
+"gpu": {
+"rss": 271,
+"pss": 229,
+"priv": 211
+},
+"renderer": {
+"rss": 226,
+"pss": 180,
+"priv": 159
+}
+},
+{
+"checkpoint": "after cycle 3",
+"s": 37,
+"groupMiB": 470,
+"gpu": {
+"rss": 214,
+"pss": 172,
+"priv": 154
+},
+"renderer": {
+"rss": 228,
+"pss": 183,
+"priv": 161
+}
+},
+{
+"checkpoint": "after cycle 4",
+"s": 46.3,
+"groupMiB": 496,
+"gpu": {
+"rss": 217,
+"pss": 175,
+"priv": 157
+},
+"renderer": {
+"rss": 252,
+"pss": 207,
+"priv": 185
+}
+},
+{
+"checkpoint": "after cycle 5",
+"s": 55.4,
+"groupMiB": 501,
+"gpu": {
+"rss": 218,
+"pss": 176,
+"priv": 158
+},
+"renderer": {
+"rss": 255,
+"pss": 210,
+"priv": 188
+}
+},
+{
+"checkpoint": "after cycle 6",
+"s": 65.5,
+"groupMiB": 469,
+"gpu": {
+"rss": 276,
+"pss": 234,
+"priv": 216
+},
+"renderer": {
+"rss": 161,
+"pss": 115,
+"priv": 94
+}
+},
+{
+"checkpoint": "after cycle 7",
+"s": 74.7,
+"groupMiB": 370,
+"gpu": {
+"rss": 207,
+"pss": 165,
+"priv": 147
+},
+"renderer": {
+"rss": 130,
+"pss": 85,
+"priv": 63
+}
+},
+{
+"checkpoint": "after cycle 8",
+"s": 83.9,
+"groupMiB": 419,
+"gpu": {
+"rss": 224,
+"pss": 182,
+"priv": 164
+},
+"renderer": {
+"rss": 162,
+"pss": 117,
+"priv": 95
+}
+},
+{
+"checkpoint": "after cycle 9",
+"s": 94,
+"groupMiB": 419,
+"gpu": {
+"rss": 225,
+"pss": 183,
+"priv": 165
+},
+"renderer": {
+"rss": 160,
+"pss": 115,
+"priv": 93
+}
+},
+{
+"checkpoint": "after cycle 10",
+"s": 103.2,
+"groupMiB": 418,
+"gpu": {
+"rss": 224,
+"pss": 182,
+"priv": 164
+},
+"renderer": {
+"rss": 161,
+"pss": 115,
+"priv": 93
+}
+},
+{
+"checkpoint": "after cycle 11",
+"s": 112.4,
+"groupMiB": 401,
+"gpu": {
+"rss": 227,
+"pss": 185,
+"priv": 167
+},
+"renderer": {
+"rss": 160,
+"pss": 115,
+"priv": 93
+}
+},
+{
+"checkpoint": "after cycle 12",
+"s": 121.6,
+"groupMiB": 370,
+"gpu": {
+"rss": 226,
+"pss": 184,
+"priv": 166
+},
+"renderer": {
+"rss": 161,
+"pss": 116,
+"priv": 94
+}
+},
+{
+"checkpoint": "after cycle 13",
+"s": 131.9,
+"groupMiB": 431,
+"gpu": {
+"rss": 287,
+"pss": 245,
+"priv": 227
+},
+"renderer": {
+"rss": 161,
+"pss": 116,
+"priv": 94
+}
+},
+{
+"checkpoint": "after cycle 14",
+"s": 141.1,
+"groupMiB": 380,
+"gpu": {
+"rss": 231,
+"pss": 158,
+"priv": 123
+},
+"renderer": {
+"rss": 163,
+"pss": 94,
+"priv": 66
+}
+},
+{
+"checkpoint": "after cycle 15",
+"s": 150.4,
+"groupMiB": 439,
+"gpu": {
+"rss": 291,
+"pss": 219,
+"priv": 183
+},
+"renderer": {
+"rss": 160,
+"pss": 92,
+"priv": 63
+}
+},
+{
+"checkpoint": "after cycle 16",
+"s": 160.5,
+"groupMiB": 383,
+"gpu": {
+"rss": 234,
+"pss": 162,
+"priv": 126
+},
+"renderer": {
+"rss": 161,
+"pss": 92,
+"priv": 64
+}
+},
+{
+"checkpoint": "after cycle 17",
+"s": 169.7,
+"groupMiB": 443,
+"gpu": {
+"rss": 294,
+"pss": 221,
+"priv": 186
+},
+"renderer": {
+"rss": 161,
+"pss": 92,
+"priv": 64
+}
+},
+{
+"checkpoint": "after cycle 18",
+"s": 179,
+"groupMiB": 387,
+"gpu": {
+"rss": 237,
+"pss": 165,
+"priv": 129
+},
+"renderer": {
+"rss": 161,
+"pss": 92,
+"priv": 63
+}
+},
+{
+"checkpoint": "after cycle 19",
+"s": 188.8,
+"groupMiB": 363,
+"gpu": {
+"rss": 241,
+"pss": 169,
+"priv": 133
+},
+"renderer": {
+"rss": 132,
+"pss": 63,
+"priv": 34
+}
+},
+{
+"checkpoint": "after cycle 20",
+"s": 198.9,
+"groupMiB": 363,
+"gpu": {
+"rss": 243,
+"pss": 171,
+"priv": 135
+},
+"renderer": {
+"rss": 131,
+"pss": 62,
+"priv": 33
+}
+},
+{
+"checkpoint": "page closed",
+"s": 208.9,
+"groupMiB": 296,
+"gpu": {
+"rss": 205,
+"pss": 135,
+"priv": 98
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+},
+{
+"checkpoint": "context closed",
+"s": 218.9,
+"groupMiB": 291,
+"gpu": {
+"rss": 205,
+"pss": 135,
+"priv": 98
+},
+"renderer": {
+"rss": 0,
+"pss": 0,
+"priv": 0
+}
+}
+]
+}

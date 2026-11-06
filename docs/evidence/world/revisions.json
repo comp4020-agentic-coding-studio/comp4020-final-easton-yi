@@ -1,0 +1,325 @@
+[
+ {
+  "id": "L01",
+  "revisions": [
+   {
+    "item": "L01 outer ring geometry",
+    "original": "20 outer posts with no stated plan",
+    "revised": "posts at equal 18° steps on an ellipse with semi-axes 33 × 25, offset half a step so the −z axis falls between two posts",
+    "reason": "the 72 × 56 envelope includes the 6 m footings; equal angles keep lintel spans 8.4–10.6 m",
+    "impact": "the main opening on −z is a lintel bay of 10.6 m clear between post faces; a 12 m route uses the wider gap at the horseshoe's open end (see entries)"
+   }
+  ]
+ },
+ {
+  "id": "L02",
+  "revisions": [
+   {
+    "item": "L02 grid",
+    "original": "six rows × eight columns, ≥16 m clear between the central rows",
+    "revised": "column centres x = ±63/±45/±27/±11.5, z = ±40/±24/±8",
+    "reason": "central high columns at x = ±11.5 leave 23 − 2 × 2.5 = 18 m clear for the central passage; outer columns keep the 144 m envelope with 6 m overhangs of roof",
+    "impact": "the central passage runs along z through all six rows"
+   }
+  ]
+ },
+ {
+  "id": "L03",
+  "revisions": [
+   {
+    "item": "L03 platform approach",
+    "original": "three 2 m construction bands",
+    "revised": "front and rear flights of 24 risers of 0.25 m and 1.5 m treads, 24 m wide",
+    "reason": "a 2 m band is a construction band, not a stair riser (§7.2)",
+    "impact": "approaches extend 36 m beyond the 184 m envelope; the core bounds stay within it"
+   },
+   {
+    "item": "L03 Doric capital fill",
+    "original": "34–38 m capitals: six expanding rings of 32 D each, then three 6 m square abacus layers R(6,6,1,1)",
+    "revised": "each echinus course is a solid cushion band: its 32-segment outer ring stacked at the D section to fill the 0.42 m course plus one ring just inside it (the underside of the overhang); each abacus layer keeps its R(6,6,1,1) frame stacked to the 0.5 m layer; the core behind is the capital shade shell (inner rings and abacus decks hidden by the band, the next course and the architrave were removed 2026-11-04: 1,963 → 997 D per capital)",
+    "reason": "single 0.125 m rings 0.42 m apart and hollow square frames read as a see-through wire lampshade in the real viewport, failing Appendix C2 (capitals must cast readable shadows; outward-flaring support below a square abacus)",
+    "impact": "same 4 m capital height and 6 m abacus width (envelope unchanged); more D pieces per column (BOM); the capital reads as an echinus cushion under a solid slab and shadows the frieze"
+   },
+   {
+    "item": "L03 outer ribs",
+    "original": "20 B outer ribs per segment",
+    "revised": "20 M ribs per segment (0.5 m fillets)",
+    "reason": "twenty 1 m-wide B sections need 20 m of perimeter; a Ø 5.2 m shaft has 16.3 m, so B ribs would overlap into a smooth cylinder and leave no room for the flutes",
+    "impact": "same count and rhythm, true recessed flutes between ribs; the BOM shows M instead of B"
+   },
+   {
+    "item": "L03 capital",
+    "original": "six expanding rings and three R(6,6,1,1) abacus layers in 34–38 m",
+    "revised": "six 32-D echinus rings at 0.42 m spacing and three D R(6,6) abacus frames at 0.5 m spacing, capital top 37.06 m",
+    "reason": "the rings and frames resolve to 3.06 m; a 0.94 m M bearing course closes to 38 m",
+    "impact": "the entablature still spans 38–44 m"
+   }
+  ]
+ },
+ {
+  "id": "L04",
+  "revisions": [
+   {
+    "item": "L04 plan",
+    "original": "main hall 72 × 80, side porch 32 × 48, 12 m terrace",
+    "revised": "main platform 80 × 128 (hall 72 × 80 colonnade on it, the rest an open court), side platform 36 × 56 holding the 32 × 48 porch; a 12 m-wide flight links the 4 m and 8 m levels",
+    "reason": "112 × 128 envelope: 80 + 36 = 116 overlaps 4 m where the side terrace tucks under the main platform's edge",
+    "impact": "the court in front of the hall is the 'open connecting court'"
+   },
+   {
+    "item": "L04 Ionic recipe",
+    "original": "legacy B4: 224 M + 1,400 D per column (paper)",
+    "revised": "B4 generated: actual per-column counts in the BOM (base, shaft, neck, flare, volutes, abacus)",
+    "reason": "B4's counts were never generated; the generator expands the same rings, ribs and spirals and reports what it actually placed",
+    "impact": "see the generated BOM; the 3,306-piece offline sample is not used"
+   }
+  ]
+ },
+ {
+  "id": "L05",
+  "revisions": [
+   {
+    "item": "L05 first tier length",
+    "original": "approximately 180 m",
+    "revised": "188 m (six 22 m openings, seven 8 m piers)",
+    "reason": "openings and piers resolved at their stated sizes",
+    "impact": "the lower tier is 8 m longer than the round figure"
+   },
+   {
+    "item": "L05 middle-tier piers",
+    "original": "12 piers, roughly 20 m clear spans, not over lower arch centres",
+    "revised": "twelve 6.67 m piers at a 26.67 m pitch; piers over the lower tier stand on its deck beam, the outer five per side on the bank terrace",
+    "reason": "an exact 1:1 pier alignment with the lower tier (30 m pitch) is impossible with 11 arches over 300 m; every middle pier over the 188 m lower tier lands on the 2 m lower beam band, none over an arch crown's keystone (checked: min distance from a lower crown ≥ 3.3 m)",
+    "impact": "the middle tier reads as its own rhythm, as at the reference"
+   },
+   {
+    "item": "L05 deck width",
+    "original": "20 m deep envelope; 4 m channel plus ≥ 4 m walk",
+    "revised": "lower tier 20 m, middle 16 m, top 8 m plus a 7.5 m cantilevered walk deck to z = 9.75 (bracketed on the upper beam)",
+    "reason": "a stepped section keeps the tiers distinct and the walk wide enough to land on",
+    "impact": "the channel is 4 m wide between M walls; the walk is 7.5 m"
+   }
+  ]
+ },
+ {
+  "id": "L06",
+  "revisions": [
+   {
+    "item": "L06 ring-step base",
+    "original": "ellipse 240 × 196; four steps",
+    "revised": "step ellipses 240 × 196 at the base, shrinking 0.8 m per band; pier axes on a 226 × 182 ellipse so the attached half-columns stay within the envelope",
+    "reason": "the envelope includes the stepped base and the projecting half-columns",
+    "impact": "the steps are a walkable 0.5 m-riser plinth; entries cross it on ramps"
+   }
+  ]
+ },
+ {
+  "id": "L07",
+  "revisions": [
+   {
+    "item": "L07 plan",
+    "original": "rotunda outside Ø 96, overall depth 144, envelope width 112",
+    "revised": "drum Ø 96 centred at z = +16; six base bands step out to Ø 112; portico from z = −72 to the drum",
+    "reason": "the 112 m width is the stepped base, the 144 m depth is base + portico",
+    "impact": "none on the dome"
+   },
+   {
+    "item": "L07 portico capitals",
+    "original": "16 × 5 D leaf groups and three abacus layers",
+    "revised": "two rows of eight clusters (16) of five D leaf lanes, each lane bent in two (lower row) or four (upper row) D runs so the cluster widens, closes to a point and turns its tip down; three stepped abacus frames",
+    "reason": "with one run per lane the five lanes of a cluster fell on the same line; the builder dropped four of five as coincident duplicates, leaving 32 single sticks per capital that read as loose wires (inspector review 2026-11-04); the brief asks for broad, opening, pointed clusters",
+    "impact": "240 leaf D per capital instead of the 32 that survived (+3,328 pieces over the sixteen portico columns)"
+   }
+  ]
+ },
+ {
+  "id": "L08",
+  "revisions": [
+   {
+    "item": "L08 main arches",
+    "original": "approximately 56 m span, 24 m rise, A(56,24,3,8,4), 42–66",
+    "revised": "clear span 64 − 0 between pier inner faces = 64 m at 44 → resolved as A(64, 24, 3, 8, 4) springing at 42 + 2 = 44 on a 2 m pier cap, crown 68 + 3",
+    "reason": "the piers' inner faces stand 64 m apart (the retained central space); a 56 m arch would not land on them",
+    "impact": "pendentives fill the spandrels between the crowns at 68; the drum sits on 68–76"
+   }
+  ]
+ },
+ {
+  "id": "L09",
+  "revisions": [
+   {
+    "item": "L09 tower plan",
+    "original": "eight outer towers, eight polyline wall runs",
+    "revised": "towers at the four corners (to 72 m) and the four side midpoints (to 64 m) of a 160 × 136 polygon; tower radius 6 m, conical roofs radius 7",
+    "reason": "corner towers carry the tallest roofs; runs between towers are the eight wall runs",
+    "impact": "the main gate is beside the south tower, offset from the inner gate"
+   }
+  ]
+ },
+ {
+  "id": "L10",
+  "revisions": []
+ },
+ {
+  "id": "L11",
+  "revisions": [
+   {
+    "item": "L11 hall piers",
+    "original": "8 B vertical bundle members + 8 M ring ties per 4 m course",
+    "revised": "8 B members lapping two courses each (one set per two courses) + 8 M ties every course",
+    "reason": "8 m B stock spans two 4 m courses; placing a new set every course would double each member",
+    "impact": "BOM: 5 × 8 B per pier rather than 10 × 8"
+   },
+   {
+    "item": "L11 double-shell reveal",
+    "original": "maintenance-display opening",
+    "revised": "the outer shell's plank infill is omitted on the octagon's −z lobe between rings 8 and 16, showing the inner shell and ties",
+    "reason": "an honest reveal without a new visitor route through the 2 m cavity",
+    "impact": "visible from the hall roof and from flight"
+   }
+  ]
+ },
+ {
+  "id": "L12",
+  "revisions": [
+   {
+    "item": "L12 colonnade plan",
+    "original": "two wings of 16 arc positions × four radial rows (128 columns)",
+    "revised": "wings on circles of radius 118/122/126/130 m around (0, −16), each over 66° of arc centred on ±x; the wing bases reach ±140 m (280 m); two paved forecourt bands mark the square's front at z = −120; the facade base reaches z = +120",
+    "reason": "fits the 280 m width with the facade and dome on +z inside the 240 m depth",
+    "impact": "the main approach crosses the open square between the wing ends"
+   },
+   {
+    "item": "L12 facade bays",
+    "original": "nine bays with the middle three wider",
+    "revised": "bay lines at x = ±70/±56/±42/±28/±12: six outer bays of 14 m and three middle bays of 16/24/16 m",
+    "reason": "a 16 m main entrance clearance needs the central bay ≥ 16 m between column chains",
+    "impact": "the main door is 18 m clear"
+   }
+  ]
+ },
+ {
+  "id": "L13",
+  "revisions": [
+   {
+    "item": "L13 removed nodes",
+    "original": "nominally 21 × 11 nodes; list nodes removed for the central passage",
+    "revised": "removed: nodes (i = 9…11, j = 4…6) under the transept vault, replaced by the vault's 56 m arches; nodes (i = 0 and 20, j = 4…6) at both ends, leaving 48 m entrances (≥ 32 m)",
+    "reason": "the passage and the transept need clear floor",
+    "impact": "231 − 15 = 216 columns"
+   }
+  ]
+ },
+ {
+  "id": "L14",
+  "revisions": [
+   {
+    "item": "L14 foot placement",
+    "original": "100 × 100 envelope, four 18 m pads, leg centre radius 42 at the base",
+    "revised": "the leg centre radius 42/39/35/30/25/20/16 is measured from each vertical mid-plane (|x| = |z| = r); pads 18 × 18 centred at |x| = |z| = 41; the 12 m leg section at r = 42 reaches ±48, pads ±50",
+    "reason": "read as a diagonal distance the legs would stand only 30 m off-axis and the tower would be 75 m wide, not 100",
+    "impact": "the legs spread wider, so the lower arches span about 60 m between leg faces"
+   }
+  ]
+ },
+ {
+  "id": "L15",
+  "revisions": [
+   {
+    "item": "L15 tower floors",
+    "original": "nominal plan 56 × 40, retreat 2 m every four floors",
+    "revised": "floors 29–32 at 56 × 40, 33–36 at 52 × 36, 37–40 at 48 × 32 (2 m off every face), each setback a 2 m terrace inside a 4 m-wide roof edge with rails",
+    "reason": "a symmetric 2 m retreat on each face per stage",
+    "impact": "three principal setbacks at 40, 120 and 168, plus two minor ones"
+   }
+  ]
+ },
+ {
+  "id": "L16",
+  "revisions": [
+   {
+    "item": "L16 plan resolution",
+    "original": "360 × 160 envelope, curved upstream plan, 36 bands × 36 arc sectors",
+    "revised": "upstream face on a 260 m radius (convex toward the reservoir at −z), crest arc x = ±170; the canyon narrows the body to ±60 m at the foundation; thickness by Catmull-Rom through 110/82/52/27/12 m; 36 equal-angle sectors per band, trimmed by the canyon",
+    "reason": "a dam fills a V-shaped canyon: full-width sectors at the base would hang in the rock",
+    "impact": "the 160 m depth = 110 m base thickness + the plan sagitta + spillway toe; the crest is 12 m thick"
+   },
+   {
+    "item": "L16 fin spillway integration",
+    "original": "§7.4 local sample: 61.75 m high, back at z = −6",
+    "revised": "used unchanged as a lower downstream annex at the crown, its origin at the dam toe (back bedded into the body), between the two powerhouses, discharging into the central channel",
+    "reason": "keeps the 160 m dam and adds the required fins, bays, bottom-wide/top-narrow sections and spreading chute faces",
+    "impact": "the spillway reads from the toe and from the crest road above"
+   }
+  ]
+ },
+ {
+  "id": "L17",
+  "revisions": [
+   {
+    "item": "L17 lobby passage",
+    "original": "20 column bundles on the 6 × 4 grid perimeter, 16 m central passage",
+    "revised": "the two bundles on the passage line (x = 0, z = ±24) move sideways to x = ±8 on their facades, so the passage along z is 16 m clear between them",
+    "reason": "a bundle on the passage axis would block it",
+    "impact": "same 20 bundles; the facade bays beside the passage are 8 and 4 m"
+   },
+   {
+    "item": "L17 terraces",
+    "original": "8 m-wide edge-viewing terraces around 76, 140 and 204 m, projecting 4 m",
+    "revised": "on floors 16, 32 and 48 (floor f's slab at 12 + 4(f − 1) = 72, 136, 200 m): a ring 8 m wide whose outer 4 m cantilevers beyond the facade on bracket groups every 8 m; the inner 4 m is the recessed floor edge",
+    "reason": "floor and elevation conventions resolved (floor 1 at 12 m)",
+    "impact": "the terraces reach the 80 × 56 envelope"
+   }
+  ]
+ },
+ {
+  "id": "L18",
+  "revisions": [
+   {
+    "item": "L18 terminations",
+    "original": "A and I end at 30; C and G at 42; D/F/H at 54; B/E continue to 60",
+    "revised": "as written; tube E (centre) is full height; B shares E's west… north face and continues beside it",
+    "reason": "unchanged",
+    "impact": "from above: nine → seven → cross of five → two"
+   }
+  ]
+ },
+ {
+  "id": "L19",
+  "revisions": [
+   {
+    "item": "L19 prisms",
+    "original": "four right-triangle zones around the centre, ending at floors 40/48/56/64",
+    "revised": "the 88 m square split by both diagonals into four isosceles right triangles W/S/N/E ending at floors 40/48/56/64; each part's crown slopes down toward the lower neighbour's side over its last four floors",
+    "reason": "the diagonals give one shared central edge (assigned once, to the last-ending prism E)",
+    "impact": "the 12 m diagonal route at the base runs from SW to NE between the W/S and N/E pairs"
+   }
+  ]
+ },
+ {
+  "id": "L20",
+  "revisions": [
+   {
+    "item": "L20 nose curtain wall",
+    "original": "each wing: double-M mullions every 4 m along both sides, a 12-segment nose and M floor-edge ring",
+    "revised": "the double-M mullions also stand at the nose's eleven interior segment points (0.3 m outside the outline, as on the sides), and the nose carries glass strips tangent to each segment",
+    "reason": "with mullions only on the straight sides, the three rounded noses showed the dark wing interior as bare 300 m slabs (inspector review, 2026-11-04)",
+    "impact": "the curtain wall reads continuously round each wing; more M pieces (BOM); envelope unchanged"
+   },
+   {
+    "item": "L20 wing interior",
+    "original": "rear shading shells behind the curtain wall (§7.2: allowed)",
+    "revised": "the wing-prism and core infill shells use the plank finish (lit timber tone) instead of the near-black shade finish",
+    "reason": "about 54,000 m² of shade behind 38 %-opaque glass made the whole tower read as a black slab from every review camera, hiding the setbacks and terraces (inspector review, 2026-11-04); L18/L19 show timber behind their glass",
+    "impact": "appearance only; no piece, collider or envelope change"
+   },
+   {
+    "item": "L20 wing length",
+    "original": "wings initially about 56 m long and 24 m wide at 120°, envelope 144 × 132; each wing retreats four times 56 → 48 → 40 → 32 → 24",
+    "revised": "wings 81 m from the core centre to the nose tip (65 m beyond the 16 m core), retreating 8 m at each of its four setbacks: 81 → 73 → 65 → 57 → 49",
+    "reason": "with 56 m wings the Y plan's bounding box is only 100 × 90; 81 m wings meet 144 × 132 (solved numerically from the outline); the 8 m step per setback is kept",
+    "impact": "the final wing stubs are longer than 24 m, so the crown's wing fins carry the sequence's end"
+   }
+  ]
+ }
+]

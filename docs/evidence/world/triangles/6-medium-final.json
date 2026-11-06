@@ -1,0 +1,5844 @@
+{
+"note": "medium, final: box folding, per-chunk terrain, jump refresh, tiered shell segments, and the shadow-caster bounds fix for instanced shells (shadow-cull.ts). 82 views, 1280x720, SwiftShader.",
+"env": {
+"quality": "medium",
+"viewport": "1280x720",
+"browser": "153.0.8010.12",
+"gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+},
+"views": [
+{
+"view": "home",
+"triangles": 466913,
+"calls": 134,
+"camera": 417127,
+"shadow": 49786,
+"byCategory": {
+"far": {
+"camera": 119404,
+"shadow": 24000,
+"calls": 19
+},
+"shells": {
+"camera": 110616,
+"shadow": 8980,
+"calls": 44
+},
+"rocks": {
+"camera": 81600,
+"shadow": 14820,
+"calls": 10
+},
+"terrain": {
+"camera": 68096,
+"shadow": 0,
+"calls": 23
+},
+"grass": {
+"camera": 33015,
+"shadow": 0,
+"calls": 1
+},
+"portals": {
+"camera": 1626,
+"shadow": 1620,
+"calls": 15
+},
+"other": {
+"camera": 2230,
+"shadow": 360,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L01 ground",
+"triangles": 353109,
+"calls": 81,
+"camera": 247341,
+"shadow": 105768,
+"byCategory": {
+"far": {
+"camera": 48800,
+"shadow": 48000,
+"calls": 6
+},
+"rocks": {
+"camera": 36460,
+"shadow": 26240,
+"calls": 7
+},
+"terrain": {
+"camera": 58480,
+"shadow": 0,
+"calls": 11
+},
+"detail:M": {
+"camera": 23088,
+"shadow": 23088,
+"calls": 12
+},
+"detail:D": {
+"camera": 45846,
+"shadow": 0,
+"calls": 20
+},
+"grass": {
+"camera": 25035,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 7748,
+"shadow": 8008,
+"calls": 15
+},
+"other": {
+"camera": 1522,
+"shadow": 432,
+"calls": 6
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L01 interior",
+"triangles": 338258,
+"calls": 68,
+"camera": 236202,
+"shadow": 102056,
+"byCategory": {
+"far": {
+"camera": 24000,
+"shadow": 48000,
+"calls": 3
+},
+"terrain": {
+"camera": 70864,
+"shadow": 0,
+"calls": 5
+},
+"detail:D": {
+"camera": 60570,
+"shadow": 0,
+"calls": 22
+},
+"rocks": {
+"camera": 26240,
+"shadow": 26240,
+"calls": 6
+},
+"detail:M": {
+"camera": 23088,
+"shadow": 23088,
+"calls": 12
+},
+"grass": {
+"camera": 25260,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 4296,
+"shadow": 4296,
+"calls": 10
+},
+"other": {
+"camera": 1522,
+"shadow": 432,
+"calls": 6
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L01 detail",
+"triangles": 345822,
+"calls": 67,
+"camera": 240054,
+"shadow": 105768,
+"byCategory": {
+"far": {
+"camera": 48000,
+"shadow": 48000,
+"calls": 4
+},
+"rocks": {
+"camera": 41880,
+"shadow": 26240,
+"calls": 7
+},
+"terrain": {
+"camera": 56448,
+"shadow": 0,
+"calls": 7
+},
+"detail:M": {
+"camera": 20826,
+"shadow": 23088,
+"calls": 10
+},
+"detail:D": {
+"camera": 38622,
+"shadow": 0,
+"calls": 16
+},
+"grass": {
+"camera": 23760,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 8704,
+"shadow": 8008,
+"calls": 13
+},
+"other": {
+"camera": 1450,
+"shadow": 432,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L01 high",
+"triangles": 546009,
+"calls": 146,
+"camera": 476353,
+"shadow": 69656,
+"byCategory": {
+"far": {
+"camera": 143404,
+"shadow": 24000,
+"calls": 20
+},
+"shells": {
+"camera": 114816,
+"shadow": 4296,
+"calls": 48
+},
+"rocks": {
+"camera": 81600,
+"shadow": 26240,
+"calls": 11
+},
+"terrain": {
+"camera": 67904,
+"shadow": 0,
+"calls": 25
+},
+"detail:M": {
+"camera": 23088,
+"shadow": 14688,
+"calls": 10
+},
+"grass": {
+"camera": 29775,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 12924,
+"shadow": 0,
+"calls": 10
+},
+"other": {
+"camera": 2302,
+"shadow": 432,
+"calls": 10
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L02 ground",
+"triangles": 638668,
+"calls": 174,
+"camera": 422384,
+"shadow": 216284,
+"byCategory": {
+"detail:M": {
+"camera": 130788,
+"shadow": 110496,
+"calls": 44
+},
+"detail:D": {
+"camera": 121836,
+"shadow": 0,
+"calls": 56
+},
+"far": {
+"camera": 34536,
+"shadow": 58536,
+"calls": 5
+},
+"terrain": {
+"camera": 66960,
+"shadow": 0,
+"calls": 8
+},
+"rocks": {
+"camera": 30460,
+"shadow": 26240,
+"calls": 6
+},
+"shells": {
+"camera": 8704,
+"shadow": 12672,
+"calls": 17
+},
+"grass": {
+"camera": 17370,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 9216,
+"shadow": 7974,
+"calls": 18
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"other": {
+"camera": 526,
+"shadow": 360,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L02 interior",
+"triangles": 584443,
+"calls": 139,
+"camera": 362543,
+"shadow": 221900,
+"byCategory": {
+"detail:M": {
+"camera": 137616,
+"shadow": 125952,
+"calls": 42
+},
+"detail:D": {
+"camera": 103536,
+"shadow": 0,
+"calls": 42
+},
+"far": {
+"camera": 24000,
+"shadow": 48000,
+"calls": 3
+},
+"terrain": {
+"camera": 58000,
+"shadow": 0,
+"calls": 5
+},
+"rocks": {
+"camera": 14820,
+"shadow": 26240,
+"calls": 5
+},
+"shells": {
+"camera": 8164,
+"shadow": 12132,
+"calls": 15
+},
+"detail:B": {
+"camera": 9216,
+"shadow": 9216,
+"calls": 20
+},
+"grass": {
+"camera": 6375,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 454,
+"shadow": 360,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L02 detail",
+"triangles": 509024,
+"calls": 116,
+"camera": 289728,
+"shadow": 219296,
+"byCategory": {
+"detail:M": {
+"camera": 116748,
+"shadow": 123684,
+"calls": 37
+},
+"detail:D": {
+"camera": 79548,
+"shadow": 0,
+"calls": 30
+},
+"terrain": {
+"camera": 59232,
+"shadow": 0,
+"calls": 4
+},
+"far": {
+"camera": 0,
+"shadow": 48000,
+"calls": 2
+},
+"rocks": {
+"camera": 14820,
+"shadow": 26240,
+"calls": 5
+},
+"detail:B": {
+"camera": 8658,
+"shadow": 9216,
+"calls": 19
+},
+"shells": {
+"camera": 3756,
+"shadow": 11796,
+"calls": 12
+},
+"grass": {
+"camera": 6150,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 454,
+"shadow": 360,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L02 high",
+"triangles": 555867,
+"calls": 136,
+"camera": 435045,
+"shadow": 120822,
+"byCategory": {
+"far": {
+"camera": 81828,
+"shadow": 48000,
+"calls": 8
+},
+"detail:M": {
+"camera": 77190,
+"shadow": 37050,
+"calls": 22
+},
+"rocks": {
+"camera": 55600,
+"shadow": 26240,
+"calls": 8
+},
+"terrain": {
+"camera": 75024,
+"shadow": 0,
+"calls": 12
+},
+"shells": {
+"camera": 53420,
+"shadow": 7468,
+"calls": 21
+},
+"detail:chains": {
+"camera": 40204,
+"shadow": 0,
+"calls": 14
+},
+"detail:D": {
+"camera": 26586,
+"shadow": 0,
+"calls": 21
+},
+"grass": {
+"camera": 14775,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 7974,
+"shadow": 1698,
+"calls": 10
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"other": {
+"camera": 454,
+"shadow": 360,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L03 ground",
+"triangles": 532371,
+"calls": 138,
+"camera": 383759,
+"shadow": 148612,
+"byCategory": {
+"detail:M": {
+"camera": 102606,
+"shadow": 76902,
+"calls": 40
+},
+"terrain": {
+"camera": 69456,
+"shadow": 0,
+"calls": 8
+},
+"far": {
+"camera": 34536,
+"shadow": 32492,
+"calls": 4
+},
+"detail:D": {
+"camera": 62076,
+"shadow": 0,
+"calls": 31
+},
+"rocks": {
+"camera": 30460,
+"shadow": 26240,
+"calls": 6
+},
+"detail:chains": {
+"camera": 44232,
+"shadow": 0,
+"calls": 16
+},
+"grass": {
+"camera": 29175,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 8704,
+"shadow": 12612,
+"calls": 13
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"other": {
+"camera": 526,
+"shadow": 360,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L03 interior",
+"triangles": 494607,
+"calls": 104,
+"camera": 306571,
+"shadow": 188036,
+"byCategory": {
+"detail:M": {
+"camera": 113418,
+"shadow": 115476,
+"calls": 48
+},
+"detail:D": {
+"camera": 111060,
+"shadow": 0,
+"calls": 23
+},
+"rocks": {
+"camera": 21400,
+"shadow": 26240,
+"calls": 5
+},
+"terrain": {
+"camera": 47072,
+"shadow": 0,
+"calls": 5
+},
+"far": {
+"camera": 0,
+"shadow": 32492,
+"calls": 2
+},
+"shells": {
+"camera": 4480,
+"shadow": 12664,
+"calls": 10
+},
+"grass": {
+"camera": 8325,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 454,
+"shadow": 360,
+"calls": 3
+},
+"portals": {
+"camera": 0,
+"shadow": 804,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L03 detail",
+"triangles": 479765,
+"calls": 97,
+"camera": 308891,
+"shadow": 170874,
+"byCategory": {
+"detail:M": {
+"camera": 101508,
+"shadow": 94410,
+"calls": 42
+},
+"detail:D": {
+"camera": 100212,
+"shadow": 0,
+"calls": 27
+},
+"rocks": {
+"camera": 26240,
+"shadow": 41880,
+"calls": 7
+},
+"terrain": {
+"camera": 56000,
+"shadow": 0,
+"calls": 4
+},
+"shells": {
+"camera": 4480,
+"shadow": 25732,
+"calls": 9
+},
+"grass": {
+"camera": 19635,
+"shadow": 0,
+"calls": 1
+},
+"far": {
+"camera": 0,
+"shadow": 8492,
+"calls": 1
+},
+"other": {
+"camera": 454,
+"shadow": 360,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L03 high",
+"triangles": 333456,
+"calls": 69,
+"camera": 232866,
+"shadow": 100590,
+"byCategory": {
+"far": {
+"camera": 72492,
+"shadow": 32492,
+"calls": 8
+},
+"rocks": {
+"camera": 41880,
+"shadow": 32820,
+"calls": 7
+},
+"terrain": {
+"camera": 59552,
+"shadow": 0,
+"calls": 12
+},
+"shells": {
+"camera": 20060,
+"shadow": 34912,
+"calls": 20
+},
+"grass": {
+"camera": 35370,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1522,
+"shadow": 360,
+"calls": 5
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L04 ground",
+"triangles": 626910,
+"calls": 153,
+"camera": 439802,
+"shadow": 187108,
+"byCategory": {
+"detail:M": {
+"camera": 106224,
+"shadow": 85734,
+"calls": 39
+},
+"far": {
+"camera": 66492,
+"shadow": 56492,
+"calls": 7
+},
+"terrain": {
+"camera": 86208,
+"shadow": 0,
+"calls": 9
+},
+"detail:D": {
+"camera": 81450,
+"shadow": 0,
+"calls": 41
+},
+"rocks": {
+"camera": 41880,
+"shadow": 26240,
+"calls": 7
+},
+"shells": {
+"camera": 33888,
+"shadow": 17280,
+"calls": 23
+},
+"grass": {
+"camera": 16620,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 4524,
+"shadow": 0,
+"calls": 5
+},
+"other": {
+"camera": 526,
+"shadow": 1356,
+"calls": 5
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L04 interior",
+"triangles": 609866,
+"calls": 107,
+"camera": 404144,
+"shadow": 205722,
+"byCategory": {
+"detail:M": {
+"camera": 100032,
+"shadow": 108762,
+"calls": 39
+},
+"far": {
+"camera": 56492,
+"shadow": 56492,
+"calls": 6
+},
+"detail:D": {
+"camera": 92472,
+"shadow": 0,
+"calls": 25
+},
+"terrain": {
+"camera": 81104,
+"shadow": 0,
+"calls": 5
+},
+"rocks": {
+"camera": 34200,
+"shadow": 26240,
+"calls": 6
+},
+"shells": {
+"camera": 36200,
+"shadow": 12872,
+"calls": 17
+},
+"other": {
+"camera": 1090,
+"shadow": 1356,
+"calls": 4
+},
+"grass": {
+"camera": 2190,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L04 detail",
+"triangles": 759696,
+"calls": 168,
+"camera": 557964,
+"shadow": 201732,
+"byCategory": {
+"detail:M": {
+"camera": 104658,
+"shadow": 102000,
+"calls": 43
+},
+"far": {
+"camera": 111772,
+"shadow": 56492,
+"calls": 16
+},
+"shells": {
+"camera": 88748,
+"shadow": 15644,
+"calls": 35
+},
+"rocks": {
+"camera": 71380,
+"shadow": 26240,
+"calls": 10
+},
+"terrain": {
+"camera": 92272,
+"shadow": 0,
+"calls": 17
+},
+"detail:D": {
+"camera": 81444,
+"shadow": 0,
+"calls": 27
+},
+"grass": {
+"camera": 5280,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 1356,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L04 high",
+"triangles": 700001,
+"calls": 182,
+"camera": 611143,
+"shadow": 88858,
+"byCategory": {
+"far": {
+"camera": 144204,
+"shadow": 24000,
+"calls": 18
+},
+"detail:M": {
+"camera": 104616,
+"shadow": 26820,
+"calls": 24
+},
+"shells": {
+"camera": 114300,
+"shadow": 7724,
+"calls": 50
+},
+"rocks": {
+"camera": 81600,
+"shadow": 26240,
+"calls": 11
+},
+"terrain": {
+"camera": 70496,
+"shadow": 0,
+"calls": 18
+},
+"detail:chains": {
+"camera": 57820,
+"shadow": 0,
+"calls": 25
+},
+"grass": {
+"camera": 19965,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 7956,
+"shadow": 3714,
+"calls": 11
+},
+"detail:D": {
+"camera": 7416,
+"shadow": 0,
+"calls": 5
+},
+"other": {
+"camera": 2230,
+"shadow": 360,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L05 ground",
+"triangles": 399037,
+"calls": 117,
+"camera": 284477,
+"shadow": 114560,
+"byCategory": {
+"far": {
+"camera": 96000,
+"shadow": 48000,
+"calls": 6
+},
+"detail:M": {
+"camera": 44460,
+"shadow": 33492,
+"calls": 34
+},
+"rocks": {
+"camera": 41880,
+"shadow": 17180,
+"calls": 6
+},
+"terrain": {
+"camera": 56960,
+"shadow": 0,
+"calls": 5
+},
+"shells": {
+"camera": 17280,
+"shadow": 13596,
+"calls": 19
+},
+"grass": {
+"camera": 14055,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 10956,
+"shadow": 0,
+"calls": 19
+},
+"detail:B": {
+"camera": 1440,
+"shadow": 936,
+"calls": 14
+},
+"other": {
+"camera": 454,
+"shadow": 1356,
+"calls": 4
+},
+"detail:chains": {
+"camera": 628,
+"shadow": 0,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L05 interior",
+"triangles": 453709,
+"calls": 111,
+"camera": 265997,
+"shadow": 187712,
+"byCategory": {
+"far": {
+"camera": 72000,
+"shadow": 72000,
+"calls": 6
+},
+"detail:M": {
+"camera": 44148,
+"shadow": 35016,
+"calls": 32
+},
+"shells": {
+"camera": 36308,
+"shadow": 36272,
+"calls": 19
+},
+"rocks": {
+"camera": 26240,
+"shadow": 41880,
+"calls": 7
+},
+"terrain": {
+"camera": 53952,
+"shadow": 0,
+"calls": 4
+},
+"grass": {
+"camera": 19305,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 10734,
+"shadow": 0,
+"calls": 19
+},
+"other": {
+"camera": 1450,
+"shadow": 1356,
+"calls": 5
+},
+"detail:B": {
+"camera": 1188,
+"shadow": 1188,
+"calls": 12
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 308,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L05 detail",
+"triangles": 605293,
+"calls": 157,
+"camera": 418169,
+"shadow": 187124,
+"byCategory": {
+"far": {
+"camera": 138432,
+"shadow": 72000,
+"calls": 16
+},
+"shells": {
+"camera": 91572,
+"shadow": 36272,
+"calls": 40
+},
+"rocks": {
+"camera": 46480,
+"shadow": 41880,
+"calls": 9
+},
+"detail:M": {
+"camera": 36372,
+"shadow": 34662,
+"calls": 26
+},
+"terrain": {
+"camera": 65584,
+"shadow": 0,
+"calls": 16
+},
+"grass": {
+"camera": 20925,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 13566,
+"shadow": 0,
+"calls": 18
+},
+"other": {
+"camera": 1870,
+"shadow": 1356,
+"calls": 8
+},
+"detail:B": {
+"camera": 1188,
+"shadow": 954,
+"calls": 11
+},
+"detail:chains": {
+"camera": 1652,
+"shadow": 0,
+"calls": 7
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 166,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L05 high",
+"triangles": 360001,
+"calls": 59,
+"camera": 255233,
+"shadow": 104768,
+"byCategory": {
+"far": {
+"camera": 100492,
+"shadow": 32492,
+"calls": 8
+},
+"shells": {
+"camera": 47144,
+"shadow": 32304,
+"calls": 23
+},
+"rocks": {
+"camera": 41880,
+"shadow": 32820,
+"calls": 7
+},
+"terrain": {
+"camera": 54576,
+"shadow": 0,
+"calls": 9
+},
+"grass": {
+"camera": 9255,
+"shadow": 0,
+"calls": 1
+},
+"detail:M": {
+"camera": 0,
+"shadow": 6156,
+"calls": 2
+},
+"other": {
+"camera": 1522,
+"shadow": 996,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L06 ground",
+"triangles": 550730,
+"calls": 120,
+"camera": 310498,
+"shadow": 240232,
+"byCategory": {
+"detail:M": {
+"camera": 108774,
+"shadow": 98172,
+"calls": 47
+},
+"rocks": {
+"camera": 41880,
+"shadow": 43040,
+"calls": 8
+},
+"shells": {
+"camera": 36192,
+"shadow": 40008,
+"calls": 12
+},
+"far": {
+"camera": 8492,
+"shadow": 56492,
+"calls": 4
+},
+"terrain": {
+"camera": 56960,
+"shadow": 0,
+"calls": 4
+},
+"detail:D": {
+"camera": 25056,
+"shadow": 0,
+"calls": 11
+},
+"grass": {
+"camera": 16830,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 13708,
+"shadow": 0,
+"calls": 20
+},
+"detail:B": {
+"camera": 1152,
+"shadow": 1248,
+"calls": 5
+},
+"other": {
+"camera": 1090,
+"shadow": 1272,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L06 interior",
+"triangles": 358450,
+"calls": 73,
+"camera": 270390,
+"shadow": 88060,
+"byCategory": {
+"shells": {
+"camera": 61940,
+"shadow": 31692,
+"calls": 12
+},
+"rocks": {
+"camera": 37180,
+"shadow": 32820,
+"calls": 6
+},
+"far": {
+"camera": 53408,
+"shadow": 15496,
+"calls": 5
+},
+"detail:M": {
+"camera": 55578,
+"shadow": 6780,
+"calls": 23
+},
+"terrain": {
+"camera": 52976,
+"shadow": 0,
+"calls": 9
+},
+"detail:D": {
+"camera": 7554,
+"shadow": 0,
+"calls": 3
+},
+"other": {
+"camera": 94,
+"shadow": 1272,
+"calls": 3
+},
+"detail:chains": {
+"camera": 1296,
+"shadow": 0,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"grass": {
+"camera": 0,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L06 detail",
+"triangles": 514246,
+"calls": 158,
+"camera": 343898,
+"shadow": 170348,
+"byCategory": {
+"detail:M": {
+"camera": 74484,
+"shadow": 40620,
+"calls": 52
+},
+"detail:D": {
+"camera": 104418,
+"shadow": 0,
+"calls": 31
+},
+"rocks": {
+"camera": 35120,
+"shadow": 43040,
+"calls": 7
+},
+"shells": {
+"camera": 27084,
+"shadow": 37428,
+"calls": 10
+},
+"far": {
+"camera": 15496,
+"shadow": 47988,
+"calls": 4
+},
+"terrain": {
+"camera": 47840,
+"shadow": 0,
+"calls": 8
+},
+"detail:chains": {
+"camera": 28524,
+"shadow": 0,
+"calls": 38
+},
+"grass": {
+"camera": 9480,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1090,
+"shadow": 1272,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L06 high",
+"triangles": 386861,
+"calls": 78,
+"camera": 267763,
+"shadow": 119098,
+"byCategory": {
+"far": {
+"camera": 88936,
+"shadow": 63496,
+"calls": 11
+},
+"shells": {
+"camera": 55568,
+"shadow": 28464,
+"calls": 25
+},
+"terrain": {
+"camera": 68672,
+"shadow": 0,
+"calls": 13
+},
+"rocks": {
+"camera": 41880,
+"shadow": 25860,
+"calls": 6
+},
+"grass": {
+"camera": 9195,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1522,
+"shadow": 1272,
+"calls": 6
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L07 ground",
+"triangles": 689731,
+"calls": 164,
+"camera": 550283,
+"shadow": 139448,
+"byCategory": {
+"far": {
+"camera": 140100,
+"shadow": 56492,
+"calls": 18
+},
+"shells": {
+"camera": 102168,
+"shadow": 11944,
+"calls": 42
+},
+"detail:M": {
+"camera": 58368,
+"shadow": 43416,
+"calls": 25
+},
+"rocks": {
+"camera": 72540,
+"shadow": 26240,
+"calls": 10
+},
+"terrain": {
+"camera": 72960,
+"shadow": 0,
+"calls": 18
+},
+"detail:D": {
+"camera": 71754,
+"shadow": 0,
+"calls": 18
+},
+"grass": {
+"camera": 18705,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 11288,
+"shadow": 0,
+"calls": 18
+},
+"other": {
+"camera": 1870,
+"shadow": 1356,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 168,
+"shadow": 0,
+"calls": 3
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L07 interior",
+"triangles": 422863,
+"calls": 84,
+"camera": 199047,
+"shadow": 223816,
+"byCategory": {
+"detail:M": {
+"camera": 105000,
+"shadow": 97920,
+"calls": 52
+},
+"rocks": {
+"camera": 20480,
+"shadow": 46340,
+"calls": 6
+},
+"terrain": {
+"camera": 58048,
+"shadow": 0,
+"calls": 4
+},
+"far": {
+"camera": 0,
+"shadow": 48000,
+"calls": 2
+},
+"shells": {
+"camera": 648,
+"shadow": 30560,
+"calls": 8
+},
+"detail:D": {
+"camera": 8484,
+"shadow": 0,
+"calls": 5
+},
+"grass": {
+"camera": 4935,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1090,
+"shadow": 996,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L07 detail",
+"triangles": 688835,
+"calls": 167,
+"camera": 514295,
+"shadow": 174540,
+"byCategory": {
+"far": {
+"camera": 140100,
+"shadow": 56492,
+"calls": 18
+},
+"shells": {
+"camera": 102168,
+"shadow": 37876,
+"calls": 44
+},
+"detail:M": {
+"camera": 78594,
+"shadow": 46356,
+"calls": 32
+},
+"rocks": {
+"camera": 66780,
+"shadow": 32820,
+"calls": 9
+},
+"detail:D": {
+"camera": 56148,
+"shadow": 0,
+"calls": 24
+},
+"terrain": {
+"camera": 47392,
+"shadow": 0,
+"calls": 16
+},
+"grass": {
+"camera": 18015,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 996,
+"calls": 7
+},
+"detail:chains": {
+"camera": 2688,
+"shadow": 0,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L07 high",
+"triangles": 432073,
+"calls": 113,
+"camera": 367475,
+"shadow": 64598,
+"byCategory": {
+"far": {
+"camera": 102788,
+"shadow": 24000,
+"calls": 10
+},
+"rocks": {
+"camera": 63420,
+"shadow": 36120,
+"calls": 9
+},
+"shells": {
+"camera": 65548,
+"shadow": 3476,
+"calls": 27
+},
+"terrain": {
+"camera": 64656,
+"shadow": 0,
+"calls": 14
+},
+"detail:M": {
+"camera": 33510,
+"shadow": 0,
+"calls": 6
+},
+"grass": {
+"camera": 16965,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 16872,
+"shadow": 0,
+"calls": 25
+},
+"other": {
+"camera": 1726,
+"shadow": 996,
+"calls": 5
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L08 ground",
+"triangles": 612553,
+"calls": 147,
+"camera": 407333,
+"shadow": 205220,
+"byCategory": {
+"detail:M": {
+"camera": 133002,
+"shadow": 100452,
+"calls": 50
+},
+"far": {
+"camera": 82492,
+"shadow": 24000,
+"calls": 8
+},
+"shells": {
+"camera": 53308,
+"shadow": 36072,
+"calls": 23
+},
+"rocks": {
+"camera": 30700,
+"shadow": 43040,
+"calls": 7
+},
+"terrain": {
+"camera": 72464,
+"shadow": 0,
+"calls": 13
+},
+"grass": {
+"camera": 22845,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 8104,
+"shadow": 0,
+"calls": 23
+},
+"other": {
+"camera": 1366,
+"shadow": 1272,
+"calls": 5
+},
+"detail:B": {
+"camera": 2112,
+"shadow": 384,
+"calls": 6
+},
+"detail:D": {
+"camera": 576,
+"shadow": 0,
+"calls": 7
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L08 interior",
+"triangles": 563224,
+"calls": 102,
+"camera": 276896,
+"shadow": 286328,
+"byCategory": {
+"detail:M": {
+"camera": 123762,
+"shadow": 135804,
+"calls": 52
+},
+"far": {
+"camera": 24000,
+"shadow": 72000,
+"calls": 4
+},
+"shells": {
+"camera": 34920,
+"shadow": 36660,
+"calls": 12
+},
+"rocks": {
+"camera": 27060,
+"shadow": 37280,
+"calls": 5
+},
+"terrain": {
+"camera": 58304,
+"shadow": 0,
+"calls": 3
+},
+"detail:B": {
+"camera": 3456,
+"shadow": 3312,
+"calls": 18
+},
+"detail:D": {
+"camera": 3942,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1090,
+"shadow": 1272,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"grass": {
+"camera": 0,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L08 detail",
+"triangles": 608674,
+"calls": 128,
+"camera": 327928,
+"shadow": 280746,
+"byCategory": {
+"far": {
+"camera": 100812,
+"shadow": 95212,
+"calls": 11
+},
+"detail:M": {
+"camera": 75942,
+"shadow": 105738,
+"calls": 40
+},
+"terrain": {
+"camera": 83776,
+"shadow": 0,
+"calls": 13
+},
+"shells": {
+"camera": 29372,
+"shadow": 39420,
+"calls": 23
+},
+"rocks": {
+"camera": 29600,
+"shadow": 37280,
+"calls": 6
+},
+"detail:D": {
+"camera": 4080,
+"shadow": 0,
+"calls": 14
+},
+"detail:B": {
+"camera": 864,
+"shadow": 1824,
+"calls": 11
+},
+"other": {
+"camera": 1366,
+"shadow": 1272,
+"calls": 5
+},
+"grass": {
+"camera": 1590,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L08 high",
+"triangles": 461686,
+"calls": 109,
+"camera": 327418,
+"shadow": 134268,
+"byCategory": {
+"far": {
+"camera": 98936,
+"shadow": 38708,
+"calls": 11
+},
+"detail:M": {
+"camera": 48042,
+"shadow": 53142,
+"calls": 22
+},
+"rocks": {
+"camera": 52100,
+"shadow": 25860,
+"calls": 7
+},
+"shells": {
+"camera": 57896,
+"shadow": 15280,
+"calls": 30
+},
+"terrain": {
+"camera": 64736,
+"shadow": 0,
+"calls": 15
+},
+"other": {
+"camera": 1798,
+"shadow": 1272,
+"calls": 7
+},
+"grass": {
+"camera": 1920,
+"shadow": 0,
+"calls": 1
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L09 ground",
+"triangles": 812545,
+"calls": 185,
+"camera": 606965,
+"shadow": 205580,
+"byCategory": {
+"detail:M": {
+"camera": 201882,
+"shadow": 165294,
+"calls": 63
+},
+"far": {
+"camera": 117888,
+"shadow": 15496,
+"calls": 13
+},
+"shells": {
+"camera": 89976,
+"shadow": 1236,
+"calls": 26
+},
+"rocks": {
+"camera": 64580,
+"shadow": 21640,
+"calls": 8
+},
+"terrain": {
+"camera": 67280,
+"shadow": 0,
+"calls": 14
+},
+"grass": {
+"camera": 30915,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 26056,
+"shadow": 0,
+"calls": 26
+},
+"detail:B": {
+"camera": 5196,
+"shadow": 918,
+"calls": 11
+},
+"other": {
+"camera": 1720,
+"shadow": 996,
+"calls": 6
+},
+"detail:D": {
+"camera": 942,
+"shadow": 0,
+"calls": 11
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 168,
+"shadow": 0,
+"calls": 3
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L09 interior",
+"triangles": 793576,
+"calls": 139,
+"camera": 469586,
+"shadow": 323990,
+"byCategory": {
+"detail:M": {
+"camera": 296766,
+"shadow": 249474,
+"calls": 82
+},
+"far": {
+"camera": 33212,
+"shadow": 39496,
+"calls": 4
+},
+"terrain": {
+"camera": 61184,
+"shadow": 0,
+"calls": 5
+},
+"rocks": {
+"camera": 37280,
+"shadow": 21640,
+"calls": 5
+},
+"shells": {
+"camera": 27672,
+"shadow": 5844,
+"calls": 7
+},
+"detail:B": {
+"camera": 7416,
+"shadow": 6540,
+"calls": 22
+},
+"detail:chains": {
+"camera": 2264,
+"shadow": 0,
+"calls": 4
+},
+"other": {
+"camera": 1090,
+"shadow": 996,
+"calls": 3
+},
+"grass": {
+"camera": 1710,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 630,
+"shadow": 0,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L09 detail",
+"triangles": 561828,
+"calls": 132,
+"camera": 346762,
+"shadow": 215066,
+"byCategory": {
+"detail:M": {
+"camera": 154434,
+"shadow": 146334,
+"calls": 51
+},
+"far": {
+"camera": 63440,
+"shadow": 24000,
+"calls": 7
+},
+"terrain": {
+"camera": 59696,
+"shadow": 0,
+"calls": 12
+},
+"rocks": {
+"camera": 26240,
+"shadow": 27060,
+"calls": 5
+},
+"shells": {
+"camera": 20648,
+"shadow": 13652,
+"calls": 20
+},
+"grass": {
+"camera": 15330,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 3018,
+"shadow": 3018,
+"calls": 10
+},
+"other": {
+"camera": 1522,
+"shadow": 996,
+"calls": 5
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"detail:D": {
+"camera": 444,
+"shadow": 0,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L09 high",
+"triangles": 374134,
+"calls": 80,
+"camera": 326904,
+"shadow": 47230,
+"byCategory": {
+"far": {
+"camera": 107236,
+"shadow": 24000,
+"calls": 12
+},
+"rocks": {
+"camera": 65820,
+"shadow": 21640,
+"calls": 8
+},
+"shells": {
+"camera": 66088,
+"shadow": 588,
+"calls": 25
+},
+"terrain": {
+"camera": 48752,
+"shadow": 0,
+"calls": 12
+},
+"grass": {
+"camera": 35220,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1798,
+"shadow": 996,
+"calls": 6
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L10 ground",
+"triangles": 622487,
+"calls": 150,
+"camera": 446083,
+"shadow": 176404,
+"byCategory": {
+"detail:M": {
+"camera": 117264,
+"shadow": 77904,
+"calls": 52
+},
+"far": {
+"camera": 103896,
+"shadow": 39496,
+"calls": 12
+},
+"rocks": {
+"camera": 58960,
+"shadow": 39580,
+"calls": 8
+},
+"shells": {
+"camera": 60652,
+"shadow": 18152,
+"calls": 26
+},
+"terrain": {
+"camera": 62176,
+"shadow": 0,
+"calls": 8
+},
+"detail:D": {
+"camera": 16050,
+"shadow": 0,
+"calls": 12
+},
+"grass": {
+"camera": 14505,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 10688,
+"shadow": 0,
+"calls": 22
+},
+"other": {
+"camera": 1366,
+"shadow": 1272,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L10 interior",
+"triangles": 770017,
+"calls": 167,
+"camera": 507069,
+"shadow": 262948,
+"byCategory": {
+"detail:M": {
+"camera": 144630,
+"shadow": 140382,
+"calls": 70
+},
+"far": {
+"camera": 136308,
+"shadow": 63496,
+"calls": 13
+},
+"rocks": {
+"camera": 43320,
+"shadow": 39580,
+"calls": 7
+},
+"shells": {
+"camera": 53524,
+"shadow": 18152,
+"calls": 23
+},
+"detail:D": {
+"camera": 65118,
+"shadow": 0,
+"calls": 29
+},
+"terrain": {
+"camera": 60736,
+"shadow": 0,
+"calls": 7
+},
+"other": {
+"camera": 1366,
+"shadow": 1338,
+"calls": 6
+},
+"detail:chains": {
+"camera": 1436,
+"shadow": 0,
+"calls": 7
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"grass": {
+"camera": 105,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L10 detail",
+"triangles": 580629,
+"calls": 152,
+"camera": 325635,
+"shadow": 254994,
+"byCategory": {
+"detail:M": {
+"camera": 99384,
+"shadow": 122562,
+"calls": 67
+},
+"far": {
+"camera": 58708,
+"shadow": 62708,
+"calls": 7
+},
+"rocks": {
+"camera": 44420,
+"shadow": 47540,
+"calls": 8
+},
+"terrain": {
+"camera": 55120,
+"shadow": 0,
+"calls": 9
+},
+"shells": {
+"camera": 33224,
+"shadow": 20912,
+"calls": 21
+},
+"detail:D": {
+"camera": 28512,
+"shadow": 0,
+"calls": 28
+},
+"grass": {
+"camera": 3795,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1366,
+"shadow": 1272,
+"calls": 5
+},
+"detail:chains": {
+"camera": 744,
+"shadow": 0,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L10 high",
+"triangles": 553391,
+"calls": 101,
+"camera": 398205,
+"shadow": 155186,
+"byCategory": {
+"far": {
+"camera": 145900,
+"shadow": 71212,
+"calls": 14
+},
+"detail:M": {
+"camera": 45972,
+"shadow": 42150,
+"calls": 13
+},
+"shells": {
+"camera": 67084,
+"shadow": 14308,
+"calls": 31
+},
+"rocks": {
+"camera": 55360,
+"shadow": 25860,
+"calls": 7
+},
+"terrain": {
+"camera": 70912,
+"shadow": 0,
+"calls": 15
+},
+"grass": {
+"camera": 10185,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 1272,
+"calls": 8
+},
+"detail:B": {
+"camera": 384,
+"shadow": 384,
+"calls": 2
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L11 ground",
+"triangles": 656951,
+"calls": 170,
+"camera": 484999,
+"shadow": 171952,
+"byCategory": {
+"far": {
+"camera": 143696,
+"shadow": 48000,
+"calls": 13
+},
+"detail:M": {
+"camera": 90834,
+"shadow": 70848,
+"calls": 43
+},
+"rocks": {
+"camera": 65820,
+"shadow": 31900,
+"calls": 9
+},
+"shells": {
+"camera": 64032,
+"shadow": 17712,
+"calls": 27
+},
+"terrain": {
+"camera": 79136,
+"shadow": 0,
+"calls": 13
+},
+"grass": {
+"camera": 21495,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 14264,
+"shadow": 0,
+"calls": 24
+},
+"detail:B": {
+"camera": 2976,
+"shadow": 2220,
+"calls": 22
+},
+"other": {
+"camera": 1792,
+"shadow": 1272,
+"calls": 7
+},
+"detail:D": {
+"camera": 588,
+"shadow": 0,
+"calls": 6
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 4,
+"shadow": 0,
+"calls": 2
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L11 interior",
+"triangles": 470714,
+"calls": 135,
+"camera": 262614,
+"shadow": 208100,
+"byCategory": {
+"detail:M": {
+"camera": 122670,
+"shadow": 114906,
+"calls": 60
+},
+"terrain": {
+"camera": 73920,
+"shadow": 0,
+"calls": 5
+},
+"far": {
+"camera": 24000,
+"shadow": 48000,
+"calls": 3
+},
+"rocks": {
+"camera": 21640,
+"shadow": 31900,
+"calls": 5
+},
+"shells": {
+"camera": 11392,
+"shadow": 9520,
+"calls": 10
+},
+"detail:B": {
+"camera": 2556,
+"shadow": 2502,
+"calls": 39
+},
+"detail:D": {
+"camera": 3852,
+"shadow": 0,
+"calls": 3
+},
+"other": {
+"camera": 1366,
+"shadow": 1272,
+"calls": 5
+},
+"detail:chains": {
+"camera": 856,
+"shadow": 0,
+"calls": 2
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"grass": {
+"camera": 0,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L11 detail",
+"triangles": 437832,
+"calls": 92,
+"camera": 263026,
+"shadow": 174806,
+"byCategory": {
+"detail:M": {
+"camera": 52662,
+"shadow": 82092,
+"calls": 31
+},
+"rocks": {
+"camera": 65820,
+"shadow": 31900,
+"calls": 9
+},
+"far": {
+"camera": 48000,
+"shadow": 48000,
+"calls": 4
+},
+"terrain": {
+"camera": 67552,
+"shadow": 0,
+"calls": 7
+},
+"shells": {
+"camera": 22920,
+"shadow": 9520,
+"calls": 11
+},
+"detail:D": {
+"camera": 3294,
+"shadow": 0,
+"calls": 7
+},
+"detail:B": {
+"camera": 1050,
+"shadow": 2022,
+"calls": 15
+},
+"other": {
+"camera": 1366,
+"shadow": 1272,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"grass": {
+"camera": 0,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L11 high",
+"triangles": 401637,
+"calls": 123,
+"camera": 372817,
+"shadow": 28820,
+"byCategory": {
+"shells": {
+"camera": 95556,
+"shadow": 5908,
+"calls": 29
+},
+"rocks": {
+"camera": 64580,
+"shadow": 21640,
+"calls": 8
+},
+"far": {
+"camera": 85088,
+"shadow": 0,
+"calls": 8
+},
+"terrain": {
+"camera": 67920,
+"shadow": 0,
+"calls": 15
+},
+"detail:chains": {
+"camera": 21616,
+"shadow": 0,
+"calls": 40
+},
+"grass": {
+"camera": 20355,
+"shadow": 0,
+"calls": 1
+},
+"detail:M": {
+"camera": 15048,
+"shadow": 0,
+"calls": 3
+},
+"other": {
+"camera": 1720,
+"shadow": 1272,
+"calls": 7
+},
+"detail:B": {
+"camera": 396,
+"shadow": 0,
+"calls": 2
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L12 ground",
+"triangles": 537786,
+"calls": 141,
+"camera": 418542,
+"shadow": 119244,
+"byCategory": {
+"far": {
+"camera": 127008,
+"shadow": 33408,
+"calls": 13
+},
+"shells": {
+"camera": 63088,
+"shadow": 34856,
+"calls": 31
+},
+"rocks": {
+"camera": 51140,
+"shadow": 39580,
+"calls": 8
+},
+"terrain": {
+"camera": 76736,
+"shadow": 0,
+"calls": 15
+},
+"detail:chains": {
+"camera": 57656,
+"shadow": 0,
+"calls": 47
+},
+"detail:M": {
+"camera": 28236,
+"shadow": 11124,
+"calls": 9
+},
+"grass": {
+"camera": 12270,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 276,
+"calls": 7
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L12 interior",
+"triangles": 672903,
+"calls": 190,
+"camera": 449283,
+"shadow": 223620,
+"byCategory": {
+"detail:M": {
+"camera": 140718,
+"shadow": 143394,
+"calls": 63
+},
+"far": {
+"camera": 93008,
+"shadow": 24000,
+"calls": 10
+},
+"rocks": {
+"camera": 39720,
+"shadow": 39580,
+"calls": 7
+},
+"shells": {
+"camera": 61348,
+"shadow": 16304,
+"calls": 29
+},
+"terrain": {
+"camera": 52352,
+"shadow": 0,
+"calls": 13
+},
+"detail:D": {
+"camera": 26934,
+"shadow": 0,
+"calls": 13
+},
+"detail:chains": {
+"camera": 25280,
+"shadow": 0,
+"calls": 36
+},
+"grass": {
+"camera": 7515,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 342,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L12 detail",
+"triangles": 596388,
+"calls": 126,
+"camera": 365786,
+"shadow": 230602,
+"byCategory": {
+"detail:M": {
+"camera": 145164,
+"shadow": 142416,
+"calls": 65
+},
+"rocks": {
+"camera": 55600,
+"shadow": 47540,
+"calls": 9
+},
+"shells": {
+"camera": 46028,
+"shadow": 16304,
+"calls": 15
+},
+"far": {
+"camera": 35496,
+"shadow": 24000,
+"calls": 4
+},
+"terrain": {
+"camera": 52880,
+"shadow": 0,
+"calls": 7
+},
+"detail:D": {
+"camera": 22428,
+"shadow": 0,
+"calls": 13
+},
+"grass": {
+"camera": 6090,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1366,
+"shadow": 342,
+"calls": 5
+},
+"detail:chains": {
+"camera": 372,
+"shadow": 0,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L12 high",
+"triangles": 543099,
+"calls": 93,
+"camera": 408153,
+"shadow": 134946,
+"byCategory": {
+"far": {
+"camera": 147008,
+"shadow": 57408,
+"calls": 16
+},
+"rocks": {
+"camera": 66780,
+"shadow": 39580,
+"calls": 9
+},
+"shells": {
+"camera": 67672,
+"shadow": 37616,
+"calls": 32
+},
+"terrain": {
+"camera": 89200,
+"shadow": 0,
+"calls": 17
+},
+"grass": {
+"camera": 35085,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 342,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L13 ground",
+"triangles": 544602,
+"calls": 166,
+"camera": 373316,
+"shadow": 171286,
+"byCategory": {
+"far": {
+"camera": 97212,
+"shadow": 71212,
+"calls": 10
+},
+"detail:M": {
+"camera": 75030,
+"shadow": 51528,
+"calls": 43
+},
+"terrain": {
+"camera": 75616,
+"shadow": 0,
+"calls": 11
+},
+"shells": {
+"camera": 46480,
+"shadow": 16304,
+"calls": 21
+},
+"rocks": {
+"camera": 26000,
+"shadow": 31900,
+"calls": 6
+},
+"detail:chains": {
+"camera": 28576,
+"shadow": 0,
+"calls": 57
+},
+"grass": {
+"camera": 22200,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 874,
+"shadow": 342,
+"calls": 7
+},
+"detail:D": {
+"camera": 798,
+"shadow": 0,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 168,
+"shadow": 0,
+"calls": 3
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L13 interior",
+"triangles": 575741,
+"calls": 121,
+"camera": 374021,
+"shadow": 201720,
+"byCategory": {
+"detail:M": {
+"camera": 125922,
+"shadow": 105474,
+"calls": 64
+},
+"far": {
+"camera": 95212,
+"shadow": 48000,
+"calls": 6
+},
+"terrain": {
+"camera": 97504,
+"shadow": 0,
+"calls": 5
+},
+"rocks": {
+"camera": 21640,
+"shadow": 31900,
+"calls": 5
+},
+"shells": {
+"camera": 19836,
+"shadow": 16004,
+"calls": 13
+},
+"detail:D": {
+"camera": 5700,
+"shadow": 0,
+"calls": 7
+},
+"detail:chains": {
+"camera": 4320,
+"shadow": 0,
+"calls": 11
+},
+"grass": {
+"camera": 1995,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1366,
+"shadow": 342,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L13 detail",
+"triangles": 580436,
+"calls": 101,
+"camera": 335934,
+"shadow": 244502,
+"byCategory": {
+"far": {
+"camera": 101212,
+"shadow": 71212,
+"calls": 9
+},
+"detail:M": {
+"camera": 63450,
+"shadow": 105252,
+"calls": 43
+},
+"rocks": {
+"camera": 55600,
+"shadow": 47540,
+"calls": 9
+},
+"terrain": {
+"camera": 76496,
+"shadow": 0,
+"calls": 9
+},
+"shells": {
+"camera": 34328,
+"shadow": 20156,
+"calls": 17
+},
+"detail:D": {
+"camera": 2730,
+"shadow": 0,
+"calls": 5
+},
+"other": {
+"camera": 1366,
+"shadow": 342,
+"calls": 5
+},
+"grass": {
+"camera": 390,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L13 high",
+"triangles": 521095,
+"calls": 83,
+"camera": 374843,
+"shadow": 146252,
+"byCategory": {
+"far": {
+"camera": 164620,
+"shadow": 95212,
+"calls": 15
+},
+"shells": {
+"camera": 61144,
+"shadow": 18864,
+"calls": 30
+},
+"rocks": {
+"camera": 39720,
+"shadow": 31900,
+"calls": 7
+},
+"terrain": {
+"camera": 70192,
+"shadow": 0,
+"calls": 14
+},
+"grass": {
+"camera": 37755,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 874,
+"shadow": 276,
+"calls": 6
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L14 ground",
+"triangles": 408363,
+"calls": 96,
+"camera": 236439,
+"shadow": 171924,
+"byCategory": {
+"far": {
+"camera": 48000,
+"shadow": 72000,
+"calls": 5
+},
+"terrain": {
+"camera": 94368,
+"shadow": 0,
+"calls": 4
+},
+"detail:M": {
+"camera": 34638,
+"shadow": 35940,
+"calls": 35
+},
+"shells": {
+"camera": 31628,
+"shadow": 31628,
+"calls": 8
+},
+"rocks": {
+"camera": 21540,
+"shadow": 29500,
+"calls": 5
+},
+"detail:B": {
+"camera": 3120,
+"shadow": 2856,
+"calls": 27
+},
+"detail:chains": {
+"camera": 1316,
+"shadow": 0,
+"calls": 5
+},
+"grass": {
+"camera": 1215,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 156,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 94,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L14 interior",
+"triangles": 345415,
+"calls": 93,
+"camera": 172525,
+"shadow": 172890,
+"byCategory": {
+"far": {
+"camera": 24000,
+"shadow": 72000,
+"calls": 4
+},
+"terrain": {
+"camera": 77536,
+"shadow": 0,
+"calls": 4
+},
+"detail:M": {
+"camera": 36450,
+"shadow": 36918,
+"calls": 28
+},
+"rocks": {
+"camera": 21540,
+"shadow": 29500,
+"calls": 5
+},
+"shells": {
+"camera": 2124,
+"shadow": 31628,
+"calls": 6
+},
+"detail:D": {
+"camera": 6030,
+"shadow": 0,
+"calls": 14
+},
+"detail:B": {
+"camera": 2820,
+"shadow": 2844,
+"calls": 24
+},
+"grass": {
+"camera": 1215,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 352,
+"shadow": 0,
+"calls": 2
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 94,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L14 detail",
+"triangles": 540898,
+"calls": 134,
+"camera": 376960,
+"shadow": 163938,
+"byCategory": {
+"far": {
+"camera": 142000,
+"shadow": 72000,
+"calls": 13
+},
+"shells": {
+"camera": 61720,
+"shadow": 31628,
+"calls": 27
+},
+"terrain": {
+"camera": 87120,
+"shadow": 0,
+"calls": 14
+},
+"rocks": {
+"camera": 51140,
+"shadow": 29500,
+"calls": 8
+},
+"detail:M": {
+"camera": 29388,
+"shadow": 28302,
+"calls": 33
+},
+"detail:B": {
+"camera": 2166,
+"shadow": 2508,
+"calls": 23
+},
+"other": {
+"camera": 1870,
+"shadow": 0,
+"calls": 6
+},
+"detail:D": {
+"camera": 666,
+"shadow": 0,
+"calls": 3
+},
+"grass": {
+"camera": 360,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 168,
+"shadow": 0,
+"calls": 3
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L14 high",
+"triangles": 492807,
+"calls": 96,
+"camera": 356231,
+"shadow": 136576,
+"byCategory": {
+"far": {
+"camera": 107408,
+"shadow": 57408,
+"calls": 11
+},
+"terrain": {
+"camera": 110896,
+"shadow": 0,
+"calls": 15
+},
+"rocks": {
+"camera": 39720,
+"shadow": 47540,
+"calls": 8
+},
+"shells": {
+"camera": 52500,
+"shadow": 31628,
+"calls": 22
+},
+"detail:chains": {
+"camera": 27036,
+"shadow": 0,
+"calls": 25
+},
+"grass": {
+"camera": 17535,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 598,
+"shadow": 0,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L15 ground",
+"triangles": 384812,
+"calls": 106,
+"camera": 256610,
+"shadow": 128202,
+"byCategory": {
+"detail:M": {
+"camera": 77676,
+"shadow": 58410,
+"calls": 47
+},
+"far": {
+"camera": 48000,
+"shadow": 48000,
+"calls": 4
+},
+"terrain": {
+"camera": 57664,
+"shadow": 0,
+"calls": 5
+},
+"rocks": {
+"camera": 26000,
+"shadow": 18180,
+"calls": 5
+},
+"shells": {
+"camera": 15480,
+"shadow": 3612,
+"calls": 9
+},
+"grass": {
+"camera": 13650,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 13044,
+"shadow": 0,
+"calls": 18
+},
+"detail:chains": {
+"camera": 4476,
+"shadow": 0,
+"calls": 12
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 94,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L15 interior",
+"triangles": 638461,
+"calls": 129,
+"camera": 446619,
+"shadow": 191842,
+"byCategory": {
+"far": {
+"camera": 144804,
+"shadow": 72000,
+"calls": 15
+},
+"detail:M": {
+"camera": 63630,
+"shadow": 63018,
+"calls": 44
+},
+"shells": {
+"camera": 97800,
+"shadow": 24924,
+"calls": 27
+},
+"rocks": {
+"camera": 61120,
+"shadow": 31900,
+"calls": 9
+},
+"terrain": {
+"camera": 67216,
+"shadow": 0,
+"calls": 14
+},
+"grass": {
+"camera": 9285,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 2080,
+"shadow": 0,
+"calls": 6
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"detail:chains": {
+"camera": 144,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L15 detail",
+"triangles": 390689,
+"calls": 100,
+"camera": 244811,
+"shadow": 145878,
+"byCategory": {
+"detail:M": {
+"camera": 66294,
+"shadow": 76086,
+"calls": 48
+},
+"far": {
+"camera": 44000,
+"shadow": 48000,
+"calls": 5
+},
+"rocks": {
+"camera": 39720,
+"shadow": 18180,
+"calls": 6
+},
+"terrain": {
+"camera": 55392,
+"shadow": 0,
+"calls": 5
+},
+"grass": {
+"camera": 18135,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 9676,
+"shadow": 3612,
+"calls": 11
+},
+"detail:D": {
+"camera": 10926,
+"shadow": 0,
+"calls": 18
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 94,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 48,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L15 high",
+"triangles": 514479,
+"calls": 120,
+"camera": 420449,
+"shadow": 94030,
+"byCategory": {
+"far": {
+"camera": 169964,
+"shadow": 72000,
+"calls": 20
+},
+"shells": {
+"camera": 107108,
+"shadow": 3844,
+"calls": 40
+},
+"rocks": {
+"camera": 81600,
+"shadow": 18180,
+"calls": 10
+},
+"terrain": {
+"camera": 56832,
+"shadow": 0,
+"calls": 20
+},
+"other": {
+"camera": 1864,
+"shadow": 0,
+"calls": 6
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"grass": {
+"camera": 915,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L16 ground",
+"triangles": 605861,
+"calls": 156,
+"camera": 404141,
+"shadow": 201720,
+"byCategory": {
+"detail:M": {
+"camera": 108714,
+"shadow": 86472,
+"calls": 31
+},
+"far": {
+"camera": 101408,
+"shadow": 48000,
+"calls": 8
+},
+"shells": {
+"camera": 43004,
+"shadow": 37748,
+"calls": 17
+},
+"terrain": {
+"camera": 76128,
+"shadow": 0,
+"calls": 7
+},
+"rocks": {
+"camera": 21540,
+"shadow": 29500,
+"calls": 5
+},
+"detail:chains": {
+"camera": 41860,
+"shadow": 0,
+"calls": 79
+},
+"grass": {
+"camera": 10575,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 382,
+"shadow": 0,
+"calls": 2
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 168,
+"shadow": 0,
+"calls": 3
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L16 interior",
+"triangles": 552396,
+"calls": 161,
+"camera": 353556,
+"shadow": 198840,
+"byCategory": {
+"detail:M": {
+"camera": 115770,
+"shadow": 98424,
+"calls": 36
+},
+"far": {
+"camera": 67408,
+"shadow": 33408,
+"calls": 6
+},
+"shells": {
+"camera": 33840,
+"shadow": 37220,
+"calls": 14
+},
+"rocks": {
+"camera": 21540,
+"shadow": 29500,
+"calls": 5
+},
+"terrain": {
+"camera": 47504,
+"shadow": 0,
+"calls": 5
+},
+"detail:chains": {
+"camera": 39004,
+"shadow": 0,
+"calls": 69
+},
+"grass": {
+"camera": 17100,
+"shadow": 0,
+"calls": 1
+},
+"detail:D": {
+"camera": 10476,
+"shadow": 0,
+"calls": 15
+},
+"other": {
+"camera": 382,
+"shadow": 288,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 170,
+"shadow": 0,
+"calls": 4
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L16 detail",
+"triangles": 313212,
+"calls": 71,
+"camera": 196130,
+"shadow": 117082,
+"byCategory": {
+"terrain": {
+"camera": 70944,
+"shadow": 0,
+"calls": 7
+},
+"rocks": {
+"camera": 37180,
+"shadow": 29500,
+"calls": 6
+},
+"detail:M": {
+"camera": 27018,
+"shadow": 30054,
+"calls": 27
+},
+"far": {
+"camera": 19408,
+"shadow": 33408,
+"calls": 4
+},
+"shells": {
+"camera": 25944,
+"shadow": 23832,
+"calls": 7
+},
+"detail:D": {
+"camera": 13770,
+"shadow": 0,
+"calls": 11
+},
+"detail:chains": {
+"camera": 1408,
+"shadow": 0,
+"calls": 3
+},
+"other": {
+"camera": 94,
+"shadow": 288,
+"calls": 2
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"grass": {
+"camera": 0,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L16 high",
+"triangles": 478434,
+"calls": 91,
+"camera": 376664,
+"shadow": 101770,
+"byCategory": {
+"far": {
+"camera": 152208,
+"shadow": 48000,
+"calls": 15
+},
+"shells": {
+"camera": 67672,
+"shadow": 23832,
+"calls": 29
+},
+"rocks": {
+"camera": 60200,
+"shadow": 29500,
+"calls": 9
+},
+"terrain": {
+"camera": 83136,
+"shadow": 0,
+"calls": 19
+},
+"grass": {
+"camera": 11040,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 1870,
+"shadow": 438,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L17 ground",
+"triangles": 434591,
+"calls": 126,
+"camera": 285397,
+"shadow": 149194,
+"byCategory": {
+"far": {
+"camera": 82000,
+"shadow": 72000,
+"calls": 7
+},
+"terrain": {
+"camera": 75616,
+"shadow": 0,
+"calls": 5
+},
+"detail:M": {
+"camera": 38352,
+"shadow": 22752,
+"calls": 35
+},
+"rocks": {
+"camera": 29500,
+"shadow": 29500,
+"calls": 6
+},
+"shells": {
+"camera": 7984,
+"shadow": 23832,
+"calls": 11
+},
+"detail:D": {
+"camera": 29706,
+"shadow": 0,
+"calls": 19
+},
+"detail:chains": {
+"camera": 11956,
+"shadow": 0,
+"calls": 26
+},
+"grass": {
+"camera": 8865,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 672,
+"shadow": 672,
+"calls": 8
+},
+"other": {
+"camera": 382,
+"shadow": 438,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L17 interior",
+"triangles": 255976,
+"calls": 80,
+"camera": 175578,
+"shadow": 80398,
+"byCategory": {
+"terrain": {
+"camera": 69088,
+"shadow": 0,
+"calls": 7
+},
+"far": {
+"camera": 34000,
+"shadow": 24000,
+"calls": 3
+},
+"rocks": {
+"camera": 15780,
+"shadow": 29500,
+"calls": 5
+},
+"detail:M": {
+"camera": 20622,
+"shadow": 23172,
+"calls": 26
+},
+"detail:D": {
+"camera": 15132,
+"shadow": 0,
+"calls": 10
+},
+"grass": {
+"camera": 11310,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 7984,
+"shadow": 2520,
+"calls": 10
+},
+"detail:B": {
+"camera": 768,
+"shadow": 768,
+"calls": 10
+},
+"other": {
+"camera": 532,
+"shadow": 438,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L17 detail",
+"triangles": 349757,
+"calls": 94,
+"camera": 185323,
+"shadow": 164434,
+"byCategory": {
+"detail:M": {
+"camera": 48558,
+"shadow": 52152,
+"calls": 48
+},
+"far": {
+"camera": 24000,
+"shadow": 72000,
+"calls": 4
+},
+"terrain": {
+"camera": 57344,
+"shadow": 0,
+"calls": 2
+},
+"detail:D": {
+"camera": 31686,
+"shadow": 0,
+"calls": 16
+},
+"shells": {
+"camera": 5388,
+"shadow": 24064,
+"calls": 9
+},
+"rocks": {
+"camera": 7820,
+"shadow": 15780,
+"calls": 3
+},
+"grass": {
+"camera": 9375,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 382,
+"shadow": 438,
+"calls": 4
+},
+"detail:chains": {
+"camera": 408,
+"shadow": 0,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L17 high",
+"triangles": 519617,
+"calls": 148,
+"camera": 433423,
+"shadow": 86194,
+"byCategory": {
+"far": {
+"camera": 131408,
+"shadow": 48000,
+"calls": 11
+},
+"rocks": {
+"camera": 81600,
+"shadow": 15780,
+"calls": 10
+},
+"terrain": {
+"camera": 65328,
+"shadow": 0,
+"calls": 18
+},
+"detail:M": {
+"camera": 45156,
+"shadow": 18708,
+"calls": 28
+},
+"shells": {
+"camera": 57972,
+"shadow": 2740,
+"calls": 23
+},
+"grass": {
+"camera": 34965,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 13416,
+"shadow": 0,
+"calls": 21
+},
+"other": {
+"camera": 1870,
+"shadow": 438,
+"calls": 8
+},
+"detail:B": {
+"camera": 1170,
+"shadow": 528,
+"calls": 18
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L18 ground",
+"triangles": 507899,
+"calls": 123,
+"camera": 374545,
+"shadow": 133354,
+"byCategory": {
+"far": {
+"camera": 96000,
+"shadow": 48000,
+"calls": 6
+},
+"detail:M": {
+"camera": 94002,
+"shadow": 45084,
+"calls": 49
+},
+"terrain": {
+"camera": 103472,
+"shadow": 0,
+"calls": 5
+},
+"shells": {
+"camera": 29308,
+"shadow": 24052,
+"calls": 13
+},
+"rocks": {
+"camera": 15780,
+"shadow": 15780,
+"calls": 4
+},
+"grass": {
+"camera": 17985,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 17088,
+"shadow": 0,
+"calls": 36
+},
+"other": {
+"camera": 382,
+"shadow": 438,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 166,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L18 interior",
+"triangles": 489366,
+"calls": 106,
+"camera": 281762,
+"shadow": 207604,
+"byCategory": {
+"detail:M": {
+"camera": 87288,
+"shadow": 89010,
+"calls": 63
+},
+"far": {
+"camera": 48000,
+"shadow": 96000,
+"calls": 6
+},
+"terrain": {
+"camera": 104192,
+"shadow": 0,
+"calls": 4
+},
+"rocks": {
+"camera": 15780,
+"shadow": 15780,
+"calls": 4
+},
+"grass": {
+"camera": 20670,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 2980,
+"shadow": 6376,
+"calls": 12
+},
+"detail:D": {
+"camera": 1848,
+"shadow": 0,
+"calls": 4
+},
+"other": {
+"camera": 382,
+"shadow": 438,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 96,
+"shadow": 0,
+"calls": 4
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L18 detail",
+"triangles": 446099,
+"calls": 92,
+"camera": 268567,
+"shadow": 177532,
+"byCategory": {
+"detail:M": {
+"camera": 75006,
+"shadow": 86550,
+"calls": 54
+},
+"far": {
+"camera": 48000,
+"shadow": 72000,
+"calls": 5
+},
+"terrain": {
+"camera": 101440,
+"shadow": 0,
+"calls": 4
+},
+"rocks": {
+"camera": 26000,
+"shadow": 15780,
+"calls": 5
+},
+"shells": {
+"camera": 9676,
+"shadow": 2764,
+"calls": 13
+},
+"grass": {
+"camera": 7725,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 94,
+"shadow": 438,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 96,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 4,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L18 high",
+"triangles": 439828,
+"calls": 133,
+"camera": 369234,
+"shadow": 70594,
+"byCategory": {
+"far": {
+"camera": 120000,
+"shadow": 48000,
+"calls": 7
+},
+"terrain": {
+"camera": 108304,
+"shadow": 0,
+"calls": 8
+},
+"rocks": {
+"camera": 29500,
+"shadow": 15780,
+"calls": 5
+},
+"shells": {
+"camera": 35296,
+"shadow": 6376,
+"calls": 17
+},
+"detail:chains": {
+"camera": 37096,
+"shadow": 0,
+"calls": 65
+},
+"detail:M": {
+"camera": 19032,
+"shadow": 0,
+"calls": 13
+},
+"grass": {
+"camera": 18840,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 532,
+"shadow": 438,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 176,
+"shadow": 0,
+"calls": 7
+},
+"detail:B": {
+"camera": 96,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L19 ground",
+"triangles": 424900,
+"calls": 184,
+"camera": 261714,
+"shadow": 163186,
+"byCategory": {
+"far": {
+"camera": 72000,
+"shadow": 72000,
+"calls": 6
+},
+"detail:M": {
+"camera": 84870,
+"shadow": 48492,
+"calls": 56
+},
+"terrain": {
+"camera": 39104,
+"shadow": 0,
+"calls": 2
+},
+"rocks": {
+"camera": 15780,
+"shadow": 15780,
+"calls": 4
+},
+"shells": {
+"camera": 5476,
+"shadow": 24052,
+"calls": 10
+},
+"grass": {
+"camera": 24780,
+"shadow": 0,
+"calls": 1
+},
+"detail:chains": {
+"camera": 13292,
+"shadow": 0,
+"calls": 40
+},
+"detail:B": {
+"camera": 5352,
+"shadow": 2424,
+"calls": 55
+},
+"other": {
+"camera": 532,
+"shadow": 438,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 166,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L19 interior",
+"triangles": 286173,
+"calls": 119,
+"camera": 150427,
+"shadow": 135746,
+"byCategory": {
+"detail:M": {
+"camera": 48006,
+"shadow": 52632,
+"calls": 44
+},
+"far": {
+"camera": 24000,
+"shadow": 48000,
+"calls": 3
+},
+"rocks": {
+"camera": 15780,
+"shadow": 29500,
+"calls": 5
+},
+"terrain": {
+"camera": 43872,
+"shadow": 0,
+"calls": 6
+},
+"grass": {
+"camera": 10185,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 5176,
+"shadow": 2752,
+"calls": 8
+},
+"detail:B": {
+"camera": 2514,
+"shadow": 2424,
+"calls": 44
+},
+"other": {
+"camera": 532,
+"shadow": 438,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L19 detail",
+"triangles": 480118,
+"calls": 196,
+"camera": 321090,
+"shadow": 159028,
+"byCategory": {
+"detail:M": {
+"camera": 102852,
+"shadow": 64782,
+"calls": 68
+},
+"far": {
+"camera": 82000,
+"shadow": 72000,
+"calls": 7
+},
+"terrain": {
+"camera": 54272,
+"shadow": 0,
+"calls": 5
+},
+"rocks": {
+"camera": 26000,
+"shadow": 15780,
+"calls": 5
+},
+"grass": {
+"camera": 25560,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 14692,
+"shadow": 2740,
+"calls": 14
+},
+"detail:B": {
+"camera": 6924,
+"shadow": 3288,
+"calls": 65
+},
+"detail:chains": {
+"camera": 7732,
+"shadow": 0,
+"calls": 22
+},
+"other": {
+"camera": 532,
+"shadow": 438,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L19 high",
+"triangles": 294427,
+"calls": 52,
+"camera": 227469,
+"shadow": 66958,
+"byCategory": {
+"far": {
+"camera": 112000,
+"shadow": 48000,
+"calls": 9
+},
+"shells": {
+"camera": 41980,
+"shadow": 2740,
+"calls": 16
+},
+"terrain": {
+"camera": 43984,
+"shadow": 0,
+"calls": 11
+},
+"rocks": {
+"camera": 26000,
+"shadow": 15780,
+"calls": 5
+},
+"grass": {
+"camera": 2445,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 532,
+"shadow": 438,
+"calls": 5
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 166,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L20 ground",
+"triangles": 382672,
+"calls": 129,
+"camera": 291204,
+"shadow": 91468,
+"byCategory": {
+"far": {
+"camera": 58000,
+"shadow": 48000,
+"calls": 5
+},
+"detail:M": {
+"camera": 78468,
+"shadow": 24486,
+"calls": 36
+},
+"terrain": {
+"camera": 53632,
+"shadow": 0,
+"calls": 5
+},
+"detail:chains": {
+"camera": 48428,
+"shadow": 0,
+"calls": 52
+},
+"rocks": {
+"camera": 15780,
+"shadow": 15780,
+"calls": 4
+},
+"grass": {
+"camera": 25440,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 7996,
+"shadow": 2764,
+"calls": 12
+},
+"detail:D": {
+"camera": 2550,
+"shadow": 0,
+"calls": 5
+},
+"other": {
+"camera": 382,
+"shadow": 438,
+"calls": 4
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 166,
+"shadow": 0,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L20 interior",
+"triangles": 185706,
+"calls": 55,
+"camera": 109070,
+"shadow": 76636,
+"byCategory": {
+"detail:M": {
+"camera": 26652,
+"shadow": 36564,
+"calls": 19
+},
+"rocks": {
+"camera": 29600,
+"shadow": 15780,
+"calls": 5
+},
+"terrain": {
+"camera": 40896,
+"shadow": 0,
+"calls": 9
+},
+"far": {
+"camera": 0,
+"shadow": 24000,
+"calls": 1
+},
+"shells": {
+"camera": 9556,
+"shadow": 256,
+"calls": 10
+},
+"detail:D": {
+"camera": 930,
+"shadow": 0,
+"calls": 3
+},
+"grass": {
+"camera": 780,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"other": {
+"camera": 94,
+"shadow": 0,
+"calls": 1
+},
+"detail:B": {
+"camera": 36,
+"shadow": 36,
+"calls": 2
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L20 detail",
+"triangles": 381378,
+"calls": 118,
+"camera": 266942,
+"shadow": 114436,
+"byCategory": {
+"detail:M": {
+"camera": 83142,
+"shadow": 47454,
+"calls": 40
+},
+"far": {
+"camera": 48000,
+"shadow": 48000,
+"calls": 4
+},
+"terrain": {
+"camera": 51840,
+"shadow": 0,
+"calls": 4
+},
+"detail:chains": {
+"camera": 41000,
+"shadow": 0,
+"calls": 46
+},
+"rocks": {
+"camera": 15780,
+"shadow": 15780,
+"calls": 4
+},
+"grass": {
+"camera": 22320,
+"shadow": 0,
+"calls": 1
+},
+"shells": {
+"camera": 2980,
+"shadow": 2764,
+"calls": 10
+},
+"detail:D": {
+"camera": 1260,
+"shadow": 0,
+"calls": 2
+},
+"other": {
+"camera": 94,
+"shadow": 438,
+"calls": 3
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 164,
+"shadow": 0,
+"calls": 1
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "L20 high",
+"triangles": 406272,
+"calls": 109,
+"camera": 374074,
+"shadow": 32198,
+"byCategory": {
+"far": {
+"camera": 126596,
+"shadow": 24000,
+"calls": 16
+},
+"shells": {
+"camera": 103172,
+"shadow": 232,
+"calls": 35
+},
+"rocks": {
+"camera": 81600,
+"shadow": 7960,
+"calls": 9
+},
+"terrain": {
+"camera": 57680,
+"shadow": 0,
+"calls": 18
+},
+"other": {
+"camera": 2230,
+"shadow": 0,
+"calls": 7
+},
+"portals": {
+"camera": 1626,
+"shadow": 0,
+"calls": 9
+},
+"grass": {
+"camera": 630,
+"shadow": 0,
+"calls": 1
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+},
+{
+"view": "home again",
+"triangles": 480789,
+"calls": 139,
+"camera": 431003,
+"shadow": 49786,
+"byCategory": {
+"far": {
+"camera": 129404,
+"shadow": 24000,
+"calls": 20
+},
+"shells": {
+"camera": 114300,
+"shadow": 8980,
+"calls": 47
+},
+"rocks": {
+"camera": 81600,
+"shadow": 14820,
+"calls": 10
+},
+"terrain": {
+"camera": 68288,
+"shadow": 0,
+"calls": 24
+},
+"grass": {
+"camera": 33015,
+"shadow": 0,
+"calls": 1
+},
+"portals": {
+"camera": 1626,
+"shadow": 1620,
+"calls": 15
+},
+"other": {
+"camera": 2230,
+"shadow": 360,
+"calls": 8
+},
+"clouds": {
+"camera": 348,
+"shadow": 0,
+"calls": 1
+},
+"water": {
+"camera": 178,
+"shadow": 0,
+"calls": 8
+},
+"sky": {
+"camera": 12,
+"shadow": 0,
+"calls": 1
+},
+"sea": {
+"camera": 2,
+"shadow": 0,
+"calls": 1
+}
+}
+}
+]
+}

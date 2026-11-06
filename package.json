@@ -5,7 +5,8 @@
   "scripts": {
     "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
     "dev": "node src/server/main.ts",
-    "build": "vite build && node scripts/build-server.ts",
+    "build": "vite build && node scripts/build-server.ts && node scripts/world/build-world.ts --quiet --publish dist/client/world-data",
+    "build:world": "node scripts/world/supervise.ts --stage world-gen --budget-mib 4096 --log .world-cache/telemetry/world-gen.jsonl -- node scripts/world/build-world.ts --publish dist/client/world-data --report docs/evidence/world",
     "start": "node dist/server/main.js",
     "typecheck": "tsc --noEmit",
     "check": "pnpm typecheck && pnpm test",

@@ -1,0 +1,60 @@
+{
+  "label": "B",
+  "env": {
+    "stage": "B",
+    "viewport": "1280x720",
+    "quality": "high",
+    "browser": "153.0.8010.12",
+    "headless": true,
+    "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "elapsedS": 35.8,
+  "steps": [
+    {
+      "step": "home: load",
+      "start": 0.5,
+      "groupStart": 250,
+      "groupPeak": 510,
+      "end": 2,
+      "groupEnd": 513,
+      "ok": true
+    },
+    {
+      "step": "home: settle (exploring)",
+      "start": 2,
+      "groupStart": 513,
+      "groupPeak": 565,
+      "end": 7.6,
+      "groupEnd": 604,
+      "ok": true
+    },
+    {
+      "step": "L01: near",
+      "start": 7.6,
+      "groupStart": 604,
+      "groupPeak": 619,
+      "end": 19.3,
+      "groupEnd": 613,
+      "ok": true
+    },
+    {
+      "step": "home again",
+      "start": 19.3,
+      "groupStart": 613,
+      "groupPeak": 615,
+      "end": 29.3,
+      "groupEnd": 599,
+      "ok": true
+    },
+    {
+      "step": "leave world (/readme/)",
+      "start": 29.3,
+      "groupStart": 599,
+      "groupPeak": 599,
+      "end": 35.8,
+      "groupEnd": 406,
+      "ok": true
+    }
+  ],
+  "errors": []
+}

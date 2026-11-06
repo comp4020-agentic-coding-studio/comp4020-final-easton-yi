@@ -3,7 +3,7 @@
 // durable commands (PLACE-09, SYNC-02..07).
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api.ts";
-import { navigate, signInLink } from "../router.ts";
+import { navigate, setLeaveGuard, signInLink } from "../router.ts";
 import { accountDeleted, showNotice, useSession } from "../session.ts";
 import { Viewport, webglAvailable, PERSON_COLORS, PERSON_SHAPES } from "../scene/viewport.ts";
 import { knock, unlockAudio, isMuted, setMuted } from "../scene/audio.ts";
@@ -198,6 +198,18 @@ export function Workshop({ workId }: { workId: string }) {
     revalidate(d);
     if (d && opts.send && opts.send !== "none") sendDraft(d, opts.send === "start" ? "draft.start" : "draft.pose", opts.send !== "pose");
   };
+
+  // Return to world asks before leaving: placed sticks are saved by the server as they land, but a stick that
+  // hasn't been placed yet (or a placement still waiting for the server) exists only in this window
+  useEffect(
+    () =>
+      setLeaveGuard(() => {
+        if (pending.current || phaseRef.current === "submitting" || phaseRef.current === "unknown-result") return "A placement is still waiting for the server. If you leave now, you may not see whether it was saved.";
+        if (draftRef.current) return "You have a stick that isn't placed yet. Placed sticks are saved; this one will be discarded if you leave.";
+        return null;
+      }),
+    [],
+  );
 
   // keep the viewport ghost in sync with state
   useEffect(() => {

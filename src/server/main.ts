@@ -547,12 +547,34 @@ if (existsSync(clientDir)) {
     decorateReply: false,
   });
 }
+// The island's static world data (scripts/world/build-world.ts), under its own prefix so it can never
+// shadow the /world/ page: content-hashed landmark and terrain files are immutable; the manifest is
+// revalidated. Served pre-compressed (.br/.gz built alongside).
+const worldDir = join(clientDir, "world-data");
+if (existsSync(join(worldDir, "manifest.json"))) {
+  await app.register(fastifyStatic, {
+    root: worldDir,
+    prefix: "/world-data/",
+    preCompressed: true,
+    decorateReply: false,
+    index: false,
+    wildcard: true,
+    // a missing world file is a 404 here, never the app shell
+    allowedPath: (path) => /^\/(manifest\.json|terrain\.[0-9a-f]{8}\.bin|landmarks\/L\d\d\.(far\.)?[0-9a-f]{8}\.bin|bom\/L\d\d\.json)$/.test(path),
+    setHeaders: (reply, path) => {
+      // `path` may name the pre-compressed sibling (.br/.gz)
+      const file = path.replace(/\.(br|gz)$/, "");
+      reply.header("Cache-Control", /manifest\.json$/.test(file) ? "no-cache" : /\.[0-9a-f]{8}\.bin$/.test(file) ? "public, max-age=31536000, immutable" : "public, max-age=3600");
+      reply.header("X-Content-Type-Options", "nosniff");
+    },
+  });
+}
 const shell = (): string =>
   existsSync(join(clientDir, "index.html"))
     ? readFileSync(join(clientDir, "index.html"), "utf8")
     : `<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><title>Stillwood</title></head><body><main><h1>Stillwood</h1><p>The client hasn't been built. Run <code>pnpm build</code>.</p><p><a href="/readme/">About this app</a></p></main></body></html>`;
 
-const PAGES = [/^\/$/, /^\/works\/$/, /^\/works\/[0-9a-f-]{36}\/$/, /^\/exhibits\/[0-9a-f-]{36}\/$/, /^\/favorites\/$/, /^\/(login|register|recover|account|join)\/$/];
+const PAGES = [/^\/$/, /^\/world\/$/, /^\/world\/inspect\/$/, /^\/works\/$/, /^\/works\/[0-9a-f-]{36}\/$/, /^\/exhibits\/[0-9a-f-]{36}\/$/, /^\/favorites\/$/, /^\/(login|register|recover|account|join)\/$/];
 app.setNotFoundHandler(async (req, reply) => {
   const path = req.url.split("?")[0]!.split("#")[0]!;
   if (req.method !== "GET" && req.method !== "HEAD") return reply.status(404).send({ error: { code: "NOT_FOUND", message: "Not found" } });

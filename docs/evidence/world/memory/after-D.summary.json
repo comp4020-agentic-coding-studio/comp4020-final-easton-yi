@@ -1,0 +1,105 @@
+{
+  "label": "D",
+  "env": {
+    "stage": "D",
+    "viewport": "1280x720",
+    "quality": "high",
+    "browser": "153.0.8010.12",
+    "headless": true,
+    "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "elapsedS": 55.2,
+  "steps": [
+    {
+      "step": "home: load",
+      "start": 0.5,
+      "groupStart": 248,
+      "groupPeak": 510,
+      "end": 1.9,
+      "groupEnd": 513,
+      "ok": true
+    },
+    {
+      "step": "home: settle (exploring)",
+      "start": 1.9,
+      "groupStart": 513,
+      "groupPeak": 564,
+      "end": 8.2,
+      "groupEnd": 623,
+      "ok": true
+    },
+    {
+      "step": "L01: near",
+      "start": 8.2,
+      "groupStart": 623,
+      "groupPeak": 643,
+      "end": 13.3,
+      "groupEnd": 643,
+      "ok": true
+    },
+    {
+      "step": "L02: near",
+      "start": 13.3,
+      "groupStart": 643,
+      "groupPeak": 658,
+      "end": 18.3,
+      "groupEnd": 656,
+      "ok": true
+    },
+    {
+      "step": "L03: near",
+      "start": 18.3,
+      "groupStart": 656,
+      "groupPeak": 670,
+      "end": 23.3,
+      "groupEnd": 668,
+      "ok": true
+    },
+    {
+      "step": "L04: near",
+      "start": 23.3,
+      "groupStart": 668,
+      "groupPeak": 681,
+      "end": 28.3,
+      "groupEnd": 681,
+      "ok": true
+    },
+    {
+      "step": "L05: near",
+      "start": 28.3,
+      "groupStart": 681,
+      "groupPeak": 685,
+      "end": 33.4,
+      "groupEnd": 633,
+      "ok": true
+    },
+    {
+      "step": "L06: near",
+      "start": 33.4,
+      "groupStart": 633,
+      "groupPeak": 694,
+      "end": 38.4,
+      "groupEnd": 692,
+      "ok": true
+    },
+    {
+      "step": "L07: near",
+      "start": 38.4,
+      "groupStart": 692,
+      "groupPeak": 701,
+      "end": 43.4,
+      "groupEnd": 551,
+      "ok": true
+    },
+    {
+      "step": "leave world (/readme/)",
+      "start": 43.4,
+      "groupStart": 551,
+      "groupPeak": 551,
+      "end": 55.2,
+      "groupEnd": 424,
+      "ok": true
+    }
+  ],
+  "errors": []
+}
