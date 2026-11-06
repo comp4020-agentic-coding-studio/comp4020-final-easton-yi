@@ -43,9 +43,11 @@ import { ManifestS, parseManifest, type WorldManifest } from "../../src/world/ma
 import { REVEALS, SIDE_ROUTES, checkReveal, checkSideRoute, flightHeights, routeEye, sidePoints } from "../../src/world/routes.ts";
 import type { Collider } from "../../src/world/core.ts";
 import { terrainHidden } from "../../src/world/viewcheck.ts";
+import { courtyard } from "../../src/world/courtyard.ts";
+import { groupToWorld, type ResolvedGroup } from "../../src/world/candles.ts";
 
 /** Bump when the generator's output for an unchanged recipe changes (format, encoding, file split). */
-const GENERATOR_VERSION = "world-gen/3b";
+const GENERATOR_VERSION = "world-gen/4";
 
 const args = process.argv.slice(2);
 const flagValue = (k: string): string | undefined => {
@@ -97,6 +99,7 @@ type Summary = {
   safePoints: { id: string; feet: number[]; yaw: number }[];
   features: string[];
   revisions: { item: string; original: string; revised: string; reason: string; impact: string }[];
+  candles: { intent: string; groups: ResolvedGroup[]; dropped: { id: string; reason: string }[]; zones: { id: string; min: number[]; max: number[] }[] };
   stages: { stage: string; ms: number; mem: Record<string, number> }[];
   peak: Record<string, number>;
 };
@@ -352,6 +355,50 @@ for (const r of REVEALS) {
   reveals.push({ id: r.id, landmark: r.landmark, hidden: rv(routeEye(r.hidden)), shown: rv(routeEye(r.shown)), visibleHidden: r2(c.hidden), visibleShown: r2(c.shown), note: r.note });
 }
 
+// ---------------------------------------------------------------- environmental lighting and the home courtyard
+// (courtyard/day-night directive §4, §8, §9): candle groups resolved per landmark in its child, turned into world
+// space here; the courtyard laid out from the home spawn and portals. A landmark whose scheme dropped a group is a
+// failure: every authored group must stand on a verified surface or hover with its air gap.
+const court = courtyard(h.spawn, h.yaw, h.portals);
+const lightingLandmarks: WorldManifest["lighting"]["landmarks"] = LANDMARKS.map((def) => {
+  const s = summaries.get(def.id)!;
+  const p = P.find((q) => q.id === def.id)!;
+  if (!s.candles) failures.push(`${def.id}: no candle resolution in its summary (rebuild it)`);
+  for (const d of s.candles?.dropped ?? []) failures.push(`${def.id}: candle group ${d.id} has no valid position: ${d.reason}`);
+  const zones = (s.candles?.zones ?? []).map((z) => {
+    const c = toWorld(p, [(z.min[0]! + z.max[0]!) / 2, (z.min[1]! + z.max[1]!) / 2, (z.min[2]! + z.max[2]!) / 2]);
+    return { id: `${def.id}:${z.id}`, c: rv(c), h: rv([(z.max[0]! - z.min[0]!) / 2, (z.max[1]! - z.min[1]!) / 2, (z.max[2]! - z.min[2]!) / 2]), yaw: r2(p.yaw) };
+  });
+  const groups = (s.candles?.groups ?? []).map((g) => {
+    const w = groupToWorld(g, p.position, p.yaw);
+    // a ground group stands on the island itself: the heightfield under every cup at the cup's base (not a pad
+    // edge's drop, not a river's bed)
+    if (g.role === "ground") {
+      for (const [x, y, z] of w.cups) {
+        const t = heightAt(x, z);
+        if (Math.abs(t - y) > 0.03) failures.push(`${def.id}: ground candle group ${g.id} stands ${(y - t).toFixed(2)} m off the terrain at (${x.toFixed(1)}, ${z.toFixed(1)})`);
+      }
+    }
+    return { ...w, id: `${def.id}:${g.id}`, zone: g.zone ? `${def.id}:${g.zone}` : null };
+  });
+  return { id: def.id, intent: s.candles?.intent ?? "", groups, zones };
+});
+const lighting: WorldManifest["lighting"] = {
+  version: 1,
+  landmarks: lightingLandmarks,
+  home: {
+    groups: court.candles.map((g) => ({ ...g, id: `home:${g.id}`, light: rv(g.light), cups: g.cups.map((c) => [r2(c[0]), r2(c[1]), r2(c[2]), r2(c[3]), r2(c[4])] as [number, number, number, number, number]) })),
+    pond: { ...court.pond, wave: court.pond.wave.map((w) => [...w] as [number, number, number]) },
+    slabs: court.slabs.map((s) => ({ ...s, poly: s.poly.map(([x, z]) => [r2(x), r2(z)] as [number, number]) })),
+    edges: court.edges,
+    meadowRocks: court.meadowRocks,
+    patches: court.patches,
+    routes: court.routes.map((r) => ({ ...r, points: r.points.map(([x, z]) => [r2(x), r2(z)] as [number, number]) })),
+    approaches: court.approaches,
+    bound: court.bound,
+  },
+};
+
 const manifest: WorldManifest = {
   format: "stillwood-world/1",
   recipeVersion: RECIPE_VERSION,
@@ -370,6 +417,7 @@ const manifest: WorldManifest = {
   home: { spawn: rv(h.spawn), yaw: r2(h.yaw), portals: h.portals.map((p) => ({ id: p.id, label: p.label, position: rv(p.position), yaw: r2(p.yaw), opening: p.opening })) },
   safePoints: islandSafe,
   landmarks,
+  lighting,
   totals: { pieces: totalPieces, bytes: 0 },
 };
 // the manifest's own compressed size is part of the total
@@ -416,6 +464,21 @@ if (reportDir) {
   );
   writeFileSync(join(reportDir, "validation.json"), JSON.stringify(LANDMARKS.map((def) => { const s = summaries.get(def.id)!; return { id: def.id, title: def.title, pieces: s.count, B: s.totals.B, M: s.totals.M, D: s.totals.D, size: s.size, target: def.target, dev: s.deviation, bytes: s.asset.bytes, farBytes: s.far.bytes, ok: s.ok, checks: s.checks, generator: { stages: s.stages, peak: s.peak } }; }), null, 1));
   writeFileSync(join(reportDir, "revisions.json"), JSON.stringify(landmarks.map((l) => ({ id: l.id, revisions: l.revisions })), null, 1));
+  // candle placement per landmark (directive §9): groups by kind and role, cups, the surfaces they rest on
+  const lrows = LANDMARKS.map((def) => {
+    const s = summaries.get(def.id)!;
+    const gs = s.candles?.groups ?? [];
+    const by = (role: string): number => gs.filter((g) => g.role === role).length;
+    const kinds = [...new Set(gs.map((g) => g.kind))].join(", ");
+    const levels = [...new Set(gs.filter((g) => g.surface !== null).map((g) => Math.round(g.surface! * 10) / 10))].sort((a, b) => a - b);
+    return `| ${def.id} | ${gs.length} | ${gs.reduce((a, g) => a + g.cups.length, 0)} | ${by("supported")} / ${by("ground")} / ${by("detached")} | ${gs.filter((g) => g.essential).length} | ${kinds} | ${levels.join(", ")} | ${(s.candles?.dropped ?? []).length} |`;
+  });
+  const homeCups = lighting.home.groups.reduce((a, g) => a + g.cups.length, 0);
+  writeFileSync(
+    join(reportDir, "candles.md"),
+    `# Candle placement (generated)\n\nWritten by \`pnpm build:world\` from \`src/world/candle-schemes.ts\`, resolved against each landmark's own pieces by \`src/world/candles.ts\`. Supported groups stand on a level timber surface (or a solid plank-finish floor where the scheme says so) that carries every cup's whole footprint; ground groups stand on the building's pad only where the island's terrain is level with it under every cup and no river or basin covers it (checked again on the world heightfield here, within 3 cm); detached groups hover with an air gap of ${0.45}–${2.5} m from every piece. None stands within a walking line, a fly-through tube, a safe point or a viewpoint.\n\n| ID | Groups | Cups | Supported / ground / detached | Essential | Kinds | Surface levels (local m) | Dropped |\n| --- | ---: | ---: | --- | ---: | --- | --- | ---: |\n${lrows.join("\n")}\n\nLandmarks: ${lighting.landmarks.reduce((a, l) => a + l.groups.length, 0)} groups, ${lighting.landmarks.reduce((a, l) => a + l.groups.reduce((b, g) => b + g.cups.length, 0), 0)} cups. Home courtyard: ${lighting.home.groups.length} groups, ${homeCups} cups.\n\n## Intent per landmark\n\n${lighting.landmarks.map((l) => `- **${l.id}**: ${l.intent}`).join("\n")}\n`,
+  );
+  writeFileSync(join(reportDir, "candles.json"), JSON.stringify(LANDMARKS.map((def) => ({ id: def.id, ...summaries.get(def.id)!.candles })), null, 1));
   writeFileSync(join(reportDir, "layout.json"), JSON.stringify({ placements: landmarks.map((l) => ({ id: l.id, ...l.placement, distanceToRoute: r2(nearestOnRoute(l.placement.position[0], l.placement.position[2]).d) })), home: manifest.home, boundary: manifest.boundary }, null, 1));
 }
 

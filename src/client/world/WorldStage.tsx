@@ -21,6 +21,7 @@ import { useSession } from "../session.ts";
 import { horizontalSpeed, SPEED_MODES, type SpeedMode } from "../../world/flight.ts";
 import { DRAG_SENSITIVITY, DragLook, HELD_KEYS, KEYS, LOCK_SENSITIVITY, LOOK_KEY_STEP, LOOK_LOCK_KEY, LOOK_LOCK_LABEL, SPEED_KEYS, heldToInput, isFormField } from "./input.ts";
 import { loadReturn, loadSpeed, saveReturn, saveSpeed, type WorldRoute } from "./world-session.ts";
+import { LIGHT_MODES, loadLightMode, saveLightMode, type EnvironmentStatus, type LightMode } from "./daynight.ts";
 
 export const OPENING = "From the first lintel to towers above the clouds. Follow the valley and discover how imagination becomes space, one piece at a time.";
 
@@ -68,6 +69,9 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
   const [touch] = useState(() => matchMedia("(pointer: coarse)").matches);
   const [boostLatched, setBoostLatched] = useState(false);
   const [speed, setSpeedState] = useState<SpeedMode>(loadSpeed);
+  /** The day/night preference (a local viewing preference, remembered per browser) and what the island shows now. */
+  const [light, setLightState] = useState<LightMode>(loadLightMode);
+  const [env, setEnv] = useState<EnvironmentStatus | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [canFullscreen] = useState(fullscreenSupported);
   /** World keys are live: the stage holds focus (or Look lock is on). False after the page took focus or scrolled. */
@@ -145,12 +149,15 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
         onFault: (m) => setNotice(m),
         startPose: r?.pose ?? null,
         speed: loadSpeed(),
+        light: loadLightMode(),
+        onEnvironment: setEnv,
       });
     } catch {
       setStatus({ phase: "error", control: "error", progress: 0, regionId: "home", regionPrompt: "", nearPortal: null, nearLandmark: null, flying: false, boundary: 0, pointerLocked: false, landmarksReady: 0, speed: loadSpeed(), message: "This browser couldn't start the 3D island." });
       return;
     }
     view.current = v;
+    setEnv(v.environment());
     if (r) setNotice("Welcome back. Choose Start exploring to carry on from here.");
     try {
       if (localStorage.getItem("stillwood.test") === "1") (window as unknown as Record<string, unknown>).__stillwoodWorld = { stats: () => v.stats(), view: v };
@@ -195,6 +202,12 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
     rememberPose();
     if (fullscreenElement()) exitFullscreen();
     navigate(target.href);
+  };
+
+  const chooseLight = (m: LightMode): void => {
+    setLightState(m);
+    saveLightMode(m);
+    view.current?.setLightMode(m);
   };
 
   const chooseSpeed = (m: SpeedMode): void => {
@@ -642,6 +655,7 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
             <p id="world-help" className="world-help small">
               {helpText}
             </p>
+            <LightControl mode={light} env={env} onChoose={chooseLight} keepFocus={keepFocus} />
           </div>
         )}
         <nav className="world-portals" aria-label="Island portals">
@@ -706,6 +720,7 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
                 </button>
               )}
             </div>
+            <LightControl mode={light} env={env} onChoose={chooseLight} keepFocus={keepFocus} compact />
             {helpOpen && !touch && (
               <div id="world-keys" className="world-keys world-hud-ui" role="group" aria-label="Island controls">
                 <ul>
@@ -746,6 +761,36 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
         )}
       </div>
     </section>
+  );
+}
+
+const LIGHT_LABEL: Record<LightMode, string> = { auto: "Auto", day: "Day", night: "Night" };
+const PHASE_LABEL: Record<EnvironmentStatus["phase"], string> = { dawn: "dawn", day: "day", dusk: "dusk", night: "night" };
+
+/**
+ * Auto / Day / Night (courtyard/day-night directive §6): a local viewing preference, remembered per browser. Auto
+ * follows this device's clock (dawn 06–08, day, dusk 17–19, night); Day and Night hold it for review or preference.
+ * Plain buttons with their state in aria-pressed: they follow the HUD's focus rules (a press never starts a camera
+ * gesture and, while the world has the keys, doesn't take them away).
+ */
+function LightControl({ mode, env, onChoose, keepFocus, compact }: { mode: LightMode; env: EnvironmentStatus | null; onChoose: (m: LightMode) => void; keepFocus: (e: React.MouseEvent) => void; compact?: boolean }) {
+  const now = env ? (mode === "auto" ? `Auto · ${PHASE_LABEL[env.phase]} now` : `${LIGHT_LABEL[mode]} fixed`) : "";
+  return (
+    <div className={`world-light world-hud-ui${compact ? " compact" : ""}`} role="group" aria-label="Light: day and night" aria-describedby={compact ? undefined : "world-light-now"}>
+      <span className="world-light-title" aria-hidden="true">
+        Light
+      </span>
+      {LIGHT_MODES.map((m) => (
+        <button key={m} type="button" aria-pressed={mode === m} onClick={() => onChoose(m)} onPointerDown={(e) => e.stopPropagation()} onMouseDown={keepFocus} title={m === "auto" ? "Follow this device's time of day" : `Always ${LIGHT_LABEL[m].toLowerCase()}`}>
+          {LIGHT_LABEL[m]}
+        </button>
+      ))}
+      {!compact && (
+        <span id="world-light-now" className="world-light-now small">
+          {now}
+        </span>
+      )}
+    </div>
   );
 }
 

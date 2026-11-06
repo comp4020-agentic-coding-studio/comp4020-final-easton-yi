@@ -21,6 +21,48 @@ export type ManifestCollider = z.infer<typeof ColliderS>;
 export const ShellS = z.object({ shape: z.enum(["box", "cyl"]), c: V3, h: V3, q: Q, kind: z.enum(["shade", "glass", "plank"]) });
 export const WaterS = z.object({ c: V3, hx: z.number(), hz: z.number(), yaw: z.number(), speed: z.number(), note: z.string() });
 
+/** One candle cup: base centre (x, y, z), diameter, height. */
+const CupS = z.tuple([z.number(), z.number(), z.number(), z.number(), z.number()]).refine((v) => v.every(Number.isFinite), "non-finite cup");
+export const CandleGroupS = z.object({
+  id: z.string(),
+  light: V3,
+  range: z.number().positive(),
+  weight: z.number().positive(),
+  zone: z.string().nullable(),
+  essential: z.boolean(),
+  kind: z.string(),
+  cups: z.array(CupS).min(1).max(7),
+});
+export type ManifestCandleGroup = z.infer<typeof CandleGroupS>;
+const XZ = V2;
+/**
+ * The island's environmental lighting and the home courtyard (courtyard/day-night directive, 2026-11-06): candle
+ * groups per landmark and around home, interior zones for room-aware light selection, and the courtyard's
+ * description. Lighting data only: never part of a landmark asset, a work or the server's state.
+ */
+export const LightingS = z.object({
+  version: z.literal(1),
+  landmarks: z.array(z.object({
+    id: z.string().regex(/^L\d\d$/),
+    intent: z.string(),
+    groups: z.array(CandleGroupS),
+    /** World-space zones (yawed boxes): centre, half sizes, yaw. */
+    zones: z.array(z.object({ id: z.string(), c: V3, h: V3, yaw: z.number() })),
+  })).length(20),
+  home: z.object({
+    groups: z.array(CandleGroupS),
+    pond: z.object({ c: XZ, u: XZ, v: XZ, a: z.number().positive(), b: z.number().positive(), wave: z.array(z.tuple([z.number(), z.number(), z.number()])), rim: z.number(), depth: z.number().positive(), water: z.number() }),
+    slabs: z.array(z.object({ id: z.string(), kind: z.enum(["platform", "step", "candle", "plinth"]), poly: z.array(XZ).min(3), top: z.number(), base: z.number(), batter: z.number(), seed: z.number().int() })),
+    edges: z.array(z.object({ id: z.string(), c: XZ, yaw: z.number(), a: z.number(), b: z.number(), h: z.number(), base: z.number(), variant: z.number().int(), seed: z.number().int() })),
+    meadowRocks: z.array(z.object({ id: z.string(), c: XZ, yaw: z.number(), a: z.number(), b: z.number(), h: z.number(), base: z.number(), variant: z.number().int(), seed: z.number().int() })),
+    patches: z.array(z.object({ id: z.string(), c: XZ, r: XZ })),
+    routes: z.array(z.object({ id: z.string(), points: z.array(XZ), width: z.number() })),
+    approaches: z.array(z.object({ id: z.string(), c: XZ, n: XZ, half: z.number(), depth: z.number() })),
+    bound: z.object({ c: XZ, r: z.number() }),
+  }),
+});
+export type ManifestLighting = z.infer<typeof LightingS>;
+
 export const LandmarkS = z.object({
   id: z.string().regex(/^L\d\d$/),
   regionId: z.enum(["A", "B", "C", "D", "E"]),
@@ -88,6 +130,7 @@ export const ManifestS = z.object({
   home: z.object({ spawn: V3, yaw: z.number(), portals: z.array(z.object({ id: z.enum(["explore", "works", "together"]), label: z.string(), position: V3, yaw: z.number(), opening: V2 })) }),
   safePoints: z.array(z.object({ id: z.string(), feet: V3, yaw: z.number(), regionId: z.string() })),
   landmarks: z.array(LandmarkS).length(20),
+  lighting: LightingS,
   totals: z.object({ pieces: z.number().int(), bytes: z.number().int() }),
 });
 export type WorldManifest = z.infer<typeof ManifestS>;

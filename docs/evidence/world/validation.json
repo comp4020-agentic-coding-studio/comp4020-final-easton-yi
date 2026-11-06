@@ -110,10 +110,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 38,
+     "ms": 36,
      "mem": {
       "rssMiB": 114,
-      "heapUsedMiB": 21,
+      "heapUsedMiB": 26,
       "heapTotalMiB": 35,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
@@ -121,55 +121,66 @@
     },
     {
      "stage": "validate",
-     "ms": 59,
+     "ms": 57,
      "mem": {
-      "rssMiB": 142,
+      "rssMiB": 143,
       "heapUsedMiB": 40,
-      "heapTotalMiB": 62,
+      "heapTotalMiB": 63,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 268,
+     "mem": {
+      "rssMiB": 157,
+      "heapUsedMiB": 49,
+      "heapTotalMiB": 76,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 9,
+     "ms": 10,
      "mem": {
-      "rssMiB": 143,
-      "heapUsedMiB": 34,
-      "heapTotalMiB": 63,
-      "externalMiB": 13,
-      "arrayBuffersMiB": 3
+      "rssMiB": 159,
+      "heapUsedMiB": 44,
+      "heapTotalMiB": 108,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 143,
-      "heapUsedMiB": 34,
-      "heapTotalMiB": 63,
-      "externalMiB": 13,
-      "arrayBuffersMiB": 3
+      "rssMiB": 159,
+      "heapUsedMiB": 44,
+      "heapTotalMiB": 108,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "write",
-     "ms": 1,
+     "ms": 9,
      "mem": {
-      "rssMiB": 143,
-      "heapUsedMiB": 35,
-      "heapTotalMiB": 63,
-      "externalMiB": 13,
-      "arrayBuffersMiB": 3
+      "rssMiB": 159,
+      "heapUsedMiB": 44,
+      "heapTotalMiB": 108,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 143,
-    "heapUsedMiB": 35,
-    "heapTotalMiB": 63,
-    "externalMiB": 13,
-    "arrayBuffersMiB": 3
+    "rssMiB": 159,
+    "heapUsedMiB": 44,
+    "heapTotalMiB": 108,
+    "externalMiB": 14,
+    "arrayBuffersMiB": 4
    }
   }
  },
@@ -284,10 +295,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 117,
+     "ms": 114,
      "mem": {
-      "rssMiB": 177,
-      "heapUsedMiB": 56,
+      "rssMiB": 180,
+      "heapUsedMiB": 60,
       "heapTotalMiB": 97,
       "externalMiB": 22,
       "arrayBuffersMiB": 12
@@ -295,22 +306,33 @@
     },
     {
      "stage": "validate",
-     "ms": 165,
+     "ms": 145,
      "mem": {
-      "rssMiB": 290,
-      "heapUsedMiB": 86,
-      "heapTotalMiB": 202,
+      "rssMiB": 272,
+      "heapUsedMiB": 54,
+      "heapTotalMiB": 175,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 300,
+     "mem": {
+      "rssMiB": 303,
+      "heapUsedMiB": 138,
+      "heapTotalMiB": 211,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 28,
+     "ms": 29,
      "mem": {
-      "rssMiB": 294,
-      "heapUsedMiB": 134,
-      "heapTotalMiB": 205,
+      "rssMiB": 312,
+      "heapUsedMiB": 130,
+      "heapTotalMiB": 221,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
@@ -319,9 +341,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 294,
-      "heapUsedMiB": 134,
-      "heapTotalMiB": 205,
+      "rssMiB": 312,
+      "heapUsedMiB": 130,
+      "heapTotalMiB": 221,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
@@ -330,18 +352,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 294,
-      "heapUsedMiB": 134,
-      "heapTotalMiB": 205,
+      "rssMiB": 312,
+      "heapUsedMiB": 130,
+      "heapTotalMiB": 221,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 294,
-    "heapUsedMiB": 134,
-    "heapTotalMiB": 205,
+    "rssMiB": 312,
+    "heapUsedMiB": 130,
+    "heapTotalMiB": 221,
     "externalMiB": 14,
     "arrayBuffersMiB": 4
    }
@@ -458,66 +480,77 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 223,
+     "ms": 218,
      "mem": {
-      "rssMiB": 242,
-      "heapUsedMiB": 112,
-      "heapTotalMiB": 184,
+      "rssMiB": 250,
+      "heapUsedMiB": 72,
+      "heapTotalMiB": 198,
       "externalMiB": 29,
       "arrayBuffersMiB": 19
      }
     },
     {
      "stage": "validate",
-     "ms": 248,
+     "ms": 206,
      "mem": {
-      "rssMiB": 404,
-      "heapUsedMiB": 107,
-      "heapTotalMiB": 234,
+      "rssMiB": 421,
+      "heapUsedMiB": 222,
+      "heapTotalMiB": 324,
       "externalMiB": 29,
-      "arrayBuffersMiB": 5
+      "arrayBuffersMiB": 19
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 354,
+     "mem": {
+      "rssMiB": 501,
+      "heapUsedMiB": 325,
+      "heapTotalMiB": 400,
+      "externalMiB": 29,
+      "arrayBuffersMiB": 19
      }
     },
     {
      "stage": "encode",
-     "ms": 49,
+     "ms": 44,
      "mem": {
-      "rssMiB": 407,
-      "heapUsedMiB": 122,
-      "heapTotalMiB": 237,
-      "externalMiB": 18,
-      "arrayBuffersMiB": 8
+      "rssMiB": 513,
+      "heapUsedMiB": 325,
+      "heapTotalMiB": 409,
+      "externalMiB": 32,
+      "arrayBuffersMiB": 22
      }
     },
     {
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 407,
-      "heapUsedMiB": 122,
-      "heapTotalMiB": 237,
-      "externalMiB": 18,
-      "arrayBuffersMiB": 8
+      "rssMiB": 513,
+      "heapUsedMiB": 325,
+      "heapTotalMiB": 409,
+      "externalMiB": 32,
+      "arrayBuffersMiB": 22
      }
     },
     {
      "stage": "write",
      "ms": 2,
      "mem": {
-      "rssMiB": 407,
-      "heapUsedMiB": 122,
-      "heapTotalMiB": 237,
-      "externalMiB": 18,
-      "arrayBuffersMiB": 8
+      "rssMiB": 513,
+      "heapUsedMiB": 325,
+      "heapTotalMiB": 409,
+      "externalMiB": 32,
+      "arrayBuffersMiB": 22
      }
     }
    ],
    "peak": {
-    "rssMiB": 407,
-    "heapUsedMiB": 122,
-    "heapTotalMiB": 237,
-    "externalMiB": 18,
-    "arrayBuffersMiB": 8
+    "rssMiB": 513,
+    "heapUsedMiB": 326,
+    "heapTotalMiB": 409,
+    "externalMiB": 32,
+    "arrayBuffersMiB": 22
    }
   }
  },
@@ -632,66 +665,77 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 116,
+     "ms": 102,
      "mem": {
-      "rssMiB": 160,
-      "heapUsedMiB": 43,
+      "rssMiB": 169,
+      "heapUsedMiB": 50,
       "heapTotalMiB": 94,
-      "externalMiB": 15,
-      "arrayBuffersMiB": 5
+      "externalMiB": 17,
+      "arrayBuffersMiB": 7
      }
     },
     {
      "stage": "validate",
-     "ms": 136,
+     "ms": 105,
      "mem": {
-      "rssMiB": 304,
-      "heapUsedMiB": 126,
-      "heapTotalMiB": 221,
-      "externalMiB": 15,
-      "arrayBuffersMiB": 5
+      "rssMiB": 198,
+      "heapUsedMiB": 62,
+      "heapTotalMiB": 108,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 315,
+     "mem": {
+      "rssMiB": 263,
+      "heapUsedMiB": 99,
+      "heapTotalMiB": 207,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 2
      }
     },
     {
      "stage": "encode",
-     "ms": 30,
+     "ms": 28,
      "mem": {
-      "rssMiB": 308,
-      "heapUsedMiB": 113,
-      "heapTotalMiB": 223,
-      "externalMiB": 16,
-      "arrayBuffersMiB": 6
+      "rssMiB": 287,
+      "heapUsedMiB": 134,
+      "heapTotalMiB": 210,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 308,
-      "heapUsedMiB": 113,
-      "heapTotalMiB": 223,
-      "externalMiB": 16,
-      "arrayBuffersMiB": 6
+      "rssMiB": 287,
+      "heapUsedMiB": 134,
+      "heapTotalMiB": 210,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 309,
-      "heapUsedMiB": 113,
-      "heapTotalMiB": 223,
-      "externalMiB": 16,
-      "arrayBuffersMiB": 6
+      "rssMiB": 287,
+      "heapUsedMiB": 134,
+      "heapTotalMiB": 210,
+      "externalMiB": 14,
+      "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 309,
-    "heapUsedMiB": 114,
-    "heapTotalMiB": 223,
-    "externalMiB": 16,
-    "arrayBuffersMiB": 6
+    "rssMiB": 287,
+    "heapUsedMiB": 135,
+    "heapTotalMiB": 210,
+    "externalMiB": 14,
+    "arrayBuffersMiB": 4
    }
   }
  },
@@ -806,10 +850,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 48,
+     "ms": 45,
      "mem": {
-      "rssMiB": 117,
-      "heapUsedMiB": 25,
+      "rssMiB": 118,
+      "heapUsedMiB": 29,
       "heapTotalMiB": 51,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
@@ -817,22 +861,33 @@
     },
     {
      "stage": "validate",
-     "ms": 67,
+     "ms": 50,
      "mem": {
-      "rssMiB": 189,
-      "heapUsedMiB": 43,
-      "heapTotalMiB": 108,
+      "rssMiB": 147,
+      "heapUsedMiB": 46,
+      "heapTotalMiB": 66,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 275,
+     "mem": {
+      "rssMiB": 181,
+      "heapUsedMiB": 61,
+      "heapTotalMiB": 113,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 10,
+     "ms": 12,
      "mem": {
-      "rssMiB": 190,
-      "heapUsedMiB": 55,
-      "heapTotalMiB": 108,
+      "rssMiB": 189,
+      "heapUsedMiB": 72,
+      "heapTotalMiB": 114,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
@@ -841,29 +896,29 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 190,
-      "heapUsedMiB": 56,
-      "heapTotalMiB": 108,
+      "rssMiB": 189,
+      "heapUsedMiB": 72,
+      "heapTotalMiB": 114,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "write",
-     "ms": 1,
+     "ms": 10,
      "mem": {
-      "rssMiB": 191,
-      "heapUsedMiB": 56,
-      "heapTotalMiB": 108,
+      "rssMiB": 189,
+      "heapUsedMiB": 72,
+      "heapTotalMiB": 114,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 191,
-    "heapUsedMiB": 56,
-    "heapTotalMiB": 108,
+    "rssMiB": 189,
+    "heapUsedMiB": 73,
+    "heapTotalMiB": 114,
     "externalMiB": 14,
     "arrayBuffersMiB": 4
    }
@@ -980,33 +1035,44 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 315,
+     "ms": 302,
      "mem": {
-      "rssMiB": 297,
-      "heapUsedMiB": 131,
-      "heapTotalMiB": 198,
+      "rssMiB": 301,
+      "heapUsedMiB": 119,
+      "heapTotalMiB": 201,
       "externalMiB": 31,
       "arrayBuffersMiB": 21
      }
     },
     {
      "stage": "validate",
-     "ms": 249,
+     "ms": 256,
      "mem": {
-      "rssMiB": 413,
-      "heapUsedMiB": 119,
-      "heapTotalMiB": 227,
+      "rssMiB": 456,
+      "heapUsedMiB": 111,
+      "heapTotalMiB": 251,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 6
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 344,
+     "mem": {
+      "rssMiB": 467,
+      "heapUsedMiB": 214,
+      "heapTotalMiB": 326,
       "externalMiB": 16,
       "arrayBuffersMiB": 6
      }
     },
     {
      "stage": "encode",
-     "ms": 43,
+     "ms": 42,
      "mem": {
-      "rssMiB": 416,
-      "heapUsedMiB": 162,
-      "heapTotalMiB": 231,
+      "rssMiB": 470,
+      "heapUsedMiB": 256,
+      "heapTotalMiB": 330,
       "externalMiB": 20,
       "arrayBuffersMiB": 10
      }
@@ -1015,9 +1081,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 416,
-      "heapUsedMiB": 162,
-      "heapTotalMiB": 231,
+      "rssMiB": 470,
+      "heapUsedMiB": 256,
+      "heapTotalMiB": 330,
       "externalMiB": 20,
       "arrayBuffersMiB": 10
      }
@@ -1026,18 +1092,18 @@
      "stage": "write",
      "ms": 2,
      "mem": {
-      "rssMiB": 416,
-      "heapUsedMiB": 162,
-      "heapTotalMiB": 231,
+      "rssMiB": 470,
+      "heapUsedMiB": 256,
+      "heapTotalMiB": 330,
       "externalMiB": 20,
       "arrayBuffersMiB": 10
      }
     }
    ],
    "peak": {
-    "rssMiB": 416,
-    "heapUsedMiB": 162,
-    "heapTotalMiB": 231,
+    "rssMiB": 470,
+    "heapUsedMiB": 256,
+    "heapTotalMiB": 330,
     "externalMiB": 20,
     "arrayBuffersMiB": 10
    }
@@ -1154,33 +1220,44 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 97,
+     "ms": 90,
      "mem": {
-      "rssMiB": 148,
-      "heapUsedMiB": 42,
-      "heapTotalMiB": 94,
+      "rssMiB": 147,
+      "heapUsedMiB": 45,
+      "heapTotalMiB": 95,
       "externalMiB": 17,
       "arrayBuffersMiB": 7
      }
     },
     {
      "stage": "validate",
-     "ms": 128,
+     "ms": 127,
      "mem": {
       "rssMiB": 260,
-      "heapUsedMiB": 55,
+      "heapUsedMiB": 53,
       "heapTotalMiB": 168,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     },
     {
-     "stage": "encode",
-     "ms": 23,
+     "stage": "candles",
+     "ms": 300,
      "mem": {
-      "rssMiB": 262,
-      "heapUsedMiB": 94,
-      "heapTotalMiB": 171,
+      "rssMiB": 287,
+      "heapUsedMiB": 87,
+      "heapTotalMiB": 202,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 25,
+     "mem": {
+      "rssMiB": 291,
+      "heapUsedMiB": 130,
+      "heapTotalMiB": 205,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -1189,9 +1266,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 262,
-      "heapUsedMiB": 94,
-      "heapTotalMiB": 171,
+      "rssMiB": 291,
+      "heapUsedMiB": 130,
+      "heapTotalMiB": 205,
       "externalMiB": 14,
       "arrayBuffersMiB": 3
      }
@@ -1200,18 +1277,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 262,
-      "heapUsedMiB": 94,
-      "heapTotalMiB": 171,
+      "rssMiB": 291,
+      "heapUsedMiB": 130,
+      "heapTotalMiB": 205,
       "externalMiB": 14,
       "arrayBuffersMiB": 3
      }
     }
    ],
    "peak": {
-    "rssMiB": 262,
-    "heapUsedMiB": 94,
-    "heapTotalMiB": 171,
+    "rssMiB": 291,
+    "heapUsedMiB": 130,
+    "heapTotalMiB": 205,
     "externalMiB": 14,
     "arrayBuffersMiB": 3
    }
@@ -1328,10 +1405,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 77,
+     "ms": 76,
      "mem": {
-      "rssMiB": 143,
-      "heapUsedMiB": 34,
+      "rssMiB": 140,
+      "heapUsedMiB": 38,
       "heapTotalMiB": 59,
       "externalMiB": 16,
       "arrayBuffersMiB": 6
@@ -1339,22 +1416,33 @@
     },
     {
      "stage": "validate",
-     "ms": 84,
+     "ms": 85,
      "mem": {
-      "rssMiB": 196,
-      "heapUsedMiB": 46,
-      "heapTotalMiB": 106,
+      "rssMiB": 198,
+      "heapUsedMiB": 35,
+      "heapTotalMiB": 109,
+      "externalMiB": 16,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 307,
+     "mem": {
+      "rssMiB": 228,
+      "heapUsedMiB": 109,
+      "heapTotalMiB": 193,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     },
     {
      "stage": "encode",
-     "ms": 17,
+     "ms": 18,
      "mem": {
-      "rssMiB": 197,
-      "heapUsedMiB": 38,
-      "heapTotalMiB": 106,
+      "rssMiB": 245,
+      "heapUsedMiB": 125,
+      "heapTotalMiB": 194,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -1363,9 +1451,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 197,
-      "heapUsedMiB": 38,
-      "heapTotalMiB": 106,
+      "rssMiB": 245,
+      "heapUsedMiB": 125,
+      "heapTotalMiB": 194,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -1374,18 +1462,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 197,
-      "heapUsedMiB": 39,
-      "heapTotalMiB": 106,
+      "rssMiB": 245,
+      "heapUsedMiB": 126,
+      "heapTotalMiB": 194,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     }
    ],
    "peak": {
-    "rssMiB": 197,
-    "heapUsedMiB": 39,
-    "heapTotalMiB": 106,
+    "rssMiB": 245,
+    "heapUsedMiB": 126,
+    "heapTotalMiB": 194,
     "externalMiB": 13,
     "arrayBuffersMiB": 3
    }
@@ -1502,33 +1590,44 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 100,
+     "ms": 104,
      "mem": {
-      "rssMiB": 163,
-      "heapUsedMiB": 61,
-      "heapTotalMiB": 95,
+      "rssMiB": 167,
+      "heapUsedMiB": 41,
+      "heapTotalMiB": 97,
       "externalMiB": 17,
       "arrayBuffersMiB": 7
      }
     },
     {
      "stage": "validate",
-     "ms": 120,
+     "ms": 112,
      "mem": {
-      "rssMiB": 266,
-      "heapUsedMiB": 91,
-      "heapTotalMiB": 171,
+      "rssMiB": 264,
+      "heapUsedMiB": 85,
+      "heapTotalMiB": 172,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 334,
+     "mem": {
+      "rssMiB": 313,
+      "heapUsedMiB": 138,
+      "heapTotalMiB": 224,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 27,
+     "ms": 29,
      "mem": {
-      "rssMiB": 267,
-      "heapUsedMiB": 78,
-      "heapTotalMiB": 177,
+      "rssMiB": 320,
+      "heapUsedMiB": 132,
+      "heapTotalMiB": 231,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
@@ -1537,9 +1636,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 267,
-      "heapUsedMiB": 78,
-      "heapTotalMiB": 177,
+      "rssMiB": 320,
+      "heapUsedMiB": 132,
+      "heapTotalMiB": 231,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
@@ -1548,18 +1647,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 267,
-      "heapUsedMiB": 78,
-      "heapTotalMiB": 177,
+      "rssMiB": 320,
+      "heapUsedMiB": 132,
+      "heapTotalMiB": 231,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 267,
-    "heapUsedMiB": 78,
-    "heapTotalMiB": 177,
+    "rssMiB": 320,
+    "heapUsedMiB": 132,
+    "heapTotalMiB": 231,
     "externalMiB": 14,
     "arrayBuffersMiB": 4
    }
@@ -1676,11 +1775,11 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 126,
+     "ms": 123,
      "mem": {
-      "rssMiB": 189,
-      "heapUsedMiB": 53,
-      "heapTotalMiB": 101,
+      "rssMiB": 190,
+      "heapUsedMiB": 57,
+      "heapTotalMiB": 102,
       "externalMiB": 22,
       "arrayBuffersMiB": 12
      }
@@ -1689,7 +1788,7 @@
      "stage": "validate",
      "ms": 135,
      "mem": {
-      "rssMiB": 296,
+      "rssMiB": 297,
       "heapUsedMiB": 112,
       "heapTotalMiB": 208,
       "externalMiB": 13,
@@ -1697,12 +1796,23 @@
      }
     },
     {
-     "stage": "encode",
-     "ms": 27,
+     "stage": "candles",
+     "ms": 326,
      "mem": {
-      "rssMiB": 300,
-      "heapUsedMiB": 92,
-      "heapTotalMiB": 212,
+      "rssMiB": 303,
+      "heapUsedMiB": 99,
+      "heapTotalMiB": 190,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 30,
+     "mem": {
+      "rssMiB": 304,
+      "heapUsedMiB": 89,
+      "heapTotalMiB": 196,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
@@ -1711,9 +1821,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 300,
-      "heapUsedMiB": 92,
-      "heapTotalMiB": 212,
+      "rssMiB": 304,
+      "heapUsedMiB": 89,
+      "heapTotalMiB": 196,
       "externalMiB": 15,
       "arrayBuffersMiB": 4
      }
@@ -1722,18 +1832,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 300,
-      "heapUsedMiB": 92,
-      "heapTotalMiB": 212,
+      "rssMiB": 304,
+      "heapUsedMiB": 90,
+      "heapTotalMiB": 196,
       "externalMiB": 15,
       "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 300,
-    "heapUsedMiB": 93,
-    "heapTotalMiB": 212,
+    "rssMiB": 304,
+    "heapUsedMiB": 90,
+    "heapTotalMiB": 196,
     "externalMiB": 15,
     "arrayBuffersMiB": 4
    }
@@ -1850,10 +1960,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 86,
+     "ms": 83,
      "mem": {
-      "rssMiB": 146,
-      "heapUsedMiB": 33,
+      "rssMiB": 144,
+      "heapUsedMiB": 38,
       "heapTotalMiB": 93,
       "externalMiB": 16,
       "arrayBuffersMiB": 6
@@ -1861,22 +1971,33 @@
     },
     {
      "stage": "validate",
-     "ms": 116,
+     "ms": 115,
      "mem": {
-      "rssMiB": 258,
-      "heapUsedMiB": 51,
+      "rssMiB": 252,
+      "heapUsedMiB": 84,
       "heapTotalMiB": 163,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     },
     {
-     "stage": "encode",
-     "ms": 17,
+     "stage": "candles",
+     "ms": 319,
      "mem": {
-      "rssMiB": 259,
-      "heapUsedMiB": 75,
-      "heapTotalMiB": 164,
+      "rssMiB": 290,
+      "heapUsedMiB": 81,
+      "heapTotalMiB": 204,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "encode",
+     "ms": 16,
+     "mem": {
+      "rssMiB": 292,
+      "heapUsedMiB": 104,
+      "heapTotalMiB": 205,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -1885,29 +2006,29 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 259,
-      "heapUsedMiB": 75,
-      "heapTotalMiB": 164,
+      "rssMiB": 292,
+      "heapUsedMiB": 104,
+      "heapTotalMiB": 205,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "write",
-     "ms": 2,
+     "ms": 1,
      "mem": {
-      "rssMiB": 259,
-      "heapUsedMiB": 75,
-      "heapTotalMiB": 164,
+      "rssMiB": 292,
+      "heapUsedMiB": 104,
+      "heapTotalMiB": 205,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     }
    ],
    "peak": {
-    "rssMiB": 259,
-    "heapUsedMiB": 76,
-    "heapTotalMiB": 164,
+    "rssMiB": 292,
+    "heapUsedMiB": 104,
+    "heapTotalMiB": 205,
     "externalMiB": 13,
     "arrayBuffersMiB": 3
    }
@@ -2024,66 +2145,77 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 150,
+     "ms": 119,
      "mem": {
-      "rssMiB": 191,
-      "heapUsedMiB": 41,
-      "heapTotalMiB": 105,
+      "rssMiB": 192,
+      "heapUsedMiB": 57,
+      "heapTotalMiB": 104,
       "externalMiB": 22,
-      "arrayBuffersMiB": 8
+      "arrayBuffersMiB": 12
      }
     },
     {
      "stage": "validate",
-     "ms": 141,
+     "ms": 130,
      "mem": {
-      "rssMiB": 327,
-      "heapUsedMiB": 156,
-      "heapTotalMiB": 238,
-      "externalMiB": 18,
-      "arrayBuffersMiB": 8
+      "rssMiB": 298,
+      "heapUsedMiB": 140,
+      "heapTotalMiB": 210,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 332,
+     "mem": {
+      "rssMiB": 320,
+      "heapUsedMiB": 101,
+      "heapTotalMiB": 191,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 34,
+     "ms": 33,
      "mem": {
-      "rssMiB": 332,
-      "heapUsedMiB": 149,
-      "heapTotalMiB": 243,
-      "externalMiB": 19,
-      "arrayBuffersMiB": 9
+      "rssMiB": 321,
+      "heapUsedMiB": 99,
+      "heapTotalMiB": 193,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
      }
     },
     {
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 332,
-      "heapUsedMiB": 149,
-      "heapTotalMiB": 243,
-      "externalMiB": 20,
-      "arrayBuffersMiB": 9
+      "rssMiB": 321,
+      "heapUsedMiB": 99,
+      "heapTotalMiB": 193,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
      }
     },
     {
      "stage": "write",
-     "ms": 1,
+     "ms": 9,
      "mem": {
-      "rssMiB": 332,
-      "heapUsedMiB": 149,
-      "heapTotalMiB": 243,
-      "externalMiB": 20,
-      "arrayBuffersMiB": 9
+      "rssMiB": 321,
+      "heapUsedMiB": 99,
+      "heapTotalMiB": 193,
+      "externalMiB": 15,
+      "arrayBuffersMiB": 5
      }
     }
    ],
    "peak": {
-    "rssMiB": 332,
-    "heapUsedMiB": 149,
-    "heapTotalMiB": 243,
-    "externalMiB": 20,
-    "arrayBuffersMiB": 9
+    "rssMiB": 321,
+    "heapUsedMiB": 99,
+    "heapTotalMiB": 193,
+    "externalMiB": 15,
+    "arrayBuffersMiB": 5
    }
   }
  },
@@ -2198,10 +2330,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 128,
+     "ms": 124,
      "mem": {
       "rssMiB": 191,
-      "heapUsedMiB": 60,
+      "heapUsedMiB": 63,
       "heapTotalMiB": 102,
       "externalMiB": 22,
       "arrayBuffersMiB": 12
@@ -2209,22 +2341,33 @@
     },
     {
      "stage": "validate",
-     "ms": 157,
+     "ms": 134,
      "mem": {
-      "rssMiB": 291,
-      "heapUsedMiB": 61,
-      "heapTotalMiB": 185,
+      "rssMiB": 272,
+      "heapUsedMiB": 83,
+      "heapTotalMiB": 182,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 380,
+     "mem": {
+      "rssMiB": 322,
+      "heapUsedMiB": 83,
+      "heapTotalMiB": 213,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 21,
+     "ms": 19,
      "mem": {
-      "rssMiB": 293,
-      "heapUsedMiB": 89,
-      "heapTotalMiB": 188,
+      "rssMiB": 324,
+      "heapUsedMiB": 111,
+      "heapTotalMiB": 215,
       "externalMiB": 15,
       "arrayBuffersMiB": 5
      }
@@ -2233,29 +2376,29 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 293,
-      "heapUsedMiB": 89,
-      "heapTotalMiB": 188,
+      "rssMiB": 324,
+      "heapUsedMiB": 111,
+      "heapTotalMiB": 215,
       "externalMiB": 15,
       "arrayBuffersMiB": 5
      }
     },
     {
      "stage": "write",
-     "ms": 1,
+     "ms": 2,
      "mem": {
-      "rssMiB": 293,
-      "heapUsedMiB": 89,
-      "heapTotalMiB": 188,
+      "rssMiB": 324,
+      "heapUsedMiB": 111,
+      "heapTotalMiB": 215,
       "externalMiB": 15,
       "arrayBuffersMiB": 5
      }
     }
    ],
    "peak": {
-    "rssMiB": 293,
-    "heapUsedMiB": 89,
-    "heapTotalMiB": 188,
+    "rssMiB": 324,
+    "heapUsedMiB": 111,
+    "heapTotalMiB": 215,
     "externalMiB": 15,
     "arrayBuffersMiB": 5
    }
@@ -2372,33 +2515,44 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 33,
+     "ms": 29,
      "mem": {
-      "rssMiB": 110,
-      "heapUsedMiB": 21,
-      "heapTotalMiB": 30,
+      "rssMiB": 111,
+      "heapUsedMiB": 20,
+      "heapTotalMiB": 32,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     },
     {
      "stage": "validate",
-     "ms": 46,
+     "ms": 42,
      "mem": {
-      "rssMiB": 140,
-      "heapUsedMiB": 28,
-      "heapTotalMiB": 60,
+      "rssMiB": 136,
+      "heapUsedMiB": 39,
+      "heapTotalMiB": 57,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 264,
+     "mem": {
+      "rssMiB": 149,
+      "heapUsedMiB": 43,
+      "heapTotalMiB": 100,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     },
     {
      "stage": "encode",
-     "ms": 7,
+     "ms": 8,
      "mem": {
-      "rssMiB": 140,
-      "heapUsedMiB": 39,
-      "heapTotalMiB": 60,
+      "rssMiB": 152,
+      "heapUsedMiB": 53,
+      "heapTotalMiB": 100,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
@@ -2407,9 +2561,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 140,
-      "heapUsedMiB": 39,
-      "heapTotalMiB": 60,
+      "rssMiB": 152,
+      "heapUsedMiB": 53,
+      "heapTotalMiB": 100,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
@@ -2418,18 +2572,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 140,
-      "heapUsedMiB": 39,
-      "heapTotalMiB": 60,
+      "rssMiB": 152,
+      "heapUsedMiB": 53,
+      "heapTotalMiB": 100,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     }
    ],
    "peak": {
-    "rssMiB": 140,
-    "heapUsedMiB": 39,
-    "heapTotalMiB": 60,
+    "rssMiB": 152,
+    "heapUsedMiB": 54,
+    "heapTotalMiB": 100,
     "externalMiB": 12,
     "arrayBuffersMiB": 2
    }
@@ -2546,22 +2700,33 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 67,
+     "ms": 68,
      "mem": {
-      "rssMiB": 142,
-      "heapUsedMiB": 38,
-      "heapTotalMiB": 59,
+      "rssMiB": 141,
+      "heapUsedMiB": 40,
+      "heapTotalMiB": 58,
       "externalMiB": 16,
       "arrayBuffersMiB": 6
      }
     },
     {
      "stage": "validate",
-     "ms": 113,
+     "ms": 110,
      "mem": {
-      "rssMiB": 193,
-      "heapUsedMiB": 58,
-      "heapTotalMiB": 103,
+      "rssMiB": 188,
+      "heapUsedMiB": 43,
+      "heapTotalMiB": 104,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 310,
+     "mem": {
+      "rssMiB": 255,
+      "heapUsedMiB": 80,
+      "heapTotalMiB": 201,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
@@ -2570,9 +2735,9 @@
      "stage": "encode",
      "ms": 16,
      "mem": {
-      "rssMiB": 194,
-      "heapUsedMiB": 51,
-      "heapTotalMiB": 104,
+      "rssMiB": 256,
+      "heapUsedMiB": 102,
+      "heapTotalMiB": 202,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -2581,9 +2746,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 194,
-      "heapUsedMiB": 51,
-      "heapTotalMiB": 104,
+      "rssMiB": 256,
+      "heapUsedMiB": 102,
+      "heapTotalMiB": 202,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -2592,18 +2757,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 194,
-      "heapUsedMiB": 51,
-      "heapTotalMiB": 104,
+      "rssMiB": 256,
+      "heapUsedMiB": 102,
+      "heapTotalMiB": 202,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     }
    ],
    "peak": {
-    "rssMiB": 194,
-    "heapUsedMiB": 51,
-    "heapTotalMiB": 104,
+    "rssMiB": 256,
+    "heapUsedMiB": 102,
+    "heapTotalMiB": 202,
     "externalMiB": 13,
     "arrayBuffersMiB": 3
    }
@@ -2720,33 +2885,44 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 310,
+     "ms": 164,
      "mem": {
       "rssMiB": 203,
       "heapUsedMiB": 49,
-      "heapTotalMiB": 178,
+      "heapTotalMiB": 180,
       "externalMiB": 23,
       "arrayBuffersMiB": 8
      }
     },
     {
      "stage": "validate",
-     "ms": 170,
+     "ms": 137,
      "mem": {
       "rssMiB": 316,
-      "heapUsedMiB": 141,
-      "heapTotalMiB": 224,
+      "heapUsedMiB": 142,
+      "heapTotalMiB": 225,
+      "externalMiB": 18,
+      "arrayBuffersMiB": 8
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 412,
+     "mem": {
+      "rssMiB": 397,
+      "heapUsedMiB": 227,
+      "heapTotalMiB": 302,
       "externalMiB": 18,
       "arrayBuffersMiB": 8
      }
     },
     {
      "stage": "encode",
-     "ms": 36,
+     "ms": 34,
      "mem": {
-      "rssMiB": 320,
-      "heapUsedMiB": 128,
-      "heapTotalMiB": 228,
+      "rssMiB": 401,
+      "heapUsedMiB": 209,
+      "heapTotalMiB": 304,
       "externalMiB": 20,
       "arrayBuffersMiB": 10
      }
@@ -2755,9 +2931,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 320,
-      "heapUsedMiB": 128,
-      "heapTotalMiB": 228,
+      "rssMiB": 401,
+      "heapUsedMiB": 209,
+      "heapTotalMiB": 304,
       "externalMiB": 20,
       "arrayBuffersMiB": 10
      }
@@ -2766,18 +2942,18 @@
      "stage": "write",
      "ms": 2,
      "mem": {
-      "rssMiB": 320,
-      "heapUsedMiB": 128,
-      "heapTotalMiB": 228,
+      "rssMiB": 401,
+      "heapUsedMiB": 209,
+      "heapTotalMiB": 304,
       "externalMiB": 20,
       "arrayBuffersMiB": 10
      }
     }
    ],
    "peak": {
-    "rssMiB": 320,
-    "heapUsedMiB": 129,
-    "heapTotalMiB": 228,
+    "rssMiB": 401,
+    "heapUsedMiB": 209,
+    "heapTotalMiB": 304,
     "externalMiB": 20,
     "arrayBuffersMiB": 10
    }
@@ -2894,64 +3070,75 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 119,
+     "ms": 102,
      "mem": {
-      "rssMiB": 182,
-      "heapUsedMiB": 60,
-      "heapTotalMiB": 97,
+      "rssMiB": 184,
+      "heapUsedMiB": 62,
+      "heapTotalMiB": 98,
       "externalMiB": 22,
       "arrayBuffersMiB": 12
      }
     },
     {
      "stage": "validate",
-     "ms": 171,
+     "ms": 154,
      "mem": {
-      "rssMiB": 302,
-      "heapUsedMiB": 98,
-      "heapTotalMiB": 212,
+      "rssMiB": 303,
+      "heapUsedMiB": 100,
+      "heapTotalMiB": 213,
+      "externalMiB": 13,
+      "arrayBuffersMiB": 3
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 301,
+     "mem": {
+      "rssMiB": 344,
+      "heapUsedMiB": 151,
+      "heapTotalMiB": 252,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "encode",
-     "ms": 19,
+     "ms": 18,
      "mem": {
-      "rssMiB": 304,
-      "heapUsedMiB": 121,
-      "heapTotalMiB": 214,
+      "rssMiB": 346,
+      "heapUsedMiB": 173,
+      "heapTotalMiB": 253,
       "externalMiB": 14,
       "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "encode far",
-     "ms": 1,
+     "ms": 0,
      "mem": {
-      "rssMiB": 304,
-      "heapUsedMiB": 121,
-      "heapTotalMiB": 214,
+      "rssMiB": 346,
+      "heapUsedMiB": 173,
+      "heapTotalMiB": 253,
       "externalMiB": 15,
       "arrayBuffersMiB": 4
      }
     },
     {
      "stage": "write",
-     "ms": 1,
+     "ms": 2,
      "mem": {
-      "rssMiB": 304,
-      "heapUsedMiB": 121,
-      "heapTotalMiB": 214,
+      "rssMiB": 346,
+      "heapUsedMiB": 173,
+      "heapTotalMiB": 253,
       "externalMiB": 15,
       "arrayBuffersMiB": 4
      }
     }
    ],
    "peak": {
-    "rssMiB": 304,
-    "heapUsedMiB": 121,
-    "heapTotalMiB": 214,
+    "rssMiB": 346,
+    "heapUsedMiB": 173,
+    "heapTotalMiB": 254,
     "externalMiB": 15,
     "arrayBuffersMiB": 4
    }
@@ -3068,10 +3255,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 67,
+     "ms": 59,
      "mem": {
-      "rssMiB": 139,
-      "heapUsedMiB": 32,
+      "rssMiB": 140,
+      "heapUsedMiB": 37,
       "heapTotalMiB": 56,
       "externalMiB": 16,
       "arrayBuffersMiB": 6
@@ -3079,22 +3266,33 @@
     },
     {
      "stage": "validate",
-     "ms": 142,
+     "ms": 150,
      "mem": {
-      "rssMiB": 221,
-      "heapUsedMiB": 51,
-      "heapTotalMiB": 170,
+      "rssMiB": 265,
+      "heapUsedMiB": 90,
+      "heapTotalMiB": 169,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 1
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 283,
+     "mem": {
+      "rssMiB": 275,
+      "heapUsedMiB": 89,
+      "heapTotalMiB": 179,
       "externalMiB": 12,
       "arrayBuffersMiB": 1
      }
     },
     {
      "stage": "encode",
-     "ms": 18,
+     "ms": 16,
      "mem": {
-      "rssMiB": 225,
-      "heapUsedMiB": 76,
-      "heapTotalMiB": 171,
+      "rssMiB": 276,
+      "heapUsedMiB": 114,
+      "heapTotalMiB": 181,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
@@ -3103,9 +3301,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 225,
-      "heapUsedMiB": 76,
-      "heapTotalMiB": 171,
+      "rssMiB": 276,
+      "heapUsedMiB": 114,
+      "heapTotalMiB": 181,
       "externalMiB": 13,
       "arrayBuffersMiB": 2
      }
@@ -3114,18 +3312,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 225,
-      "heapUsedMiB": 76,
-      "heapTotalMiB": 171,
+      "rssMiB": 277,
+      "heapUsedMiB": 114,
+      "heapTotalMiB": 181,
       "externalMiB": 13,
       "arrayBuffersMiB": 2
      }
     }
    ],
    "peak": {
-    "rssMiB": 225,
-    "heapUsedMiB": 76,
-    "heapTotalMiB": 171,
+    "rssMiB": 277,
+    "heapUsedMiB": 114,
+    "heapTotalMiB": 181,
     "externalMiB": 13,
     "arrayBuffersMiB": 2
    }
@@ -3242,33 +3440,44 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 55,
+     "ms": 47,
      "mem": {
-      "rssMiB": 125,
-      "heapUsedMiB": 22,
-      "heapTotalMiB": 52,
+      "rssMiB": 126,
+      "heapUsedMiB": 24,
+      "heapTotalMiB": 53,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     },
     {
      "stage": "validate",
-     "ms": 100,
+     "ms": 86,
      "mem": {
-      "rssMiB": 191,
-      "heapUsedMiB": 45,
-      "heapTotalMiB": 97,
+      "rssMiB": 194,
+      "heapUsedMiB": 34,
+      "heapTotalMiB": 105,
+      "externalMiB": 11,
+      "arrayBuffersMiB": 1
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 294,
+     "mem": {
+      "rssMiB": 215,
+      "heapUsedMiB": 97,
+      "heapTotalMiB": 185,
       "externalMiB": 11,
       "arrayBuffersMiB": 1
      }
     },
     {
      "stage": "encode",
-     "ms": 20,
+     "ms": 19,
      "mem": {
-      "rssMiB": 192,
-      "heapUsedMiB": 54,
-      "heapTotalMiB": 99,
+      "rssMiB": 237,
+      "heapUsedMiB": 120,
+      "heapTotalMiB": 186,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
@@ -3277,9 +3486,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 192,
-      "heapUsedMiB": 54,
-      "heapTotalMiB": 99,
+      "rssMiB": 237,
+      "heapUsedMiB": 120,
+      "heapTotalMiB": 186,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
@@ -3288,18 +3497,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 192,
-      "heapUsedMiB": 54,
-      "heapTotalMiB": 99,
+      "rssMiB": 237,
+      "heapUsedMiB": 120,
+      "heapTotalMiB": 186,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     }
    ],
    "peak": {
-    "rssMiB": 192,
-    "heapUsedMiB": 54,
-    "heapTotalMiB": 99,
+    "rssMiB": 237,
+    "heapUsedMiB": 120,
+    "heapTotalMiB": 186,
     "externalMiB": 12,
     "arrayBuffersMiB": 2
    }
@@ -3416,10 +3625,10 @@
    "stages": [
     {
      "stage": "build",
-     "ms": 71,
+     "ms": 67,
      "mem": {
-      "rssMiB": 147,
-      "heapUsedMiB": 28,
+      "rssMiB": 145,
+      "heapUsedMiB": 31,
       "heapTotalMiB": 59,
       "externalMiB": 16,
       "arrayBuffersMiB": 6
@@ -3427,22 +3636,33 @@
     },
     {
      "stage": "validate",
-     "ms": 108,
+     "ms": 126,
      "mem": {
-      "rssMiB": 206,
-      "heapUsedMiB": 81,
-      "heapTotalMiB": 166,
+      "rssMiB": 258,
+      "heapUsedMiB": 79,
+      "heapTotalMiB": 170,
+      "externalMiB": 12,
+      "arrayBuffersMiB": 2
+     }
+    },
+    {
+     "stage": "candles",
+     "ms": 395,
+     "mem": {
+      "rssMiB": 332,
+      "heapUsedMiB": 142,
+      "heapTotalMiB": 244,
       "externalMiB": 12,
       "arrayBuffersMiB": 2
      }
     },
     {
      "stage": "encode",
-     "ms": 30,
+     "ms": 33,
      "mem": {
-      "rssMiB": 230,
-      "heapUsedMiB": 65,
-      "heapTotalMiB": 173,
+      "rssMiB": 347,
+      "heapUsedMiB": 149,
+      "heapTotalMiB": 258,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -3451,9 +3671,9 @@
      "stage": "encode far",
      "ms": 0,
      "mem": {
-      "rssMiB": 230,
-      "heapUsedMiB": 66,
-      "heapTotalMiB": 173,
+      "rssMiB": 347,
+      "heapUsedMiB": 149,
+      "heapTotalMiB": 258,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
@@ -3462,18 +3682,18 @@
      "stage": "write",
      "ms": 1,
      "mem": {
-      "rssMiB": 230,
-      "heapUsedMiB": 66,
-      "heapTotalMiB": 173,
+      "rssMiB": 347,
+      "heapUsedMiB": 149,
+      "heapTotalMiB": 258,
       "externalMiB": 13,
       "arrayBuffersMiB": 3
      }
     }
    ],
    "peak": {
-    "rssMiB": 230,
-    "heapUsedMiB": 66,
-    "heapTotalMiB": 173,
+    "rssMiB": 347,
+    "heapUsedMiB": 150,
+    "heapTotalMiB": 258,
     "externalMiB": 13,
     "arrayBuffersMiB": 3
    }

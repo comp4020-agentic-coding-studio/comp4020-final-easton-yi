@@ -226,3 +226,39 @@ job in a capped cgroup, then found three listener leaks with heap snapshots
 counts hadn't shown, such as wire-like Corinthian leaves and V-shaped roofs. The new keyboard and slow-network tests each
 failed first and found a real defect. The detailed status is in
 [requirements-status.md](evidence/world/requirements-status.md). None of this is committed yet.
+
+## Courtyard, stone gateways and day/night (2026-11-06/07)
+
+The author's next directive
+([`docs/stillwood_courtyard_daynight_upgrade_prompt.md`](stillwood_courtyard_daynight_upgrade_prompt.md)) asked for:
+
+- a new homepage introduction;
+- weathered stone gateways in place of the timber portal frames;
+- a shallow candle pond with a small white-flower meadow at the spawn;
+- Auto / Day / Night with a fixed moon;
+- white candle cups placed with each building's structure across all twenty landmarks.
+
+It asked for the whole scope in one pass, with the work run under the memory supervisor, an injectable clock rather
+than the system clock, and no commit or deploy.
+
+The agent kept the island's existing split. The layout is pure data shared by the generator, the browser and the tests
+(`courtyard.ts`, `gateways.ts`, `candles.ts`, `daynight.ts`); the browser modules only draw it. Candles are not pieces.
+Each landmark's authored anchors are resolved in the generator against that building's own pieces, and the result goes
+into the manifest's lighting section, so no recipe changed.
+
+Three things were caught by checks rather than by eye:
+
+- The night views first read as black buildings with orange dots. The moon and the sky fill were raised until the
+  timber kept its form.
+- The visual tour showed a ground group at L16 hovering over the river cut below the dam. The resolver had treated
+  "the pad" as level everywhere, but pads end and the river is cut through L16's. Ground groups now need the real
+  terrain, level and dry, and the generator rejects any cup more than 3 cm off it. This also moved groups at L06 and
+  L13 that stood 4–9 m above the hillside.
+- A new courtyard test found cups overhanging their stones by up to 9 cm. The stones are now sized to their cups.
+
+The same audit found recipe safe points and viewpoints off the terrain. They predate this round and are recorded,
+not changed.
+
+None of this is committed or deployed. The author has not yet reviewed the final visuals. Details and numbers:
+[courtyard.md](evidence/world/courtyard.md).
+

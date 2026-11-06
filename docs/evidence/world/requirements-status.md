@@ -16,8 +16,9 @@ marked *optional*; everything else is *required*.
 
 **Where it was checked.** Headless Chromium 153 on SwiftShader (software WebGL), one Playwright worker, under
 `scripts/world/supervise.ts`, against a local production build. Nothing here was run on a real GPU or a phone, and
-the island is **not deployed**: Fly runs `ffa5830`, before any of this work. The work is uncommitted on top of
-`b13ecae`.
+the island was uncommitted on top of `b13ecae` when this was written. It has since been committed as `b30a9bb` and
+deployed by CI (2026-11-06). The courtyard and day/night round below is uncommitted on top of `b30a9bb` and not
+deployed.
 
 ## §0, §2, §3: scope, existing features, the opening
 
@@ -152,6 +153,31 @@ existing island specs (unchanged, 25 passing).
 | Readability against bright sky and darker buildings | **partly met; low luminance contrast on pale sky** | By eye, legible in every captured view. By measurement the letters are only about **1.2–1.4:1** against the pale sky behind the membrane (1.05–1.23:1 before the shadow and rim were added), far below a 3:1 large-text guideline: milky white on a pale sky cannot do more without becoming an opaque card, which the brief rules out. It reads through its edge and shadow. The "over darker buildings" views (`07-*-over-buildings`) were checked by eye only, not measured. A different shadow strength is the one tuning knob if this isn't enough |
 | Very close, steep views | known limitation | Within about 2 m with a strong upward pitch the two-line title leaves the top of the viewport (and sits under the HUD); the hint line stays readable. Not addressed |
 | Physical phone, real GPU, Safari/Firefox rendering of the lettering | **not verified** | Chromium software rendering and emulated touch only |
+
+## Courtyard, stone gateways and day/night (2026-11-06/07)
+
+From [`stillwood_courtyard_daynight_upgrade_prompt.md`](../../stillwood_courtyard_daynight_upgrade_prompt.md), which
+supersedes the earlier visual rules for the homepage introduction, the portal frames and environmental lighting. The
+details, numbers and screenshots are in [courtyard.md](courtyard.md). New checks: `world-gateways.test.ts` (21),
+`world-courtyard.test.ts` (19), `world-daynight.test.ts` (19), `world-candles.test.ts` (108) and
+`world-daynight.spec.ts` (5); `world-protection.spec.ts` now also checks the introduction's exact copy.
+
+| Requirement | Status | Evidence / note |
+| --- | --- | --- |
+| §2 Introduction: exact copy, Start building and its sign-in flow, the world above and the page below in normal flow | met | `world-protection.spec.ts`; screenshots at 1280 and 390 px |
+| §3 Stone gateways: arch, lintel and corbelled gate; same positions, outer size and passage; stable stones; colliders follow the stone; lettering fitted; max-speed traversal | met | `world-gateways.test.ts` (bearing, oversail, opening clearance, Run + boost through and Fly + boost at the stone at 60 fps and the clamped frame); `world-portal-labels.test.ts`; close-ups by day and night |
+| §4 Pond 14–16 m forward and 4–5 m left, about 12 × 8 m, 0.15–0.25 m deep; bed, edges, a 3–4 m platform, stepping stones; 3 m routes and 4 m approaches; no water crossing; no floating water or z-fighting | met | 15.5 / 4.5 m, 12.9 × 8.3 m, 0.20 m deep; the basin is an explicit ground surface, and the terrain's fragments inside it are discarded; `world-courtyard.test.ts`. Two defects found by the test were fixed: cups overhanging their stones, and a rock on the ring route |
+| §5 White-flower meadow: local, 40–70 m², instanced, deterministic, wind with reduced motion, no emission, faded by distance and tier | met | About 49 m², 750 / 488 / 285 flowers (High / Medium / Low), 1 draw call; tested deterministic, off every route and stone and on the terrain |
+| §6 Auto / Day / Night: schedule, persistence, no daytime flash on load, 3–5 s blend, reduced motion, one state, no rebuilds, low-frequency Auto, tab return | met | `world-daynight.test.ts` on an injected clock (boundaries, midnight, blend, reversal, snap on return); `world-daynight.spec.ts` with the page clock fixed (night first frame, persistence across reload, reduced motion, the control never moves the camera). The OS clock was never changed |
+| §7 Moon: fixed, upper right from home, lighting agrees; cool light; no crushed blacks; one shadowed light | met (by eye on software rendering) | Direction (0.755, 0.326, 0.569); the key light swaps at mid-twilight, while it is off. Every landmark reviewed by day and night |
+| §8 Candles: white, low, wide (0.22–0.32 × 0.13–0.21 m), rim, wax, wick, flame; cups by day; flames fade at dusk and dawn; groups of 3–7; no timber changes | met | Tested on every group; the resolver leaves every recipe's pieces untouched (hash unchanged); the browser test checks that cups stay by day with no light |
+| §9 Structure-aware placement on all 20 landmarks; supported cups without overhang; detached air gap; clear of routes, safe points and viewpoints; stable | met | 179 groups and 722 cups, none dropped (`candles.md`); `world-candles.test.ts` re-checks support, air gap, terrain and dryness independently. Three ground-group defects (L06, L13 off the pad; L16 over the river) were found and fixed; the generator now rejects them |
+| §10 Instancing; light pool 8 / 4 / 2 with hysteresis and fades, room-aware; distant buildings not black; before and after counts | met (software rendering) | 2 candle draw calls per cell, 1 for the flowers; the pool is tested (allocated once, hysteresis, fades, zones); before and after table in courtyard.md; three context-loss cycles restore the same counts |
+| §11 Existing interaction kept: drag look, Look lock on M, Esc, Walk / Run / Fly speeds, touch, fullscreen, Return to world, focus, no-WebGL fallback | met | `world-interaction` (A–J), `world-keyboard`, `world-route` (desktop and phone), `world-protection` and `graphics` all pass: 34 tests |
+| Real GPU frame rate, physical phone, Safari/Firefox, calibrated night appearance; the author's review of the final visuals | **not verified** | Software rendering and emulated touch only; no approval is recorded |
+
+**Pre-existing, found here and not fixed:** four recipe safe points and four ground viewpoints are off the terrain
+where a pad ends or the river is cut (listed in [courtyard.md](courtyard.md#found-and-not-fixed-pre-existing)).
 
 ## Not verifiable here, with the exact steps
 

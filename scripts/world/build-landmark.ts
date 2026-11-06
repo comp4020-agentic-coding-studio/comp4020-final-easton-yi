@@ -11,6 +11,9 @@ import { mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:
 import { join } from "node:path";
 import { LANDMARKS, RECIPE_VERSION, bandTable, buildLandmark, validate } from "../../src/world/landmarks.ts";
 import { encodeFar, encodeLandmark, fnv1a, FAR_CHAINS } from "../../src/world/format.ts";
+import { resolveScheme } from "../../src/world/candles.ts";
+import { CANDLE_SCHEMES } from "../../src/world/candle-schemes.ts";
+import { islandProbe } from "../../src/world/layout.ts";
 
 const [id, out, summaryPath] = process.argv.slice(2);
 if (!id || !out || !summaryPath) {
@@ -52,6 +55,13 @@ const r = buildLandmark(def);
 mark("build");
 const v = validate(def, r);
 mark("validate");
+// environmental candle anchors (courtyard/day-night directive §9): resolved against this landmark's own pieces;
+// they are lighting data, never pieces, and are written to the manifest's lighting section, not the asset
+const scheme = CANDLE_SCHEMES[def.id];
+if (!scheme) throw new Error(`${def.id}: no candle scheme`);
+// the island around it (its placement sets the terrain's pads and the dam's river), for ground groups
+const candles = resolveScheme(def.id, r, scheme, islandProbe(def.id));
+mark("candles");
 const enc = encodeLandmark(r);
 const bytes = new Uint8Array(enc.buffer);
 const hash = fnv1a(bytes);
@@ -97,6 +107,7 @@ const summary = {
   safePoints: r.safePoints,
   features: r.features.map((f) => f.name),
   revisions: r.revisions,
+  candles: { intent: scheme.intent, groups: candles.groups, dropped: candles.dropped, zones: candles.zones },
   stages,
   peak: mem(),
 };

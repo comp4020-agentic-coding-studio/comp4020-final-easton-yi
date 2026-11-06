@@ -54,26 +54,32 @@ export function Gallery() {
     {/* The island opens with the page (its own region, above the existing exhibition, which is unchanged below). */}
     <WorldStage mode="home" />
     <main className="page">
-      <section className="intro">
-        <h1>A quiet table and one kind of stick.</h1>
+      {/* The introduction (courtyard/day-night directive §2, 2026-11-06): the copy is the author's, verbatim. */}
+      <section className="intro" aria-labelledby="intro-h">
+        <h1 id="intro-h">A world begins with one stick.</h1>
         <p className="lede">
-          Build something fragile with a few friends: a bridge, a leaning tower, a low sculpture. Every stick is the same size and
-          the same weight; gravity decides the rest.
+          A single wooden beam seems simple. Place another beside it, then another above it, and complexity begins to emerge: a
+          bridge, a soaring tower, a structure with the quiet presence of an ancient monument.
         </p>
-        <p className="actions">
-          {user ? (
-            <a className="button primary" href="/works/">
-              Go to my works
+        <p className="lede">
+          Build alongside others, and each placement becomes part of a conversation. What you leave becomes someone else’s
+          starting point—a support, a challenge, an unexpected direction. Discover what takes shape between you.
+        </p>
+        <div className="intro-actions">
+          <p className="actions">
+            <a className="button primary" href={user ? "/works/?new=1" : signInLink("register", "/works/?new=1")}>
+              Start building
             </a>
-          ) : (
-            <>
-              <a className="button primary" href={signInLink("register", "/works/?new=1")}>
-                Start building
+            {user && (
+              <a className="button" href="/works/">
+                Go to my works
               </a>
-              <span className="hint">Create an account to save your work and come back to it.</span>
-            </>
-          )}
-        </p>
+            )}
+          </p>
+          <p className="intro-support">Start with one stick. Invite others to add the next.</p>
+          {/* account and saving: secondary, and only what applies to the current sign-in state */}
+          {!user && <p className="hint small">Create an account to save your work and come back to it.</p>}
+        </div>
       </section>
 
       <section aria-labelledby="exhibits-h">

@@ -20,6 +20,13 @@ import { WORLD_QUALITY } from "./quality-world.ts";
 import { releaseShared, sharedTexturesOf } from "../scene/release-shared.ts";
 import { casterSphere, missesWindow } from "./shadow-cull.ts";
 import { createPortalLabels, type PortalLabels } from "./portal-labels.ts";
+import { basinUniforms } from "./materials.ts";
+import { courtFromManifest, createCourtyard, setBasin, type CourtyardView } from "./courtyard-view.ts";
+import { createCandles, type CandleView } from "./candles-view.ts";
+import { courtExcludes, courtGround, type Courtyard } from "../../world/courtyard.ts";
+import { gatewayColliders } from "../../world/gateways.ts";
+import { EnvironmentState, AUTO_CHECK_MS, loadLightMode, type EnvironmentStatus, type LightMode } from "./daynight.ts";
+import { applyEnvironment, createMoon } from "./lighting.ts";
 
 export const WORLD_BASE = "/world-data/";
 
@@ -31,6 +38,12 @@ export interface WorldEvents {
   startPose?: WorldPose | null;
   /** The speed preset to start with. */
   speed?: SpeedMode;
+  /** The day/night preference to start with (Auto by default); the environment is right before the first frame. */
+  light?: LightMode;
+  /** The local clock (tests inject one; the operating system's clock is never changed). */
+  clock?: () => Date;
+  /** The environment changed (mode, phase or a blend finished): for the stage's control. */
+  onEnvironment?: (s: EnvironmentStatus) => void;
 }
 
 export interface WorldStatus {
@@ -110,7 +123,8 @@ interface Residency {
 }
 
 const TIER_FOR_LOD: readonly number[] = [2, 1, 0, -1];
-const SUN_OFFSET = new THREE.Vector3(-0.45, 0.62, -0.64).multiplyScalar(500);
+/** The key light (sun or moon) stands this far from its target along its direction, for the shadow camera. */
+const KEY_DISTANCE = 500;
 /** How far ahead of the camera shadows are drawn at all (the shadow map's window is ±140 m around it). */
 const SHADOW_REACH = 200;
 /** Detail of a landmark that left the near level stays this long (re-entry hysteresis) unless the cache is over budget. */
@@ -144,7 +158,7 @@ export class WorldView {
   private terrain: TerrainField | null = null;
   /** Terrain tiles of TILE × TILE chunks, keyed by tile index. */
   private terrainMeshes = new Map<number, { mesh: THREE.Mesh; steps: string }>();
-  private terrainMat = TERRAIN_MATERIAL();
+  private terrainMat: THREE.MeshStandardMaterial;
   private terrainRequested = new Set<number>();
   private grid = new StaticGrid(32);
   private world: World | null = null;
@@ -180,6 +194,16 @@ export class WorldView {
   private sun: THREE.DirectionalLight;
   private hemi: THREE.HemisphereLight;
   private sky: THREE.Mesh | null = null;
+  /** The one environment state (day/night); every lit part follows it (lighting.ts). */
+  readonly env: EnvironmentState;
+  private moon: ReturnType<typeof createMoon> | null = null;
+  private basin = basinUniforms();
+  private court: Courtyard | null = null;
+  private courtView: CourtyardView | null = null;
+  private candles: CandleView | null = null;
+  private keyDir = new THREE.Vector3(-0.45, 0.62, -0.64).normalize();
+  private envChecked = 0;
+  private envTimer: ReturnType<typeof setInterval> | null = null;
 
   private status: WorldStatus = { phase: "loading", control: "idle", progress: 0, regionId: "home", regionPrompt: "", nearPortal: null, nearLandmark: null, flying: false, boundary: 0, pointerLocked: false, landmarksReady: 0, speed: "walk" };
   private raf = 0;
@@ -236,6 +260,10 @@ export class WorldView {
     this.camera.rotation.order = "YXZ";
     this.scene.fog = new THREE.Fog(new THREE.Color("#c9d9df"), 1600, 6000);
     this.scene.background = new THREE.Color("#9cc3d8");
+    this.terrainMat = TERRAIN_MATERIAL(this.basin);
+    // the environment is decided before anything is drawn: the first frame at night is already night
+    this.env = new EnvironmentState(events.light ?? loadLightMode(), events.clock);
+    this.env.reducedMotion = this.reducedMotion;
 
     const sunDir = new THREE.Vector3(-0.45, 0.62, -0.64).normalize();
     this.hemi = new THREE.HemisphereLight(new THREE.Color("#dbe9f2"), new THREE.Color("#6b6a4c"), 0.85);
@@ -254,6 +282,9 @@ export class WorldView {
     this.scene.add(this.sun, this.sun.target);
     this.sky = createSky(sunDir.clone());
     this.scene.add(this.sky);
+    this.moon = createMoon();
+    this.scene.add(this.moon.mesh);
+    this.applyEnv();
 
     // shared box geometry per stock: unit section scaled to the stock (length along x)
     for (const sid of STOCK_IDS) {
@@ -303,10 +334,20 @@ export class WorldView {
       } else {
         this.auto.resume();
         this.lastFrame = 0;
+        // back on the tab: the clock may have moved on; snap to it rather than replaying the missed transition
+        this.refreshEnv(true);
         this.invalidate();
       }
     };
     document.addEventListener("visibilitychange", onVis);
+    // Auto looks at the clock once a minute while the page is visible (no frames: it only invalidates on a change)
+    this.envTimer = setInterval(() => {
+      if (!document.hidden) this.refreshEnv(false);
+    }, AUTO_CHECK_MS);
+    this.disposers.push(() => {
+      if (this.envTimer) clearInterval(this.envTimer);
+      this.envTimer = null;
+    });
     const onBlur = (): void => this.releaseControl("paused");
     window.addEventListener("blur", onBlur);
     const onLock = (): void => {
@@ -373,10 +414,14 @@ export class WorldView {
       this.terrain = new TerrainField(m.manifest.terrain);
       const coast = m.manifest.coast as [number, number][];
       const field = this.terrain;
+      // the courtyard's basin, platform and stones are part of the ground the explorer stands on (courtyard.ts)
+      this.court = courtFromManifest(m.manifest.lighting.home, m.manifest.home.spawn, m.manifest.home.yaw);
+      setBasin(this.basin, this.court.pond);
+      const court = this.court;
       this.world = {
         ground: (x, z) => {
           const h = field.height(x, z);
-          return Number.isFinite(h) ? h : -40;
+          return Number.isFinite(h) ? courtGround(court, x, z, h) : -40;
         },
         coast: (x, z) => polygonSdf(coast, x, z),
         coastNormal: (x, z) => {
@@ -586,6 +631,9 @@ export class WorldView {
 
   /** Everything that doesn't stream: sea, clouds, portals, island silhouettes of all 20 landmarks, rocks. */
   private buildStatic(m: WorldManifest): void {
+    // the island's rock silhouettes and material, shared by the rocks, the gateways and the courtyard's stones
+    this.rockGeos = rockGeometries();
+    this.rockMat = ROCK_MATERIAL();
     this.sea = createSea();
     this.scene.add(this.sea.mesh);
     // the island underside: a dark skirt below the coast so low flight never shows a paper-thin island
@@ -599,16 +647,15 @@ export class WorldView {
     // portals
     const accents: Record<string, string> = { explore: "#7fc4c9", works: "#e2b46a", together: "#9fd18f" };
     for (const p of m.home.portals) {
-      const built = createPortal(p.id, accents[p.id]!);
+      const built = createPortal(p.id, accents[p.id]!, { rock: this.rockMat, rocks: this.rockGeos });
       built.group.position.set(p.position[0], p.position[1], p.position[2]);
       built.group.rotation.y = p.yaw;
       this.scene.add(built.group);
+      this.membranes.push(built.membrane);
       const normal = new THREE.Vector3(Math.sin(p.yaw), 0, Math.cos(p.yaw));
       this.portals.push({ id: p.id, label: p.label, group: built.group, pos: new THREE.Vector3(...p.position), normal, armed: true, dispose: built.dispose });
-      // solid posts for collision; the threshold between them is a trigger, not a wall
-      const c = Math.cos(p.yaw);
-      const s = Math.sin(p.yaw);
-      this.grid.add(`portal-${p.id}`, [-1, 1].map((sx) => ({ kind: "box" as const, c: [p.position[0] + sx * 3.6 * c, p.position[1] + 5, p.position[2] - sx * 3.6 * s] as [number, number, number], h: [1, 5, 1] as [number, number, number], yaw: p.yaw })));
+      // the visible stone collides (gateways.ts: piers, arch bands, lintel, corbels); the opening between is a trigger
+      this.grid.add(`portal-${p.id}`, gatewayColliders(p.id, p.position, p.yaw));
     }
     // destination lettering: presentation only (no collision, no picking, no navigation of its own)
     this.labels = createPortalLabels(m.home.portals, { touch: matchMedia("(pointer: coarse)").matches, anisotropy: Math.min(8, this.renderer.capabilities.getMaxAnisotropy()) });
@@ -643,7 +690,27 @@ export class WorldView {
     this.buildWaymarks(m);
     this.grass = createGrass(WORLD_QUALITY.high.grass);
     this.scene.add(this.grass.mesh);
+    // the home courtyard (pond, stones, flowers) and every candle on the island, with the light pool
+    if (this.court) {
+      const field = this.terrain!;
+      const court = this.court;
+      this.courtView = createCourtyard(court, this.rockMat, this.rockGeos, (x, z) => {
+        const h = field.height(x, z);
+        return courtGround(court, x, z, Number.isFinite(h) ? h : court.pond.rim);
+      });
+      this.scene.add(this.courtView.group);
+    }
+    const lit = m.lighting;
+    const groups = [...lit.home.groups, ...lit.landmarks.flatMap((l) => l.groups)];
+    const zones = lit.landmarks.flatMap((l) => l.zones);
+    this.candles = createCandles(groups, zones, { maxLights: 8 });
+    this.scene.add(this.candles.group);
+    this.applyQualityToEnvironment();
+    this.applyEnv();
   }
+  private rockGeos: THREE.BufferGeometry[] = [];
+  private rockMat: THREE.MeshStandardMaterial | null = null as unknown as THREE.MeshStandardMaterial;
+  private membranes: THREE.MeshBasicMaterial[] = [];
 
   /**
    * The rear shading shells of all twenty landmarks, in world space: one instanced mesh per landmark × shape ×
@@ -755,8 +822,8 @@ export class WorldView {
   private waymarks: THREE.Mesh[] = [];
 
   private buildRocks(m: WorldManifest): void {
-    const geos = rockGeometries();
-    const mat = ROCK_MATERIAL();
+    const geos = this.rockGeos;
+    const mat = this.rockMat!;
     const field = this.terrain!;
     // scatter after terrain arrives: deterministic positions along cliff feet, ridges and the coast
     const r = ((seed: number) => () => {
@@ -852,11 +919,8 @@ export class WorldView {
       }
     };
     this.placeRocks = place;
-    // the baked cell meshes are in the scene: dispose()'s traverse frees their geometry
-    this.disposers.push(() => {
-      geos.forEach((g) => g.dispose());
-      mat.dispose();
-    });
+    // the baked cell meshes are in the scene: dispose()'s traverse frees their geometry; the shared rock
+    // geometries and material (also used by the gateways and the courtyard) are freed in dispose()
   }
 
   private rocksPlaced = false;
@@ -1566,6 +1630,9 @@ export class WorldView {
     // the portal lettering's glow eases over about a fifth of a second (instantly for reduced motion); frames
     // continue only while it is changing, so a resting view still stops its loop
     const labelsMoving = this.labels?.step(dt, this.reducedMotion || this.renders === 0) ?? false;
+    // the environment's blend (a manual Day/Night change eases over a few seconds inside this same loop)
+    const envMoving = this.env.step(now);
+    if (envMoving) this.applyEnv();
     // ambient motion: clouds, water and grass sway (disabled for reduced motion; also only while exploring)
     const ambient = !this.reducedMotion && this.status.control === "exploring";
     const ts = now / 1000;
@@ -1575,6 +1642,22 @@ export class WorldView {
       this.grass.uniforms.uTime.value = ambient ? ts : this.grass.uniforms.uTime.value;
       this.grass.uniforms.uWind.value = this.reducedMotion ? 0 : 1;
     }
+    if (this.courtView) {
+      const fu = this.courtView.flowers.uniforms;
+      fu.uTime.value = ambient ? ts : fu.uTime.value;
+      fu.uWind.value = this.reducedMotion ? 0 : 1;
+      const wu = this.courtView.water.uniforms;
+      wu.uTime.value = ambient ? ts : wu.uTime.value;
+      wu.uRipple.value = this.reducedMotion || WORLD_QUALITY[this.tier].pondRipples === false ? 0 : 1;
+    }
+    // candles: flicker only while exploring (and never with reduced motion); the light pool follows the camera
+    let candlesMoving = false;
+    if (this.candles) {
+      this.candles.setTime(ambient ? ts : 0, ambient && WORLD_QUALITY[this.tier].flameFlicker);
+      candlesMoving = this.candles.update(this.camera.position, Math.min(dt, 0.1), this.reducedMotion || this.renders === 0);
+    }
+    if (this.moon) this.moon.follow(this.camera.position);
+    this.courtView?.follow(this.camera.position);
     if (ambient && this.clouds) this.clouds.drift(ts);
     // the previous frame still on the GPU: keep simulating, submit nothing, look again next RAF
     if (!this.gpuReady(now)) {
@@ -1583,10 +1666,10 @@ export class WorldView {
       this.raf = requestAnimationFrame(this.tick);
       return;
     }
-    // shadows follow the camera
+    // shadows follow the camera; the key light (the sun, or the moon at night) shines from the environment's direction
     const c = this.camera.position;
     this.sun.target.position.set(c.x, c.y - 20, c.z);
-    this.sun.position.copy(this.sun.target.position).add(SUN_OFFSET);
+    this.sun.position.copy(this.sun.target.position).addScaledVector(this.keyDir, KEY_DISTANCE);
     const skipped = this.cullShadowCasters();
     this.renderer.render(this.scene, this.camera);
     for (const o of skipped) o.castShadow = true;
@@ -1603,7 +1686,7 @@ export class WorldView {
     this.lastSubmit = now;
     const nextTier = this.auto.frame(now, { interval, deferUpgrade: animating });
     if (nextTier) this.applyTier(nextTier);
-    this.animating = animating || ambient || labelsMoving;
+    this.animating = animating || ambient || labelsMoving || envMoving || candlesMoving;
     if (this.animating) this.raf = requestAnimationFrame(this.tick);
   };
 
@@ -1628,6 +1711,7 @@ export class WorldView {
       const fps = this.manifest.landmarks.map((l) => ({ l, c: Math.cos(l.placement.yaw), s: Math.sin(l.placement.yaw) }));
       const safe = this.manifest.safePoints;
       const field = this.terrain;
+      const court = this.court;
       const excluded = (x: number, z: number): boolean => {
         for (const { l, c: cy, s } of fps) {
           const dx = x - l.placement.position[0];
@@ -1637,6 +1721,8 @@ export class WorldView {
           if (Math.abs(lx) < l.targetSize[0] / 2 + 3 && Math.abs(lz) < l.targetSize[1] / 2 + 3) return true;
         }
         for (const p of this.portals) if (Math.hypot(x - p.pos.x, z - p.pos.z) < 6) return true;
+        // the courtyard: no grass in the pond or its banks, on the stones or in the meadow's flowers
+        if (court && courtExcludes(court, x, z)) return true;
         for (const s2 of safe) if (Math.abs(x - s2.feet[0]) < 2.5 && Math.abs(z - s2.feet[2]) < 2.5) return true;
         // no grass in a riverbed
         for (const r of this.manifest!.rivers) if (riverDistance(r.points, x, z) < r.halfWidth + 1) return true;
@@ -1718,6 +1804,71 @@ export class WorldView {
     } else this.status.nearPortal = near;
   }
 
+  // ---------------------------------------------------------------- environment (day/night)
+
+  /** Push the environment's current state into every lit part of the scene (no rebuild, no new lights). */
+  private applyEnv(): void {
+    const e = applyEnvironment(
+      {
+        renderer: this.renderer,
+        scene: this.scene,
+        key: this.sun,
+        hemi: this.hemi,
+        sky: this.sky,
+        sea: this.sea,
+        flows: this.flows,
+        pond: this.courtView?.water ?? null,
+        clouds: this.clouds,
+        membranes: this.membranes,
+        labels: this.labels,
+        candles: this.candles,
+        stage: this.container.closest(".world-stage") as HTMLElement | null,
+      },
+      this.env.night,
+      this.moon,
+    );
+    this.keyDir.set(e.key.dir[0], e.key.dir[1], e.key.dir[2]);
+  }
+
+  /** Re-read the clock (Auto). `snap` after a return to the tab: no replay of a transition that happened unseen. */
+  private refreshEnv(snap: boolean): void {
+    const was = this.env.status();
+    if (this.env.refresh(performance.now(), snap)) {
+      this.applyEnv();
+      this.invalidate();
+    }
+    const now = this.env.status();
+    if (was.phase !== now.phase || was.mode !== now.mode) this.events.onEnvironment?.(now);
+    this.envChecked++;
+  }
+
+  /** Choose Auto / Day / Night: blends over a few seconds (immediately with reduced motion). A local preference only. */
+  setLightMode(mode: LightMode): void {
+    this.env.reducedMotion = this.reducedMotion;
+    this.env.setMode(mode, performance.now());
+    this.events.onEnvironment?.(this.env.status());
+    this.invalidate();
+  }
+
+  environment(): EnvironmentStatus {
+    return this.env.status();
+  }
+
+  /** Tests and review only: replace the clock (the environment snaps to it). The operating system's clock is untouched. */
+  setClock(clock: () => Date): void {
+    this.env.setClock(clock, performance.now());
+    this.applyEnv();
+    this.events.onEnvironment?.(this.env.status());
+    this.invalidate();
+  }
+
+  /** The tier's share of the courtyard's flowers and the candle pool's size. */
+  private applyQualityToEnvironment(): void {
+    const q = WORLD_QUALITY[this.tier];
+    this.courtView?.setFlowerDensity(q.flowerDensity, q.flowerFade);
+    this.candles?.setTier(this.tier);
+  }
+
   // ---------------------------------------------------------------- quality (reuses the existing preference)
 
   private applyMode(mode: QualityMode, initial = false): void {
@@ -1750,6 +1901,8 @@ export class WorldView {
       old.dispose();
     }
     this.scene.fog = new THREE.Fog(new THREE.Color("#c9d9df"), q.fogNear, q.fogFar);
+    this.applyQualityToEnvironment();
+    this.applyEnv();
     this.camera.far = q.fogFar + 400;
     this.camera.updateProjectionMatrix();
     this.applied = null;
@@ -1829,6 +1982,9 @@ export class WorldView {
       colliderOwners: this.grid.ownerCount(),
       portalLabels: this.labels ? { info: this.labels.info, state: this.labels.state(), textureBytes: this.labels.textureBytes } : null,
       grass: (this.grass?.mesh.geometry as THREE.InstancedBufferGeometry | undefined)?.instanceCount ?? 0,
+      environment: { ...this.env.status(), keyDir: this.keyDir.toArray().map((v) => Math.round(v * 1000) / 1000), keyIntensity: Math.round(this.sun.intensity * 1000) / 1000, moon: this.moon?.mesh.visible ?? false, checks: this.envChecked },
+      candles: this.candles?.stats() ?? null,
+      courtyard: this.courtView ? { ...this.courtView.stats, flowersDrawn: this.courtView.flowers.count } : null,
       pixelRatio: this.renderer.getPixelRatio(),
     };
   }
@@ -1959,6 +2115,13 @@ export class WorldView {
     if (this.sky) cat.set(this.sky, "sky");
     for (const f of this.flows) cat.set(f.mesh, "water");
     for (const p of this.portals) p.group.traverse((o) => cat.set(o, "portals"));
+    if (this.labels) cat.set(this.labels.mesh, "portals");
+    if (this.courtView) {
+      this.courtView.group.traverse((o) => cat.set(o, "courtyard"));
+      cat.set(this.courtView.flowers.mesh, "flowers");
+    }
+    if (this.candles) this.candles.group.traverse((o) => cat.set(o, (o as THREE.Mesh).name === "candle-flames" ? "flames" : "candles"));
+    if (this.moon) cat.set(this.moon.mesh, "moon");
     this.scene.traverse((o) => {
       if (!cat.has(o) && o instanceof THREE.InstancedMesh && (o.material as THREE.Material) && Object.values(this.shellMats).includes(o.material as THREE.Material)) cat.set(o, "shells");
     });
@@ -2085,6 +2248,21 @@ export class WorldView {
     }
     this.grass?.dispose();
     this.clouds?.dispose();
+    if (this.courtView) {
+      this.scene.remove(this.courtView.group);
+      this.courtView.dispose();
+      this.courtView = null;
+    }
+    if (this.candles) {
+      this.scene.remove(this.candles.group);
+      this.candles.dispose();
+      this.candles = null;
+    }
+    if (this.moon) {
+      this.scene.remove(this.moon.mesh);
+      this.moon.dispose();
+      this.moon = null;
+    }
     const sharedGeo = new Set<THREE.BufferGeometry>([...this.boxGeo, this.unitBox, this.shellGeo.box, this.shellGeo.cyl]);
     this.scene.traverse((o) => {
       // instanced meshes carry the renderer's own dispose listener (WebGLObjects) until disposed themselves
@@ -2106,6 +2284,8 @@ export class WorldView {
       t.depth.dispose();
     }
     for (const m of Object.values(this.shellMats)) m.dispose();
+    this.rockGeos.forEach((g) => g.dispose());
+    this.rockMat?.dispose();
     this.terrainMat.dispose();
     this.sun.shadow.dispose();
     this.renderer.dispose();

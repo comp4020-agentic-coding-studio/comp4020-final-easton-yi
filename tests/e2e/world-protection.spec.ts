@@ -41,6 +41,13 @@ test.describe("protection matrix: home controls with the island behind them", ()
     await expect(page.getByRole("link", { name: "Skip to content" })).toHaveAttribute("href", "#main");
     for (const name of ["Exhibition", "About", "Sign in"]) expect(await clickable(page.locator("header.site-header").getByRole("link", { name, exact: true })), name).toBe(true);
 
+    // the introduction (courtyard/day-night directive §2): its exact copy, below the island in the page's own flow
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("A world begins with one stick.");
+    await expect(page.getByText("A single wooden beam seems simple. Place another beside it, then another above it, and complexity begins to emerge: a bridge, a soaring tower, a structure with the quiet presence of an ancient monument.")).toBeVisible();
+    await expect(page.getByText("Build alongside others, and each placement becomes part of a conversation. What you leave becomes someone else’s starting point—a support, a challenge, an unexpected direction. Discover what takes shape between you.")).toBeVisible();
+    await expect(page.getByText("Start with one stick. Invite others to add the next.")).toBeVisible();
+    await expect(page.getByText("A quiet table and one kind of stick.")).toHaveCount(0);
+
     // the gallery's primary action and hint (baseline: Start building → register, next=/works/?new=1)
     const start = page.getByRole("link", { name: "Start building" });
     await expect(start).toHaveAttribute("href", "/register/?next=%2Fworks%2F%3Fnew%3D1");

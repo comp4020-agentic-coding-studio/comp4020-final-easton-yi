@@ -6,7 +6,9 @@ import * as THREE from "three";
 import { Sky } from "three/addons/objects/Sky.js";
 import { rng } from "../../world/core.ts";
 import type { WorldManifest } from "../../world/manifest.ts";
-import { grassMaterial, rockMaterial, terrainMaterial, waterMaterial } from "./materials.ts";
+import { grassMaterial, rockMaterial, terrainMaterial, waterMaterial, type BasinUniforms } from "./materials.ts";
+import { gatewayPlan } from "../../world/gateways.ts";
+import { gatewayGeometry, membraneGeometry } from "./stonework.ts";
 
 // ---------------------------------------------------------------- terrain
 
@@ -186,7 +188,7 @@ export function tileGeometry(field: TerrainField, t: WorldManifest["terrain"], c
   return g;
 }
 
-export const TERRAIN_MATERIAL = (): THREE.MeshStandardMaterial => terrainMaterial();
+export const TERRAIN_MATERIAL = (basin?: BasinUniforms): THREE.MeshStandardMaterial => terrainMaterial(basin);
 
 // ---------------------------------------------------------------- grass
 
@@ -373,10 +375,35 @@ export function createSky(sun: THREE.Vector3): Sky {
   u["mieCoefficient"]!.value = 0.004;
   u["mieDirectionalG"]!.value = 0.82;
   u["sunPosition"]!.value.copy(sun);
+  // the Sky shader has no night: below the horizon its scattering falls to near black. A night overlay (uNight,
+  // 0 day … 1 night, from the environment) blends toward a deep blue gradient brightening at the horizon, a cool
+  // glow around the moon's direction and a few faint fixed stars, so the night sky reads as night, not a void
+  u["uNight"] = { value: 0 };
+  u["uMoonDir"] = { value: new THREE.Vector3(0.755, 0.326, 0.569).normalize() };
+  sky.material.fragmentShader = sky.material.fragmentShader
+    .replace("uniform float time;", "uniform float time;\nuniform float uNight;\nuniform vec3 uMoonDir;")
+    .replace(
+      "gl_FragColor = vec4( texColor, 1.0 );",
+      `{
+        float up = max(direction.y, 0.0);
+        vec3 nightSky = mix(vec3(0.050, 0.075, 0.13), vec3(0.016, 0.026, 0.060), pow(up, 0.55));
+        float m = max(dot(direction, normalize(uMoonDir)), 0.0);
+        nightSky += vec3(0.07, 0.09, 0.14) * pow(m, 24.0) + vec3(0.03, 0.04, 0.07) * pow(m, 4.0);
+        // stars: a hashed cell grid in direction space, sparse and dim, fading toward the horizon
+        vec3 sd = direction * 220.0;
+        vec3 cell = floor(sd);
+        float hs = fract(sin(dot(cell, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+        float star = step(0.9965, hs) * smoothstep(0.05, 0.3, up) * smoothstep(0.42, 0.0, length(fract(sd) - 0.5));
+        nightSky += vec3(0.75, 0.8, 0.95) * star * 0.55;
+        // the scattering's own colour still carries the last twilight near the horizon as the night begins
+        texColor = mix(texColor, nightSky * 0.04 * 25.0, uNight);
+      }
+      gl_FragColor = vec4( texColor, 1.0 );`,
+    );
   return sky;
 }
 
-export function createSea(): { mesh: THREE.Mesh; uniforms: { uTime: { value: number } } } {
+export function createSea(): { mesh: THREE.Mesh; uniforms: { uTime: { value: number }; uNight: { value: number } } } {
   const { material, uniforms } = waterMaterial({ flow: false });
   const geo = new THREE.PlaneGeometry(9000, 6000, 1, 1);
   geo.rotateX(-Math.PI / 2);
@@ -388,7 +415,7 @@ export function createSea(): { mesh: THREE.Mesh; uniforms: { uTime: { value: num
 }
 
 /** A flowing water strip (river, channel, spillway outflow). */
-export function createFlow(w: { c: number[]; hx: number; hz: number; yaw: number }): { mesh: THREE.Mesh; uniforms: { uTime: { value: number } } } {
+export function createFlow(w: { c: number[]; hx: number; hz: number; yaw: number }): { mesh: THREE.Mesh; uniforms: { uTime: { value: number }; uNight: { value: number } } } {
   const { material, uniforms } = waterMaterial({ flow: true });
   const geo = new THREE.PlaneGeometry(w.hx * 2, w.hz * 2, 1, 1);
   geo.rotateX(-Math.PI / 2);
@@ -404,7 +431,7 @@ export function createFlow(w: { c: number[]; hx: number; hz: number; yaw: number
  * ~8 m so the falling surface follows the bed. uv.y runs downstream in units of 20 m (the flow shader's stripe
  * scale for a rectangle's 0…1), so the animation moves toward the sea at the same speed as the channel's.
  */
-export function createRiver(points: readonly number[][], half: number): { mesh: THREE.Mesh; uniforms: { uTime: { value: number } } } {
+export function createRiver(points: readonly number[][], half: number): { mesh: THREE.Mesh; uniforms: { uTime: { value: number }; uNight: { value: number } } } {
   const { material, uniforms } = waterMaterial({ flow: true });
   const pos: number[] = [];
   const uv: number[] = [];
@@ -451,7 +478,7 @@ export function createRiver(points: readonly number[][], half: number): { mesh: 
  * mid-distance ridge bands, low valley mist), all in one instanced mesh with a
  * generated texture (nothing downloaded). Counts follow quality.
  */
-export function createClouds(count: number, seed = 31): { mesh: THREE.Mesh; dispose(): void; drift(t: number): void } {
+export function createClouds(count: number, seed = 31): { mesh: THREE.Mesh; dispose(): void; drift(t: number): void; setNight(tint: [number, number, number], alpha: number): void } {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 128;
   const ctx = canvas.getContext("2d")!;
@@ -492,7 +519,7 @@ export function createClouds(count: number, seed = 31): { mesh: THREE.Mesh; disp
   geo.setAttribute("iSize", new THREE.InstancedBufferAttribute(new Float32Array(sizes), 2));
   geo.setAttribute("iAlpha", new THREE.InstancedBufferAttribute(new Float32Array(tints), 1));
   geo.instanceCount = n;
-  const uniforms = { map: { value: tex }, uDrift: { value: 0 }, fogColor: { value: new THREE.Color("#c9d9df") }, fogNear: { value: 900 }, fogFar: { value: 4200 } };
+  const uniforms = { map: { value: tex }, uDrift: { value: 0 }, uTint: { value: new THREE.Color(1, 1, 1) }, uAlpha: { value: 1 }, fogColor: { value: new THREE.Color("#c9d9df") }, fogNear: { value: 900 }, fogFar: { value: 4200 } };
   const mat = new THREE.ShaderMaterial({
     uniforms,
     transparent: true,
@@ -512,12 +539,13 @@ export function createClouds(count: number, seed = 31): { mesh: THREE.Mesh; disp
         #include <fog_vertex>
       }`,
     fragmentShader: /* glsl */ `
-      uniform sampler2D map;
+      uniform sampler2D map; uniform vec3 uTint; uniform float uAlpha;
       varying vec2 vUv; varying float vAlpha;
       #include <fog_pars_fragment>
       void main() {
         vec4 t = texture2D(map, vUv);
-        gl_FragColor = vec4(vec3(1.0), t.a * vAlpha);
+        // the environment tints the masses (white by day, warm at dusk, moonlit grey-blue at night)
+        gl_FragColor = vec4(uTint, t.a * vAlpha * uAlpha);
         #include <fog_fragment>
       }`,
   });
@@ -528,6 +556,10 @@ export function createClouds(count: number, seed = 31): { mesh: THREE.Mesh; disp
     mesh,
     drift(t) {
       uniforms.uDrift.value = t;
+    },
+    setNight(tint, alpha) {
+      uniforms.uTint.value.setRGB(tint[0], tint[1], tint[2], THREE.SRGBColorSpace);
+      uniforms.uAlpha.value = alpha;
     },
     dispose() {
       tex.dispose();
@@ -541,116 +573,38 @@ export function createClouds(count: number, seed = 31): { mesh: THREE.Mesh; disp
 // ---------------------------------------------------------------- portals
 
 /**
- * A portal: a substantial timber gateway in the island's stick language,
- * each with its own form so they can't be mistaken for one another or for
- * a borrowed shrine gate: Explore is a tall lattice arch, My Works a
- * bundled-post frame with a stepped lintel, Build Together two leaning
- * frames meeting overhead. Merged into one mesh per material; a soft
- * threshold plane marks the trigger.
+ * A portal: one of the three weathered stone gateways (courtyard/day-night directive §3, 2026-11-06), laid out in
+ * src/world/gateways.ts: a high pointed arch for Explore, a substantial lintel for My Works, a corbelled
+ * paired-support gate for Build Together. All their stone (dressed blocks and the small fill stones at their feet)
+ * is one merged mesh in the island's rock material, shared with the rocks (`rock`); the transparent membrane fills
+ * the actual clear opening. The timber frames they replace are gone; positions, orientation, size and passage are
+ * the same.
  */
-export function createPortal(id: "explore" | "works" | "together", accent: string): { group: THREE.Group; dispose(): void } {
+export function createPortal(id: "explore" | "works" | "together", accent: string, shared?: { rock: THREE.Material; rocks: readonly THREE.BufferGeometry[] }): { group: THREE.Group; membrane: THREE.MeshBasicMaterial; dispose(): void } {
   const group = new THREE.Group();
-  const wood = new THREE.MeshStandardMaterial({ color: new THREE.Color("#ad8259"), roughness: 0.78 });
-  const dark = new THREE.MeshStandardMaterial({ color: new THREE.Color("#73543a"), roughness: 0.85 });
-  const parts: { w: THREE.BufferGeometry[]; d: THREE.BufferGeometry[] } = { w: [], d: [] };
-  const stick = (len: number, sec: number, kind: "w" | "d", a: THREE.Vector3, b: THREE.Vector3): void => {
-    // a stick from a to b (length must equal |b − a|), section sec
-    const dir = b.clone().sub(a);
-    const g = new THREE.BoxGeometry(len, sec, sec);
-    const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir.normalize());
-    g.applyQuaternion(q);
-    g.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
-    parts[kind].push(g);
-  };
-  const seg = (a: THREE.Vector3, b: THREE.Vector3, sec: number, kind: "w" | "d", unit = 4): void => {
-    // lay a straight chain of unit-length sticks from a to b (C rule)
-    const l = a.distanceTo(b);
-    const n = Math.max(1, Math.ceil(l / unit - 0.01));
-    const dir = b.clone().sub(a).normalize();
-    if (n === 1) return stick(l, sec, kind, a, b);
-    const st = (l - unit) / (n - 1);
-    for (let i = 0; i < n; i++) {
-      const c = a.clone().addScaledVector(dir, unit / 2 + i * st);
-      stick(unit, sec, kind, c.clone().addScaledVector(dir, -unit / 2), c.clone().addScaledVector(dir, unit / 2));
-    }
-  };
-  const V = (x: number, y: number, z: number): THREE.Vector3 => new THREE.Vector3(x, y, z);
-  const post = (x: number, h: number): void => {
-    for (const [ox, oz] of [[-0.26, -0.26], [0.26, -0.26], [-0.26, 0.26], [0.26, 0.26]] as const) seg(V(x + ox, 0, oz), V(x + ox, h, oz), 0.5, "w");
-    for (let y = 1.5; y < h; y += 3) for (const s2 of [-1, 1]) seg(V(x - 0.8, y, s2 * 0.6), V(x + 0.8, y, s2 * 0.6), 0.125, "d", 1);
-    seg(V(x - 1.2, 0.25, 0), V(x + 1.2, 0.25, 0), 1, "d", 8);
-  };
-  if (id === "explore") {
-    // a tall pointed lattice arch: two curved ribs of 4 m sticks with D cross ties
-    for (const z of [-0.6, 0.6]) {
-      const pts: THREE.Vector3[] = [];
-      for (let i = 0; i <= 12; i++) {
-        const t = i / 12;
-        const a = Math.PI * t;
-        pts.push(V(-3.6 * Math.cos(a) * (1 - 0.15 * Math.sin(a)), 11.5 * Math.sin(a) ** 0.8, z));
-      }
-      for (let i = 0; i < 12; i++) stick(pts[i]!.distanceTo(pts[i + 1]!), 0.5, "w", pts[i]!, pts[i + 1]!);
-      if (z > 0) for (let i = 1; i < 12; i += 2) seg(V(pts[i]!.x, pts[i]!.y, -0.6), V(pts[i]!.x, pts[i]!.y, 0.6), 0.125, "d", 1);
-    }
-    for (const sx of [-1, 1]) seg(V(sx * 3.6, 0, -1), V(sx * 3.6, 0, 1), 1, "d", 8);
-  } else if (id === "works") {
-    // bundled posts and a stepped lintel (three projecting layers)
-    post(-3.6, 10);
-    post(3.6, 10);
-    for (let k = 0; k < 3; k++) for (const z of [-0.3, 0.3]) seg(V(-4.6 - k * 0.4, 10.25 + k * 0.5, z), V(4.6 + k * 0.4, 10.25 + k * 0.5, z), 0.5, "w");
-  } else {
-    // two leaning frames meeting overhead, a shared ridge
-    for (const sx of [-1, 1]) for (const z of [-0.8, 0.8]) seg(V(sx * 4.4, 0, z), V(sx * 0.6, 11.5, z), 0.5, "w");
-    for (const y of [3, 6, 9]) for (const sx of [-1, 1]) {
-      const x = sx * (4.4 - (3.8 * y) / 11.5);
-      seg(V(x, y, -0.8), V(x, y, 0.8), 0.125, "d", 1);
-    }
-    seg(V(0, 11.75, -1.4), V(0, 11.75, 1.4), 0.5, "w");
-  }
-  const wg = mergeAll(parts.w);
-  const dg = mergeAll(parts.d);
-  parts.w.forEach((g) => g.dispose());
-  parts.d.forEach((g) => g.dispose());
-  const wm = new THREE.Mesh(wg, wood);
-  const dm = new THREE.Mesh(dg, dark);
-  for (const m of [wm, dm]) {
-    m.castShadow = true;
-    m.receiveShadow = true;
-    group.add(m);
-  }
+  const plan = gatewayPlan(id);
+  const ownRocks = shared ? null : rockGeometries();
+  const ownMat = shared ? null : rockMaterial();
+  const sg = gatewayGeometry(plan, shared?.rocks ?? ownRocks!);
+  const stone = new THREE.Mesh(sg, shared?.rock ?? ownMat!);
+  stone.castShadow = true;
+  stone.receiveShadow = true;
+  stone.name = `gateway-${id}`;
+  group.add(stone);
   const tmat = new THREE.MeshBasicMaterial({ color: new THREE.Color(accent), transparent: true, opacity: 0.2, side: THREE.DoubleSide, depthWrite: false });
-  const threshold = new THREE.Mesh(new THREE.PlaneGeometry(6.2, 9.4), tmat);
-  threshold.position.set(0, 4.8, 0);
+  const mg = membraneGeometry(plan);
+  const threshold = new THREE.Mesh(mg, tmat);
+  threshold.name = `membrane-${id}`;
   group.add(threshold);
   return {
     group,
+    membrane: tmat,
     dispose() {
-      wg.dispose();
-      dg.dispose();
-      threshold.geometry.dispose();
-      wood.dispose();
-      dark.dispose();
+      sg.dispose();
+      mg.dispose();
       tmat.dispose();
+      ownRocks?.forEach((g) => g.dispose());
+      ownMat?.dispose();
     },
   };
-}
-
-function mergeAll(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
-  const ni = list.map((g) => (g.index ? g.toNonIndexed() : g));
-  let total = 0;
-  for (const g of ni) total += g.getAttribute("position").count;
-  const pos = new Float32Array(total * 3);
-  const nor = new Float32Array(total * 3);
-  let o = 0;
-  for (const g of ni) {
-    pos.set(g.getAttribute("position").array as Float32Array, o);
-    nor.set(g.getAttribute("normal").array as Float32Array, o);
-    o += g.getAttribute("position").count * 3;
-  }
-  ni.forEach((g, i) => g !== list[i] && g.dispose());
-  const out = new THREE.BufferGeometry();
-  out.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  out.setAttribute("normal", new THREE.BufferAttribute(nor, 3));
-  out.computeBoundingSphere();
-  return out;
 }

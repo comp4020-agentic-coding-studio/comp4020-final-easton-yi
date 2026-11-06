@@ -142,6 +142,11 @@ export interface PortalLabels {
   state(): { glow: number; hint: number }[];
   /** Redraw and re-upload the atlas (after a lost WebGL context is restored). */
   rebuild(): void;
+  /**
+   * The environment's night amount (0 day … 1 night): the lettering is unlit glass, so at night it is dimmed to a
+   * restrained moonlit level (it must not glow like a sign), while its shadow keeps it legible.
+   */
+  setNight(n: number): void;
   /** GPU bytes of the atlas (base level; mip levels add a third). */
   textureBytes: number;
   dispose(): void;
@@ -180,6 +185,7 @@ const FRAG = /* glsl */ `
   uniform vec2 uTexSize;
   uniform vec4 uL[COUNT];    // glow 0..1, hint 0..1, split v, unused
   uniform vec3 uTint[COUNT]; // the portal's accent, a few per cent of the glass
+  uniform float uNight;     // 0 day … 1 night
   varying vec2 vUv;
   varying vec2 vAtlas;
   varying float vIdx;
@@ -222,6 +228,8 @@ const FRAG = /* glsl */ `
     acc = over(vec4(0.86, 0.96, 1.00, wide * (0.05 + 0.20 * glow) * (1.0 - letter)), acc);        // faint halo, stronger when active
     acc = over(vec4(milk, letter * (0.86 + 0.12 * glow)), acc);                                   // the frosted letter
     acc = over(vec4(vec3(1.0), rimIn * (0.60 + 0.35 * glow)), acc);                               // luminous glassy edge, inside
+    // at night: the glass dims toward a cool, quiet level (brighter when active, so the hint still reads)
+    acc.rgb *= mix(1.0, mix(0.42, 0.62, glow), uNight);
     gl_FragColor = vec4(acc.rgb, acc.a * region);
     #include <colorspace_fragment>
   }`;
@@ -324,7 +332,7 @@ export function createPortalLabels(portals: readonly PortalLabelInput[], opts: {
   });
   const mat = new THREE.ShaderMaterial({
     defines: { COUNT: n },
-    uniforms: { map: { value: tex }, uTexSize: { value: new THREE.Vector2(CELL_PX[0], CELL_PX[1] * n) }, uL: { value: states }, uTint: { value: tints } },
+    uniforms: { map: { value: tex }, uTexSize: { value: new THREE.Vector2(CELL_PX[0], CELL_PX[1] * n) }, uL: { value: states }, uTint: { value: tints }, uNight: { value: 0 } },
     vertexShader: VERT,
     fragmentShader: FRAG,
     transparent: true,
@@ -380,6 +388,9 @@ export function createPortalLabels(portals: readonly PortalLabelInput[], opts: {
       return moving;
     },
     state: () => states.map((s) => ({ glow: s.x, hint: s.y })),
+    setNight(v) {
+      (mat.uniforms.uNight as { value: number }).value = Math.max(0, Math.min(1, v));
+    },
     rebuild() {
       if (disposed) return;
       canvas.width = CELL_PX[0];

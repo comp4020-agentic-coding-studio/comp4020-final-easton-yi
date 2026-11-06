@@ -3,7 +3,8 @@
 // reveals and the island-scale safe points. Authored values, validated by
 // tests (clearances, route distance, pads, heights) rather than trusted.
 import { LANDMARKS, type LandmarkDef } from "./landmarks.ts";
-import { COAST, designToS, heightAt, landform, polygonSdf, routeAt, setPads, setRivers, type Pad, type River } from "./terrain.ts";
+import { COAST, designToS, heightAt, landform, polygonSdf, riverAt, rivers, routeAt, setPads, setRivers, type Pad, type River } from "./terrain.ts";
+import type { GroundProbe } from "./candles.ts";
 
 export interface Placement {
   id: string;
@@ -248,6 +249,30 @@ function damRiver(l16: Placement): River {
 }
 
 export const placementOf = (id: string): Placement => placements().find((p) => p.id === id)!;
+
+/**
+ * The island around a landmark in its local frame (candles.ts GroundProbe): the terrain's height relative to the
+ * pad, and whether a river's water covers a point. Shared by the generator's landmark child and the tests.
+ */
+export function islandProbe(id: string): GroundProbe {
+  const place = placementOf(id);
+  const c = Math.cos(place.yaw);
+  const s = Math.sin(place.yaw);
+  const wx = (x: number, z: number): [number, number] => [place.position[0] + x * c + z * s, place.position[2] - x * s + z * c];
+  return {
+    height: (x, z) => {
+      const [X, Z] = wx(x, z);
+      return heightAt(X, Z) - place.position[1];
+    },
+    wet: (x, z, pad) => {
+      const [X, Z] = wx(x, z);
+      return rivers().some((rv) => {
+        const q = riverAt(rv, X, Z);
+        return q.across < rv.floorHalf + rv.bed / rv.wall + pad && heightAt(X, Z) < q.water + 0.05;
+      });
+    },
+  };
+}
 
 /** True if the route's centre line passes within GAP of the footprint. */
 function routeIntrudes(p: Placement): boolean {

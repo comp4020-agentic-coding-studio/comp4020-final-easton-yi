@@ -222,6 +222,22 @@ async function spaGo(page: Page, path: string): Promise<void> {
   }, path);
 }
 
+/** A fixed local time for the view's injectable clock (Auto mode): day 12:00, dusk 18:00, night 22:30, … The OS clock is untouched. */
+const CLOCK_FOR: Record<string, string> = { day: "12:00", dawn: "07:00", dusk: "18:00", night: "22:30", midnight: "00:10" };
+async function setEnv(page: Page, e: string): Promise<void> {
+  await page.evaluate((hm) => {
+    const [h, m] = hm.split(":").map(Number) as [number, number];
+    const v = (window as unknown as { __stillwoodWorld?: { view: { setClock?(c: () => Date): void; setLightMode?(m: string): void } } }).__stillwoodWorld?.view;
+    if (!v?.setClock) return; // a runtime without the environment (an older build): nothing to set
+    v.setLightMode!("auto");
+    v.setClock(() => {
+      const d = new Date();
+      d.setHours(h, m, 0, 0);
+      return d;
+    });
+  }, CLOCK_FOR[e] ?? "12:00");
+}
+
 async function openHome(page: Page): Promise<boolean> {
   begin("home: load");
   await page.goto(`${base}/`);
@@ -382,12 +398,52 @@ async function main(): Promise<void> {
         }
       }
       env.views = rows;
+    } else if (stage === "shots") {
+      // named poses under chosen environments (courtyard/day-night review): --poses file.json
+      // [{ name, eye: [x, y, z], target: [x, y, z] } | { name, landmark, kind }] and --env day,dusk,night (a fixed clock
+      // per environment through the view's injectable clock; the OS clock is never touched). One screenshot per pose
+      // and environment, with the world's environment, candle and draw stats.
+      if (!(await openHome(page))) throw new Error("world never became ready");
+      env.gl = await glRenderer(page);
+      const rows: Record<string, unknown>[] = [];
+      const envs = opt("--env", "day").split(",");
+      const poses = JSON.parse(readFileSync(opt("--poses", ""), "utf8")) as { name: string; eye?: number[]; target?: number[]; landmark?: string; kind?: string; pitch?: number }[];
+      for (const e of envs) {
+        await setEnv(page, e);
+        for (const x of poses) {
+          begin(`${e} ${x.name}`);
+          let pose: { feet: number[]; yaw: number; pitch: number } | null;
+          if (x.landmark) {
+            pose = await viewpoint(page, x.landmark, x.kind ?? "ground");
+            if (pose && x.pitch !== undefined) pose.pitch = x.pitch;
+          } else {
+            const d = [x.target![0]! - x.eye![0]!, x.target![1]! - x.eye![1]!, x.target![2]! - x.eye![2]!];
+            pose = { feet: [x.eye![0]!, x.eye![1]! - 1.65, x.eye![2]!], yaw: Math.atan2(-d[0]!, -d[2]!), pitch: Math.atan2(d[1]!, Math.hypot(d[0]!, d[2]!)) };
+          }
+          if (!pose) throw new Error(`no pose for ${x.name}`);
+          await jump(page, pose);
+          await waitFor(page, (w) => (x.landmark ? nearReady(x.landmark)(w) || (settled(w) && (w?.lods as Record<string, number> | undefined)?.[x.landmark] !== 0) : settled(w)), 120);
+          await hold(page, 2);
+          const st = (await page.evaluate(() => {
+            const s = (window as unknown as { __stillwoodWorld: { stats(): Record<string, unknown> } }).__stillwoodWorld.stats();
+            return { environment: s.environment, candles: s.candles, courtyard: s.courtyard, drawCalls: s.drawCalls, triangles: s.triangles, feet: s.feet };
+          })) as Record<string, unknown>;
+          const file = `${label}-${e}-${x.name.replace(/[^A-Za-z0-9]+/g, "-")}.png`;
+          await page.screenshot({ path: join(outDir, file) });
+          rows.push({ env: e, pose: x.name, file, ...st });
+          end(true);
+        }
+      }
+      env.shots = rows;
     } else if (stage === "tris") {
       // triangle accounting (WorldView.triangleBreakdown) at representative demanding views: the settled home
       // view, then for each listed landmark its ground/interior/high/detail viewpoints (--kinds), each with a
       // screenshot at the same pose so before/after can be compared side by side; then home again
       if (!(await openHome(page))) throw new Error("world never became ready");
       env.gl = await glRenderer(page);
+      // a fixed environment for comparable counts (the key light's direction changes the shadow pass)
+      env.environment = opt("--env", "day");
+      await setEnv(page, opt("--env", "day"));
       const rows: Record<string, unknown>[] = [];
       const kinds = opt("--kinds", "ground").split(",");
       const shots = opt("--shots", "1") === "1";
@@ -673,7 +729,15 @@ async function main(): Promise<void> {
           const feet1 = (w2?.feet as number[] | undefined) ?? feet0;
           const moved = Math.hypot(feet1[0]! - feet0[0]!, feet1[2]! - feet0[2]!);
           const res2 = (w2?.residency ?? {}) as { fencePending?: boolean; contextRestores?: number };
-          results.push({ cycle: i, resumeButtonAfterRestore: resumable, lost, rendersStoppedWhileLost: rendersStill === rendersLost, noticeShown: notice, restored: back, rendersAfterRestore: Number(afterRestore?.renders ?? 0) > rendersStill, movedAfterRestore: Math.round(moved * 10) / 10, contextRestores: res2.contextRestores });
+          // the environment's resources after restore (courtyard/day-night §10): the same candle cells, light pool and
+          // flowers as before the loss (rebuilt in place, not duplicated)
+          const envRes = await page.evaluate(() => {
+            const s = (window as unknown as { __stillwoodWorld: { stats(): Record<string, unknown> } }).__stillwoodWorld.stats();
+            const c = s.candles as { cells: number; cups: number; lightsPool: number } | null;
+            const k = s.courtyard as { flowersDrawn: number } | null;
+            return { candleCells: c?.cells ?? null, candleCups: c?.cups ?? null, lightPool: c?.lightsPool ?? null, flowersDrawn: k?.flowersDrawn ?? null, drawCalls: s.drawCalls, environment: (s.environment as { mode: string; night: number }) ?? null };
+          });
+          results.push({ cycle: i, resumeButtonAfterRestore: resumable, lost, rendersStoppedWhileLost: rendersStill === rendersLost, noticeShown: notice, restored: back, rendersAfterRestore: Number(afterRestore?.renders ?? 0) > rendersStill, movedAfterRestore: Math.round(moved * 10) / 10, contextRestores: res2.contextRestores, ...envRes });
           await page.keyboard.press("Escape");
           await hold(page, 1);
           await sample(page);
