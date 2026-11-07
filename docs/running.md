@@ -1,29 +1,7 @@
-# Running and testing Stillwood
+# Documentation moved
 
-Moved from the README on 2026-11-04 (the README keeps to the course's 400–600-word guidance).
+This historical reference is retained for existing README, reflection and source references.
 
-## Commands
+Read the [numbered document](90-reference/90-06-running.md).
 
-```sh
-pnpm install
-pnpm build && pnpm start           # http://localhost:8080, data in ./.data
-APP_URL=http://localhost:8080 pnpm check   # course invariants + HTTP/WebSocket contract specs
-pnpm test:unit                     # physics fixtures, placement maths, kill/restart tests (no build needed)
-pnpm test:integration              # builds, then runs suites against the production bundle
-pnpm test:e2e                      # Playwright, against APP_URL (some specs need ENABLE_TEST_HOOKS=1)
-```
-
-
-## The island (heavy jobs)
-
-Run world generation, tours and browser suites one at a time under the memory supervisor
-([memory-incident.md](evidence/world/memory-incident.md) §7):
-
-```sh
-pnpm build:world                   # regenerate the 20 landmarks, terrain and manifest (resumes from checkpoints)
-node scripts/world/supervise.ts --stage tris --budget-mib 3072 --log /tmp/sw/tris.jsonl -- \
-  node scripts/world/tour.ts --stage tris --quality high --only L03,L09 --kinds ground,interior,detail,high --out /tmp/sw
-```
-
-Triangle and draw-call accounting per view is in [triangles.md](evidence/world/triangles.md); the GPU-process memory
-procedure is in [memory-incident.md](evidence/world/memory-incident.md) §9.
+The numbered file is the preserved snapshot for this edition. Future tools may still write raw evidence to the original output directories.

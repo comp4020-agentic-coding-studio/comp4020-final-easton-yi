@@ -1,0 +1,284 @@
+Portals are mapped by id, and portalTarget routes works, explore and together to their destinations. Next I'll check the rest of createPortal and the membrane. · summary
+
+  Ran 1 shell command
+
+The manifest and layout.ts agree on three gates: My Works (rectangular lintel), Explore the World (tall pointed arch), and Build Together (A-frame), placed left to right in that order. Since the shapes differ, I'm measuring each opening individually, then checking font, render-order and fog conventions. · summary
+
+  Listed 1 directory
+
+The membrane is one 6.2 × 9.4 plane at the portal origin, and before I design the label I'm checking the frame geometry, render ordering, shadow culling and the shared-texture release code. · summary
+
+    traversal or change navigation behavior.
+  - Use a lightweight text-rendering approach compatible with the current
+    renderer. Avoid expensive real-time refraction or extra render loops.                                                            Dispose label resources with their owning scene
+  - Verify readability against both bright sky and darker buildings,                                                                 in embedded and fullscreen views, and at mobile
+                                                                                                                                   Keep the existing portal actions, HUD, movement a
+  Provide the updated local preview. Do not commit, push or deploy.                                                               
+I'll start with how the portals are built and which destination each one maps to.
+                                                                                                                                   Ran 2 shell commands
+
+Portals are mapped by id, and portalTarget routes works, explore and together to their destinations. Next I'll check the rest of createPortal and the membrane. · summary
+
+  Ran 1 shell command
+
+The manifest and layout.ts agree on three gates: My Works (rectangular lintel), Explore the World (tall pointed arch), and Build Together (A-frame), placed left to right in that r, I'm measuring each opening individually, thenchecking font, render-order and fog conventions. · summary                                                                      
+  Listed 1 directory                                                                                                              
+The membrane is one 6.2 × 9.4 plane at the portal origin, and before I design the label I'm checking the frame geometry, render  ordering, shadow culling and the shared-texture r
+
+  Listed 1 directory, ran 1 shell command                                                                                         
+, how the existing shader material is set up, so the label material follows the same conventions.
+
+  Ran 1 shell command
+                                                                                                                                   The manifest, layout.ts and the DOM portal links  I'm checking the HUD portal wording and theactivation range in updateProximity before writing anything. · summary                                                          
+  Ran 1 shell command                                                                                                             
+The three manifest entries map to "My Works" (/works/), "Explore the World" (stays on the island), and "Build Together" (/works/?new=1), matching the DOM portal links. I'm checking the opening geometry and the proximity code next so the lettering   clears the frames. · summary
+
+  Ran 1 shell command                                                                                                             
+l mapping, shapes, both-sides triggering and pointer input are all checked against the code; next I'll capture a baseline of the home view and stop the preview server before rebuilding. · summary
+
+  Read 2 files, ran 1 shell command                                                                                               
+The portals are built in createPortal, and their user-facing names come from the manifest's label. I'm looking at the rest of    the proximity code and the portal runtime type nete can be hooked in. · summary
+                                                                                                                                   Read 1 file, ran 1 shell command
+                                                                                                                                   The layout labels in layout.ts (My Works, Exploreatch the DOM portal links and their targets; I'mchecking the on-screen order from the screenshots next. · summary
+
+  Read 1 file                                                                                                                     
+Each portal's destination is now confirmed (Explore the World, My Works, Build Together), and I'll label each one from its own   id and manifest rather than its position. I'm meavery label fits its own opening, and making thelettering readable from both sides. · summary                                                                                   
+  Ran 1 shell command
+                                                                                                                                   The three portals are reversed on the spawn screeExplore the World centre, My Works right, withs taken from the manifest. I'm measuring the frame openings from the real geometry, and then I'll write the layout and text-atlas module. · summary
+
+● Write(src/client/world/portal-labels.ts)                                                                                         Wrote 384 lines to src/client/world/portal-lab
+// Destination lettering for the three entrance portals (2026-11-06).                                                     //
+// Frosted-glass letters that hang in each portal's transparent membrane and                                              // belong to the world: they are geometry the
+// portal's perspective, and there is no per-frame text work. One mesh and one                                            // draw call carry all three labels, each face
+// (correctly oriented from either side); one single-channel (R8) atlas holds
+// the glyph coverage, and the fragment shader derives everything else from it:                                           // a crisp letter edge, a luminous rim, a hadow
+// (blurred coverage read from the texture's own mip levels), so the effect is
+… +374 lines
+
+Before wiring it in I'm correcting one thing in the draft: the atlas cell is too short for a three-line title block (it would    clip at the top), so I'm making it taller.
+                                                                                                                                   Ran 1 shell command
+                                                                                                                                   That edit was my own. Next I'm wiring the labels  to the portals, the proximity flags, the easingin the frame loop, context-restore redraw, and disposal.
+                                                                                                                                   Ran 1 shell command
+
+The code is wired in and typechecks; next I'll add a unit test that measures each portal's actual clear opening from createPortal's geometry, rather than assuming the margin. · summary
+                                                                                                                                   Write(tests/world-portal-labels.test.ts)
+Wrote 152 lines to tests/world-portal-labels.test.ts                                                                          // Portal destination lettering (2026-11-0e
+// "clear of the wooden frame" claim is measured against each portal's real                                               // geometry (createPortal), not assumed. At
+// (the canvas measures real fonts at runtime and shrinks lines to fit their
+// caps, so the caps are what must clear the frame).                                                                      import { describe, expect, it } from "vite
+import * as THREE from "three";
+import { createPortal } from "../src/client/world/environment.ts";                                                        import { CELL_M, FACE_OFFSET, FRAME_MARGIN TITLE_CENTER, blockHeight, hintCentre, hin
+tText, layoutLabel, splitV, type PortalId } from "../src/client/world/portal-labels.ts";
+… +143 lines
+
+  Ran 1 shell command                                                                                                             
+bridge.ts imports the router, which touches window at load time, so I'll run that test under jsdom if the repo already uses it.  · summary
+                                                                                                                                   Searched for 1 pattern
+
+The router loads window at import time, so a unit test can't import bridge.ts. I'll verify the destination mapping through the   layout and the bridge's source text instead. · su
+
+  Ran 1 shell command
+
+The geometry test passed on its first run, so I want to see that it can fail. I'll print the measured opening widths and confirm that oversized caps are rejected.
+                                                                                                                                   Ran 2 shell commands
+                                                                                                                                   The measured widths match my hand calculation: 2.9 m for the gate and 2.48 m for the A-frame. Now a mutation check, to confirm the test fails when a cap is too wide:
+                                                                                                                                   Ran 1 shell command
+
+The test fails on the bad cap and I've restored the original. Now I'll build and see the actual rendering.
+
+  Ran 1 shell command                                                                                                             
+The draw-call cost is only +1 per frame and about +12 triangles, and the portal activation states look right. Next I'll check    the result. · summary
+                                                                                                                                   Read 2 files
+
+The lettering is in the membrane, tracks perspective, and shows from the spawn. Next the in-range, behind and oblique views,     since those are where mirroring and the activatio
+
+  Read 3 files                                                                                                                    
+The label reads correctly from behind, and the hint only appears in range. Next I'll zoom into the spawn view to check how the "Explore the World" label sits against the dark Colosseum. · summary                                                            
+  Read 2 files, ran 1 shell command
+
+The render looks right at 7 m, with the "behind" view reading correctly, but the labels are small from the spawn and "the World" over the Colosseum is weak. I'm checking the othe summary
+                                                                                                                                   Read 2 files
+                                                                                                                                   The lettering reads correctly from behind and sta hint showing only in the enter range. Next I'llmeasure readability by diffing each labelled shot against its pre-change pose, sky and buildings alike. · summary               
+  Ran 1 shell command
+                                                                                                                                   The contrast script found almost no pixels over tnt letters barely shift values on bright sky. I'mrerunning it with a lower threshold and comparing each letter against its immediate surrounding ring. · summary
+
+  Ran 1 shell command                                                                                                             
+The letters measure only about 1.15–1.25:1 against the pale sky, so I'm darkening and tightening the shadow and making the       letters slightly more opaque, keeping the glow re
+                                                                                                                                   Ran 1 shell command
+                                                                                                                                   The contrast numbers improved, but the ratio is mso I'll check the pictures. Pale glass on pale sky has to stay readable without turning into a dark card.
+                                                                                                                                   Read 2 files
+
+The labels are readable against both the sky and the Colosseum, so I'm checking how they behave at range next, starting with how far above eye level they sit. · summary
+                                                                                                                                   Read 1 file
+                                                                                                                                   The hint reads correctly and isn't mirrored, but looks from the E range and on darker backgrounds,fullscreen and phone. I'll add those test poses plus a far cutoff. · summary                                                    
+  Ran 1 shell command                                                                                                             
+The phone path now shows the existing touch wording, "Walk through to enter". Now the darker-background, fullscreen and phone views:
+                                                                                                                                   Read 3 files
+                                                                                                                                   The label reads clearly on the sky, terrain, fullat close range it sits overhead at 5 m. Next I'llcheck the mid-range glow, a tilted-up close shot, and resource disposal. · summary                                              
+  Ran 1 shell command
+                                                                                                                                   Disposal frees one texture, one geometry and one at 0.45 in range and 1.0 plus the hint at enter. Next I'll check that the context-restore redraw brought the letters back, and look at the mid and close views. · summary
+
+  Read 2 files
+Read tests/world-portal-labels.test.ts (154 lines)                                                                            Referenced file src/client/world/WorldView.ts
+Referenced file src/client/world/portal-labels.ts                                                                             Read../../.claude/projects/-home-zyw2004-comp4020-agentic-coding-comp4020-final-easton-yi/memory/world-interaction-gotchas.md (21 lines)
+Referenced file docs/evidence/world/requirements-status.md
+                                                                                                                                   Both screenshots read well. The lettering is redr, and the close view is legible against pale sky.check the remaining probe shots, then start the regression runs.
+
+  Read 2 files, ran 1 shell command
+                                                                                                                                   All five probe shots read correctly: lettering atthe redraw after context restore. Next is theregression set, one supervised job at a time, starting with typecheck.                                                          
+  Ran 2 shell commands                                                                                                            
+Typecheck is clean, and the unit suite passes 424/424 (the earlier 412 plus the 12 label tests). Now the island e2e specs, run as a single supervised group.                                                                                                   
+  Ran 1 shell command
+
+All 25 island e2e specs pass. I'm checking the evidence PNGs against their saved checksums, restoring any that changed, and      clearing the test artefacts. · summary
+                                                                                                                                   Ran 1 shell command
+                                                                                                                                   All 23 evidence checksums match, so nothing needsfor leftover test artefacts and stray server orbrowser processes. · summary
+                                                                                                                                   Ran 1 shell command
+
+The evidence checksums all match, so nothing was rewritten. I'm removing the leftover test-results/ folder, then updating the status document's portal-label row. · summary
+                                                                                                                                   Ran 1 shell command
+                                                                                                                                   Regression is green and the evidence checksums aloc section I'll check which screenshots andmeasurements it can honestly cite.                                                                                              
+  Ran 4 shell commands                                                                                                            
+The evidence checker doesn't limit this change, but I'll re-measure the final lettering contrast before writing any readability claims into the docs, since my last numbers predate the final tuning. · summary                                                 
+ shell command
+
+The measured contrast on pale sky is only about 1.2–1.4:1, so I'll log that in the status doc as a limitation rather than a pass. Next I'm adding the portal-label section. · summary                                                                       
+● Update(docs/evidence/world/requirements-status.md)                                                                               Added 20 lines
+| Touch: stick, Up/Down/Boost, right-side drag; speed buttons tappable without steering; no HUD overlap | met (e        mulated) | Journey J and `world-route.spund by the phone route (holding Up was clea
+red by the focus boundary) was fixed |
+| Physical phone, a real mouse under Look lock, Safari/Firefox fullscreen and pointer-lock behaviour | **not ver        ified** | Desktop emulation only |
+
+## Portal destination lettering (2026-11-06)
+
+One visual change, limited to the three entrance portals: frosted-glass destination names inside each existing m        embrane.
+Code: `src/client/world/portal-labels.ts` (layout, canvas atlas, shader), wired in `WorldView.ts` (`buildStatic`        ,
+`updateProximity`, `tick`, `onRestored`, `dispose`). Checked by `tests/world-portal-labels.test.ts` (12 tests) a        nd the
+existing island specs (unchanged, 25 passing).
+                                                                                                                        | Requirement | Status | Evidence / note
+| --- | --- | --- |
+| Labels are each destination's real name; the spatial order is not assumed | met | From `home()`: left to right         is **My Works, Explore the World, Buildre, together). The unit test reads the labe
+l from the layout and the destination from `bridge.ts` (works → `/works/`, together → `/works/?new=1` or sign-in
+, explore → `/world/`) |                                                                                                | Inside the opening, around its visual rame, wrapped to each shape | met (measured
+) | Each line's width cap plus a 0.35 m margin is checked against the opening measured from each portal's real `
+createPortal` geometry at every height the line can occupy; a mutation (wider A-frame cap) fails the test |             | Frosted-glass lettering, not a card | with a luminous rim, a teal-tinted shadow a
+nd a faint accent halo; no panel behind them. Screenshots reviewed: spawn, 7 m, near, behind, oblique, over buil
+dings, fullscreen 1920×1080, phone 390×844 |                                                                            | Visible from the initial approach, in h sides | met | Visible at spawn, 12 m, 7 m
+; perspective quads in the scene. Each portal has a front and a back quad, so the text reads correctly from behi
+nd (screenshots `05-*-behind`) |
+| Within activation range: brighter, plus a hint below | met | `stats().portalLabels.state`: 4.5 m and 3.2 m → g        low 0.45, no hint; 2 m → glow 1 and hint. Keyboard: "Press E to enter". Touch (coar
+se pointer): the existing "Walk through to enter". Same ranges as the existing proximity logic (label 6 m, enter         2.2 m) |
+| No pointer blocking, collision, traversal or navigation change | met | No raycast target (`raycast` disabled);         no collider or portal code touched; `wooard`, `world-route` (desktop and phone) an
+d `world-protection` pass unchanged |                                                                                   | Lightweight, no extra render loop, disOne mesh, one draw call (+12 triangles; 139
+ → 140 draw calls at spawn... see note), one 8-bit canvas atlas (released after upload), no refraction; frames c
+ontinue only while the glow is easing. Dispose accounting: textures 5 → 4, geometries 83 → 82, draw calls 41 → 4        0. After a forced WebGL context loss andettering is redrawn |
+| Readability against bright sky and darker buildings | **partly met; low luminance contrast on pale sky** | By
+eye, legible in every captured view. By measurement the letters are only about **1.2–1.4:1** against the pale sk        y behind the membrane (1.05–1.23:1 befored), far below a 3:1 large-text guideline:
+milky white on a pale sky cannot do more without becoming an opaque card, which the brief rules out. It reads th
+rough its edge and shadow. Over darker buildings the contrast is clearly higher. A different shadow strength is         the one tuning knob if this isn't enough
+| Very close, steep views | known limitation | Within about 2 m with a strong upward pitch the two-line title le
+aves the top of the viewport (and sits under the HUD); the hint line stays readable. Not addressed |                    | Physical phone, real GPU, Safari/Firef | **not verified** | Chromium software ren
+dering and emulated touch only |
+                                                                                                                        ## Not verifiable here, with the exact s
+
+- **Real-GPU frame rate (§10).** On a machine with a GPU: `pnpm build:world && pnpm build && pnpm start`; open         
+The draw-call figure in the draft is garbled, and I also claimed higher contrast over darker buildings without having measured   it. I'm fixing both before going on. · summary
+                                                                                                                                   Update(docs/evidence/world/requirements-status.md
+Added 1 line, removed 1 line                                                                                                  | Visible from the initial approach, in h sides | met | Visible at spawn, 12 m, 7 m
+; perspective quads in the scene. Each portal has a front and a back quad, so the text reads correctly from behi
+nd (screenshots `05-*-behind`) |                                                                                        | Within activation range: brighter, plu().portalLabels.state`: 4.5 m and 3.2 m → g
+low 0.45, no hint; 2 m → glow 1 and hint, for the nearest portal only. Keyboard: "Press E to enter". Touch (coar
+se pointer): the existing "Walk through to enter". Same ranges as the existing proximity logic (label 6 m, enter         2.2 m) |
+| No pointer blocking, collision, traversal or navigation change | met | No raycast target (`raycast` disabled);
+ no collider or portal code touched; `world-interaction`, `world-keyboard`, `world-route` (desktop and phone) an        d `world-protection` pass unchanged |
+| Lightweight, no extra render loop, disposed with the scene | met | One mesh, one draw call (+12 triangles; 139
+ → 140 draw calls at spawn... see note), one 8-bit canvas atlas (released after upload), no refraction; frames c
+ontinue only while the glow is easing. Dispose accounting: textures 5 → 4, geometries 83 → 82, draw calls 41 → 4
+0. After a forced WebGL context loss and restore (`restores 1`) the lettering is redrawn |                              | Lightweight, no extra render loop, disOne mesh, one draw call (measured at spawn:
+ draw calls 139 → 140, +12 triangles), one 8-bit canvas atlas (released after upload), no refraction; frames con        tinue only while the glow is easing. Dis 4, geometries 83 → 82, draw calls 41 → 40.
+ After a forced WebGL context loss and restore (`restores 1`) the lettering is redrawn |                                | Readability against bright sky and dar low luminance contrast on pale sky** | By
+eye, legible in every captured view. By measurement the letters are only about **1.2–1.4:1** against the pale sk
+y behind the membrane (1.05–1.23:1 before the shadow and rim were added), far below a 3:1 large-text guideline:         milky white on a pale sky cannot do moreard, which the brief rules out. It reads th
+rough its edge and shadow. Over darker buildings the contrast is clearly higher. A different shadow strength is
+the one tuning knob if this isn't enough |                                                                              | Very close, steep views | known limitaa strong upward pitch the two-line title le
+aves the top of the viewport (and sits under the HUD); the hint line stays readable. Not addressed |
+| Physical phone, real GPU, Safari/Firefox rendering of the lettering | **not verified** | Chromium software ren
+dering and emulated touch only |
+                                                                                                                                   Update(docs/evidence/world/requirements-status.md
+Added 1 line, removed 1 line                                                                                                  | Within activation range: brighter, plu().portalLabels.state`: 4.5 m and 3.2 m → g
+low 0.45, no hint; 2 m → glow 1 and hint, for the nearest portal only. Keyboard: "Press E to enter". Touch (coar        se pointer): the existing "Walk through  existing proximity logic (label 6 m, enter
+ 2.2 m) |
+| No pointer blocking, collision, traversal or navigation change | met | No raycast target (`raycast` disabled);         no collider or portal code touched; `wooard`, `world-route` (desktop and phone) an
+d `world-protection` pass unchanged |
+| Lightweight, no extra render loop, disposed with the scene | met | One mesh, one draw call (measured at spawn:
+ draw calls 139 → 140, +12 triangles), one 8-bit canvas atlas (released after upload), no refraction; frames con
+tinue only while the glow is easing. Dispose accounting: textures 5 → 4, geometries 83 → 82, draw calls 41 → 40.         After a forced WebGL context loss and rtering is redrawn |
+| Readability against bright sky and darker buildings | **partly met; low luminance contrast on pale sky** | By         eye, legible in every captured view. By nly about **1.2–1.4:1** against the pale sk
+y behind the membrane (1.05–1.23:1 before the shadow and rim were added), far below a 3:1 large-text guideline:         milky white on a pale sky cannot do moreard, which the brief rules out. It reads th
+rough its edge and shadow. Over darker buildings the contrast is clearly higher. A different shadow strength is
+the one tuning knob if this isn't enough |                                                                              | Readability against bright sky and dar low luminance contrast on pale sky** | By
+eye, legible in every captured view. By measurement the letters are only about **1.2–1.4:1** against the pale sk
+y behind the membrane (1.05–1.23:1 before the shadow and rim were added), far below a 3:1 large-text guideline:         milky white on a pale sky cannot do moreard, which the brief rules out. It reads th
+rough its edge and shadow. The "over darker buildings" views (`07-*-over-buildings`) were checked by eye only, n
+ot measured. A different shadow strength is the one tuning knob if this isn't enough |                                  | Very close, steep views | known limitaa strong upward pitch the two-line title le
+aves the top of the viewport (and sits under the HUD); the hint line stays readable. Not addressed |
+| Physical phone, real GPU, Safari/Firefox rendering of the lettering | **not verified** | Chromium software ren
+dering and emulated touch only |
+                                                                                                                       
+Docs are updated, with one unmeasured claim about contrast over darker buildings removed. Next I'm checking that dist is newer   than every source file, then starting the preview
+                                                                                                                                   Ran 1 shell command
+                                                                                                                                   dist is newer than every source file. I'll confirts matches the backup, then check evidenceintegrity and start the preview.
+                                                                                                                                   Ran 1 shell command
+
+The file differs from the backup, which I did not expect. I need to find out which one is right before the preview goes out.
+
+  Ran 1 shell command                                                                                                             
+The build difference is expected: the backup predates the 02:09 contrast pass, and dist was built after the last source edit.    Previewing it next. · summary
+                                                                                                                                   Listed 1 directory
+
+The backup predates my shadow and letter opacity changes, but the current source and the dist build (02:11) have the correct cap values, and the 12 label tests passed against thieview on port 8080 next. · summary
+
+  Ran 1 shell command
+
+The backup is stale (02:05, before the 02:09 shader change), so the source is correct and the diff is only that intended change.
+Tests and the build ran on this version, and I'm omated is still running. · summary
+
+  Ran 1 shell command
+
+The portal lettering is in, and the preview is ru0/, serving the bundle that contains it(dist/client/assets/index-CVCGWxMj.js). The server is the only thing running: no tests, no browser jobs. Nothing is committed,
+pushed or deployed.
+
+What changed
+
+- Each of the three portals now has frosted-glass lettering inside its transparent membrane. The letters are milky white with a luminous edge and a restrained teal shadow, with no panel behind them.
+- Left to right the portals are My Works, Exploreo the order is not the one you listed. I checkedlayout and the router code: each label matches its actual destination.
+- The text is visible from spawn and from 12 m, and it follows the portal in perspective. Each portal has a separate back-facing copy, so the lettering reads correctly from behind.
+- Within 6 m the label brightens slightly. Within 2.2 m it brightens fully and shows "Press E to enter" below it. On touch
+  devices it shows the existing "Walk through to
+- The label can't be clicked and has no collision. I didn't touch portal, collision or navigation code.
+- It costs one extra draw call and 12 triangles,  no refraction. It is disposed with the scene, and it redraws after a WebGL context loss and restore.
+- Files: new src/client/world/portal-labels.ts anest.ts, edits to src/client/world/WorldView.ts,and a new section in docs/evidence/world/requirements-status.md.
+
+Validation
+
+- Typecheck is clean.
+- The unit suite passes 424/424, which is the earlier 412 plus 12 new label tests. One of those tests measures each line's width against the real frame geometry, and a deliberately widened cap made it fail as expected.
+- The 25 island e2e specs pass, including the phovidence PNGs against my saved checksums and theyh.
+- I looked at screenshots at spawn, 7 m, near, behind, oblique, over buildings, fullscreen at 1920×1080 and phone at 390×844.
+
+Still open
+
+- Contrast on pale sky is low. Measured, the letters are only about 1.2–1.4:1 against the sky, well under a 3:1 large-text
+  guideline. They read through their edge and shaaking them stronger means a darker shadow, andpast a point that starts to look like a card. The shadow strength is the one setting to change if you want it bolder.
+- The "over darker buildings" views were checked e them.
+- Very close, steep views are cropped. Within about 2 m and looking sharply up, the two-line title runs off the top of the
+  screen. The hint line stays readable. I did not
+- Not verified: a physical phone, a real GPU, and Safari or Firefox. Everything was Chromium on software rendering with emulated touch.
+- The earlier open items are unchanged: Medium/Lo growth, the L07/L14 flight-opening widths, andreal-device performance.
+
+For your review
+
+Start at spawn and walk toward each portal. A close-up looking up at a portal shows the cropping case.
+
+✻ Cogitated for 59m 32s · done 2:21 AM
+
+※ recap: Goal: add frosted-glass destination lettering to the three entrance portals. It's built, tested and running in the preview at http://localhost:8080/, with nothing committed. Next, you walk toward each portal and judge how readable the lettering is.

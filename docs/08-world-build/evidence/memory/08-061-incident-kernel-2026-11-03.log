@@ -1,0 +1,11 @@
+Nov 03 22:40:07 kernel: chrome-headless invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=200
+Nov 03 22:40:07 kernel: Free swap  = 0kB
+Nov 03 22:40:07 kernel: Total swap = 4194304kB
+Nov 03 22:40:07 kernel: [   1230]  1000  1230 13746651  1903726  1903387      339         0 46166016   436224             0 chrome-headless
+Nov 03 22:40:07 kernel: [   1232]  1000  1232 13690462     2352     1968      384         0   360448       48             0 chrome-headless
+Nov 03 22:40:07 kernel: [   1233]  1000  1233 13690461     2365     2016      349         0   352256        0             0 chrome-headless
+Nov 03 22:40:07 kernel: [   1247]  1000  1247 13793788    53235    52979      256         0  1724416     1008           200 chrome-headless
+Nov 03 22:40:07 kernel: [   1249]  1000  1249 13706995     3322     3066      256         0   544768      288             0 chrome-headless
+Nov 03 22:40:07 kernel: [   1271]  1000  1271 380065630  1696358  1696149      209         0 22245376      624           300 chrome-headless
+Nov 03 22:40:07 kernel: oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/init.scope,task=chrome-headless,pid=1271,uid=1000
+Nov 03 22:40:07 kernel: Out of memory: Killed process 1271 (chrome-headless) total-vm:1520262520kB, anon-rss:6784596kB, file-rss:836kB, shmem-rss:0kB, UID:1000 pgtables:21724kB oom_score_adj:300

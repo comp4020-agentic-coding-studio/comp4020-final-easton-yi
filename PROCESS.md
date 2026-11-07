@@ -1,122 +1,39 @@
 # Process overview
 
-> Drafted by the coding agent (Claude) at the author's request, from the
-> session record, the test and measurement logs and the commit history. It
-> states what happened, not how anyone felt about it. The author should revise
-> it into their own account before the final submission.
+> Assisted retrospective draft, based on preserved directives, implementation evidence, commit history and the author's account. For author review before submission.
 
-## From brief to harness
+Development sequence and source locations: [reading map](docs/00-reading-map.md).
 
-Before any code, the repository gained two documents in `docs/`.
-[`BRIEF.md`](docs/BRIEF.md) is the product contract: numbered rules and sixteen
-acceptance scenarios. [`INITIAL_PROMPT.md`](docs/INITIAL_PROMPT.md) is an
-implementation directive: a default stack, a database model, a transactional
-save design and seven gated stages (P0–P6), each ending with a running slice,
-evidence and a status update. Both were committed unchanged
-([`a46e7ed`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a46e7ed)),
-on top of the course template
-([`02d15eb`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/02d15eb)).
+## 1. Turning an idea into a working contract
 
-The agent's harness was the directive itself, not `CLAUDE.md`, which is still empty. Its rules: read the brief and the shipped tests first; don't weaken a
-rule or edit the shipped invariants; no client-only persistence, fake
-multiplayer or fake physics; tune only with recorded measurements; keep
-[`docs/implementation-status.md`](docs/implementation-status.md) as the resume
-record; never invent user feedback, deployment results or reflections.
+I wanted people to build together with identical wooden sticks: precise placement, visible intentions, believable collapses and work worth returning to. Before implementation, I separated the product contract in [01-01-product-brief.md](docs/01-foundation/01-01-product-brief.md) from the agent's execution instructions in [01-02-build-prompt.md](docs/01-foundation/01-02-build-prompt.md). Their initial versions preceded the code ([`a46e7ed`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a46e7ed)). Numbered rules, sixteen acceptance scenarios and seven gated stages made “finished” inspectable. The directive required repair after a failed gate and an evidence-backed status record for resuming work, rather than restarting or accepting an agent's summary.
 
-## Stack, and why
+The [stack decision](docs/01-foundation/01-04-adr-0001-stack.md) put HTTP and WebSockets in Node, SQLite and authoritative physics in one coordinator worker, and React around Three.js. This suited one small Fly machine and ordered saves with physics updates; synchronous writes could delay other rooms. Client-side physics risked different collapses across browsers; an external database exceeded the deployment setup. Measuring three Rapier releases after 0.21.0 reached 261 MiB led to 0.19.3, rather than relaxing persistence or physics ([M-001](docs/90-reference/90-02-measurements.md)).
 
-The decision record is [ADR-0001](docs/adr/0001-stack.md): one Node 24 process
-on the course's single 256 MB Fly machine. The main thread handles HTTP and
-WebSockets; one worker thread owns SQLite and every live Rapier physics world,
-so every command, physics step and save runs in a single order. The client is
-React around a Three.js scene. Rejected: client-side physics (two people would see different collapses), an external
-database, and deterministic replay. Five more ADRs cover the other big decisions, from
-[server physics authority](docs/adr/0002-server-physics-authority.md) to
-[simultaneous placement](docs/adr/0006-simultaneous-placement.md).
+## 2. From performance requests to autonomous verification
 
-The default Rapier 0.21.0 pushed a 200-stick test to 261 MiB, over the machine's whole budget; measuring three
-releases ([M-001](docs/measurements.md)) led to pinning 0.19.3, over 100 MiB lower in the isolated test.
+My [graphics directive](docs/03-graphics/03-01-quality-prompt.md) required unchanged High visuals, selectable quality and no idle drawing. Baseline comparisons protected appearance, but ordinary-use simulation exposed a contradiction: Auto recovery demanded fifteen uninterrupted animation seconds while idle rendering deliberately stopped. Ten simulated minutes never escaped Low. Accumulating evidence across short interactions fixed recovery; the lesson entered the brief, implementation directive and regression tests ([M-007–008](docs/90-reference/90-02-measurements.md), [`c363bcf`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/c363bcf)). Optimisation had to preserve realistic interaction patterns, not merely pass an artificial continuous animation.
 
-## How the work was run
+For Crit 9, I delegated isolated multiplayer testing before authorising targeted repairs. The [report](docs/05-multiplayer/05-02-test-report.md) distinguished a collider defect delaying saves from a reconnect failure caused by automation. Reviewing the first collider fix then exposed unsupported tabletop areas missed by sampled positions; broader coverage checks protected the correction ([`c384c02`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/c384c02)). A green first retest was not enough.
 
-Each stage was run, inspected, corrected and committed when its gate passed.
+I formalised this in [06-01-audit-prompt.md](docs/06-verification/06-01-audit-prompt.md): “Own the verification work you can perform”. The agent had to define an acceptance matrix, classify product/test/environment failures, preserve failures, make minimal fixes, retest and audit one consolidated report. This delegated repetitive checks while keeping acceptance and unresolved judgements with me. The probe discovered that eleven of thirteen correctly refused actions were absent from logs. A failing-before regression and attributable logging produced thirteen visible refusals on Fly ([report](docs/06-verification/06-02-audit-report.md), [`a9d4a97`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a9d4a97)). The audit even corrected its own refusal count. This demonstrated useful delegation, not exhaustive coverage or a measured time saving.
 
-- **P0–P1, server core**
-  ([`7a66c19`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/7a66c19)):
-  real-engine physics fixtures, transactional placement, accounts, and tests that
-  kill the server mid-save.
-- **P1–P2, client**
-  ([`7b5d645`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/7b5d645)):
-  the workshop, placement maths, the Dockerfile, the first browser test.
-- **P3, collaboration**
-  ([`7f223c3`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/7f223c3)):
-  two real sessions, invitations, leases and reconnects.
-- **P4–P5, versions and capacity**
-  ([`49f2ef6`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/49f2ef6)).
-- **P5–P6, accessibility and docs**
-  ([`e3afd00`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/e3afd00)):
-  browser tests at both marking viewports and the acceptance report.
+## 3. Making “monumental” an implementable standard
 
-## Where it was corrected
+The next challenge was expressive: I wanted simple sticks to accumulate into a world of complex architecture, giving the small building activity a larger imaginative context. Asking for “grand” buildings left too much room for plausible but simplistic results. I used GPT-assisted component trials before handing the full world to the coding agent. The [component lab](docs/07-world-design/07-03-component-lab.zip) preserves seven geometric scenes, generators, renders and camera settings. My descriptions became recessed flutes, tapered shafts, segmented spiral capitals and broad leaf surfaces assembled from parallel strips.
 
-Most of the value came from tests and measurements contradicting a first attempt
-([details](docs/process-log.md#where-p0p6-were-corrected)): two placements in one physics tick couldn't see each
-other; the kill-mid-fall test found a checkpoint that never fired, because two clocks were compared; the two-browser
-test showed a dead connection staying "open"; and a stick on the table's curved rim kept whole piles awake
-([M-005](docs/measurements.md)). Test bugs were fixed, not by weakening a rule.
+The trials also challenged the camera. Automatic fit-all pulled back as structures grew, preserving a tabletop impression. Low-eye comparisons led to a 1.65-unit eye height and a prohibition on fit-all during loading or exploration. Separately, a 132-stick staircase passed the project's offline physics after spacing corrected lateral penetration; this did not certify the giant static monuments as physically buildable.
 
-## Later changes, each from a written directive
+The [world directive](docs/08-world-build/08-01-world-build-prompt.md) translated these findings into twenty distinct recipes: dimensions, levels, member arrangements, characteristic details, entrances and viewpoints. “Projecting square plates do not count as volutes” made the minimum acceptable representation explicit. Piece counts alone could not establish quality; each building needed recognisable geometry from ground, interior and high views. I required component previews of columns, arches and spillways before replication across buildings. The actual Ionic trial used 3,306 pieces against an earlier 1,624-piece paper recipe: prototype measurements had to revise budgets, not be replaced by convenient estimates. Proportional static members and simplified collision kept these monuments separate from the workshop's physical building rules.
 
-After P6 the author steered the work with bounded directives, each committed in `docs/` before the code changed
-([account](docs/process-log.md)).
+During implementation, the [inspector](docs/90-reference/90-03-process-record.md) caught wire-like leaves and V-shaped roofs that piece counts had missed. This combination of prototypes, recipes and inspection brought the world close to my intended appearance, in my retrospective judgement, rather than proving a visitor response. It gave the agent a concrete lower bound on architectural detail and gave me grounds to reject a generic tower labelled “monumental”.
 
-| Directive | What changed | What it caught |
-| --- | --- | --- |
-| Owner deletion (2026-10-06) | Trash, restore and permanent deletion of works ([`3a4a700`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/3a4a700)) | A rule-ID clash in the brief; a spec that would hit the registration rate limit |
-| Graphics quality (2026-10-06) | Auto/High/Medium/Low; no drawing when idle ([`c363bcf`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/c363bcf)) | A phone-width overflow; a throwaway WebGL context per re-render |
-| Account deletion, Crit 9 tests (2026-10-12) | Permanent account deletion; a local multiplayer suite; table collider v3 ([`c384c02`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/c384c02)) | A window left open and dead; a cylinder that never let piles settle |
-| Crit 10 verification (2026-10-21) | Refusals logged with actor and work ([`a9d4a97`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/a9d4a97)) | 11 of 13 refusals left no log line on Fly |
-| Island upgrade (2026-11-03/06) | A home island with 20 generated landmarks, then revised interaction and portal labels ([`b30a9bb`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/b30a9bb)) | A WSL out-of-memory crash from unpaced frames; listener leaks; inverted arches |
-| Courtyard and day/night (2026-11-06/07, uncommitted) | New introduction, stone gateways, candle pond and flowers, Auto/Day/Night with a moon, candles on all 20 landmarks | Candles over a river and off pad edges; cups overhanging stones |
+Complexity also exposed the workflow's limits. After a WSL memory crash, I required [bounded recovery](docs/08-world-build/08-03-memory-rules.md), preserving twenty landmarks instead of shrinking the ambition. Diagnosis traced the crash to unpaced browser frames, not the generator. Frame pacing, capped heavy jobs, staged validation and repeated lifecycle checks then exposed listener leaks ([incident](docs/08-world-build/08-04-memory-report.md), [`b30a9bb`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/b30a9bb)). Resource discipline became part of the execution contract; unresolved GPU-process growth remained recorded.
 
-Crit 10 changed how the agent was directed: the author set what counted as done, then reviewed one report. The island
-kept that, with heavy jobs run one at a time in a capped cgroup after a crash
-([`memory-incident.md`](docs/evidence/world/memory-incident.md)).
+## 4. Carrying lessons into interaction and atmosphere
 
-Walking the island, the author found that automatic mouse-look hid the cursor. A
-[directive](docs/stillwood_island_gallery_world_interaction_fix_prompt.md) replaced it with left-drag look, an optional
-Look lock, Walk/Run/Fly and Return to world; the phone route caught held movement being cleared. The author then asked
-for each portal's destination name in its membrane. The lettering measures only about 1.2–1.4:1 against bright sky, and
-the author hasn't confirmed it reads, so that stays open.
+Exploring the result exposed a hidden cursor, slow traversal and awkward returns from portal destinations. My [interaction directive](docs/09-world-controls/09-01-controls-prompt.md) specified free-cursor dragging, optional look lock, separate fullscreen, Walk/Run/Fly and restored position on return. Its lasting lesson was to test transitions between the world and ordinary pages, not isolated buttons. Journey tests caught lost phone input; maximum-speed checks made collision availability independent of visual loading ([status](docs/90-reference/90-04-world-status.md)).
 
-The next directive ([`docs/stillwood_courtyard_daynight_upgrade_prompt.md`](docs/stillwood_courtyard_daynight_upgrade_prompt.md))
-asked for a new introduction, stone gateways, a candle pond with white flowers, Auto/Day/Night with a moon, and candles
-on all twenty landmarks. Decisions:
+The [courtyard directive](docs/10-day-night/10-01-day-night-prompt.md) reused that approach for stone gates, pond, white flowers, moonlight and day/night switching. Separate candle cups preserved the timber construction language. Tests found cups beyond foundations and above the river; terrain and support validation became generator rules across all twenty landmarks ([courtyard](docs/10-day-night/10-02-courtyard-report.md)). An injected page clock tested transitions without changing the machine's clock. The work and new process-logging harness are committed in [`be91ad1`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/be91ad1); that harness records lessons retrospectively, not rules present from the start. The latest documented checks leave real-GPU performance, physical-phone behaviour and independent visitor evaluation unverified.
 
-- The gates keep the timber frames' positions and passage.
-- The pond is an explicit ground surface, since the terrain is too coarse to carve.
-- One shadowed light: the sun by day, a fixed moon by night.
-- Candles are resolved against each building's own pieces; no timber changed.
-
-Checks caught candles over L16's river and off two pads, and cups overhanging stones; all were fixed.
-Dimensions, counts and screenshots: [`courtyard.md`](docs/evidence/world/courtyard.md).
-
-## What's verified and what isn't
-
-**Deployed.** CI deployed the island
-([`b30a9bb`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/b30a9bb)) on 2026-11-06.
-Collaboration checks last passed on Fly at
-[`ffa5830`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/ffa5830). **The courtyard
-and day/night round is uncommitted and not deployed.**
-
-**Local only.** Suites run on a local production build under the memory supervisor. `crit9-reconnect` F3 fails outside its
-isolated network; no assertion was weakened. The courtyard round passed 591 of 591 unit tests, `pnpm check`
-53 of 53 and 39 of 39 island browser tests on a page clock (the OS clock was untouched). All ran on software WebGL, so
-they show behaviour, not frame rate; other browser suites weren't rerun. Per-requirement results:
-[status table](docs/evidence/world/requirements-status.md). The author hasn't reviewed the visuals.
-
-**Not done.** Frame rate and night appearance on a real GPU; a physical phone; latency and capacity on Fly; any
-session with people who didn't build it ([protocol](docs/acceptance-report.md)). Known limits: L16's crest candles hover
-by design, and recipe safe points off the terrain are recorded, not fixed.
-
-The README's "what good means" section is still a draft awaiting the author's own position.
+The larger alternative was turn-taking or locking the shared table. I rejected it because collaboration would become waiting. Concurrent preparation with ordered server validation lets people respond to one another, accepting occasional conflicting-placement rejection as its cost ([ADR-0006](docs/01-foundation/01-09-adr-0006-simultaneous-placement.md)). The world extends that invitation; it does not replace the shared act of building.

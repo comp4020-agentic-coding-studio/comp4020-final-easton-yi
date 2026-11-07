@@ -1,0 +1,206 @@
+C/D passed on the first run but failed the "no movement" check after a HUD click, so I'm measuring the actual distance to tell real drift from the explorer still settling after spawn.
+
+  Ran 1 shell command
+
+The 1 mm drift only appears right after spawn, from residual gravity on the grass slope, not from the HUD, so the test tolerance was too strict. I'll compare against a small epsilon instead.                                                                  
+  Searched for 1 pattern, ran 1 shell command
+                                                                                                                                 That file change was my own Python edit. Rerunnin
+
+  Ran 1 shell command                                                                                                            
+All 8 journeys pass. Next, the existing island specs as regressions: keyboard, route (desktop and phone), and protection. They run one at a time in one supervised group.
+
+  Ran 1 shell command                                                                                                            
+Holding the touch Up button never starts flight on the phone route, because the test presses it with page.mouse.down, which is a mouse event on an emulated touch device. I'm checking how the rail and buttons respond to that press next.                     
+  Searched for 1 pattern
+
+The rail likely overlaps the touch Up, Down and Boost column on a 390×844 phone, so I'm measuring the real element boxes in the browser next.                                                                                                                  
+  Ran 1 shell command                                                                                                            
+The Up button's ascend input gets cleared by the stage's focus handler when the button takes focus, so I'm exempting touch     controls from that clearing and stopping them fro
+
+● Update(src/client/world/WorldStage.tsx)                                                                                        Added 2 lines
+        if (v?.getStatus().control === "exploring") setActive(true);
+        return;
+      }
+      // the touch controls (stick, Up/Down/Boost) are themselves world input: holding one must not clear it                if ((e.target as Element | null)?.turn;
+      // one of the HUD's own controls (by Tab): its keys are its own, the world's stop                                     if (!v?.getStatus().pointerLocked)
+        endInputRef.current({ releaseLock: false });                                                                  
+● Update(src/client/world/WorldStage.tsx)
+Added 2 lines                                                                                                                   setMove(0, 0);
+  };
+  const hold = (key: "ascend" | "descend") => ({
+    // a press doesn't move focus to the button (it's held input, not a form control)
+    onMouseDown: (e: React.MouseEvent) => e.preventDefault(),                                                             onPointerDown: (e: React.PointerEven
+      e.stopPropagation();                                                                                                  (e.target as HTMLElement).setPoint
+                                                                                                                                 Touch input never activates the stage, so a blur on can't reach endInput through held; I'm givingthe stick the same no-focus-steal fix and then rebuilding and rerunning the route spec.
+                                                                                                                                 Update(src/client/world/WorldStage.tsx)
+Added 1 line, removed 1 line
+  });
+  return (                                                                                                                <div className="world-touch">
+      <div className="world-stick" ref={stick} role="img" aria-label="Move stick" onPointerDown={onDown} onPoint      erMove={onMove} onPointerUp={onUp} onPoierCapture={onUp}>
+      <div className="world-stick" ref={stick} role="img" aria-label="Move stick" onMouseDown={(e) => e.preventD      efault()} onPointerDown={onDown} onPointonUp} onPointerCancel={onUp} onLostPointerC
+apture={onUp}>                                                                                                                <div className="world-knob" stylknob[0] * 32}px, ${knob[1] * 32}px)` }} />
+      </div>
+      <div className="world-fly">                                                                                     
+  Ran 1 shell command
+
+Both desktop and phone routes pass now. I'm adding a touch journey to the new interaction spec to catch the Up bug, then runninthe unit suite and the related e2e specs.
+                                                                                                                                 Update(tests/e2e/world-interaction.spec.ts)
+Added 1 line, removed 1 line                                                                                                // out, Return to world from a portal desnsaved
+// stick protection), and tab/blur recovery. Software-rendered (SwiftShader):
+// behaviour, not frame rate. Physical touch devices are not covered here.                                             import { expect, test, type Page } from "
+import { devices, expect, test, type Page } from "@playwright/test";
+import { createWork, register } from "./helpers.ts";
+                                                                                                                       type Stats = Record<string, unknown> & { pitch: number; speed: string; lookLocked: b
+oolean; control: string; vel: number[] };                                                                              
+  Read 1 file, ran 1 shell command                                                                                               
+The interaction spec passes 9 of 9 now, including the phone journey. Next I'll run the full unit suite under the supervisor, then the affected e2e flows for workshop, home page and lifecycle.                                                             
+  Ran 1 shell command
+                                                                                                                                 The unit suite passes at 412 of 412, up from 379,ywright suite next as a regression check. Becausethose runs rewrite tracked evidence PNGs, I'll compare checksums afterward and restore from HEAD where needed.
+
+  Ran 1 shell command
+                                                                                                                                 The full suite shows 53 passed and 1 failed, the -reconnect F3 with the same message as before. I'm restoring the evidence screenshots the run rewrote next.                                                                       
+  Ran 1 shell command                                                                                                            
+These seven were clean, matching HEAD, before the run, as the earlier checksum shows. Restoring them from HEAD as the memory note says:                                                                                                                     
+  Ran 1 shell command
+
+All 23 evidence screenshots match their pre-run checksums again. Next, the remaining regressions from the brief's checks: pnpm check against a local production server, and chec
+                                                                                                                                 Ran 1 shell command
+                                                                                                                                 pnpm check passed 53 of 53 with typecheck, and chNext I'll measure resource duplication across 10fullscreen cycles and 5 portal round trips.
+                                                                                                                                 Ran 1 shell command
+
+The context count was already 2 at start and stayed 2 after 10 fullscreen cycles, so fullscreen added nothing. I'm checking whether the feature probe's throwaway context accounts for it.                                                                 
+  Searched for 1 pattern                                                                                                         
+The second context is the throwaway probe in webglAvailable(), which already existed and releases itself, so the check should bno new contexts after startup. I'm fixing the prog.
+                                                                                                                                 Ran 1 shell command
+
+Resource checks are clean: fullscreen leaves one canvas, portal round trips add no growth, and the DOM has one document with 14nodes. The "raf: true" while idle is existing amb fps under SwiftShader, so I left it; I'mcleaning up probe artifacts and reviewing the diff next.
+
+  Ran 1 shell command                                                                                                            
+src/world/ and src/client/world/ were already untracked, so the new files there don't show up individually. I'm updating the   requirements status and memory notes, then starti
+                                                                                                                                 Searched for 1 pattern
+
+● Update(docs/evidence/world/requirements-status.md)                                                                             Added 20 lines
+| Two identities on affected collaboration paths (§13.3) | required | met, with one pre-existing failure | `toge
+ther.spec.ts`, `crit9-multiplayer.spec.ts` pass; `crit9-reconnect` F3 fails outside its isolated network, as bef
+ore this work |
+| `pnpm check`, `pnpm check:evidence`, affected tests (§13.3) | required | met, with one pre-existing failure |       Final regression run, 2026-11-04, one josor: typecheck clean; `test:unit` 379 of 37
+9 (18 files); `pnpm check` against a local production server 53 of 53; `check:evidence` (12 cited commits resolv      e); integration 13 of 13; Playwright (thow-culling fix) 44 passed, **1 failed**: `c
+rit9-reconnect` F3 ("A offline + client close: an open socket existed", expected 1, received 0), its spec unchan      ged since `ffa5830`. The suite is **not*rewrites seven tracked evidence screenshots
+; they were clean before it and were restored from `HEAD` (checksums match the pre-run files). After the shadow-
+culling fix (client renderer only): rebuilt, the three island specs again 16 of 16, and typecheck, `test:unit`,       `pnpm check` and `check:evidence` repeat
+
+## Interaction upgrade (2026-11-05/06)
+                                                                                                                      From [`stillwood_island_gallery_world_in../stillwood_island_gallery_world_interacti
+on_fix_prompt.md), which supersedes the brief's interaction rules                                                     (the old model captured the pointer on Srsor). Checked by `world-interaction.spec.t
+s`                                                                                                                    (journeys A–I on desktop, J on an emulatts` and `world-input.test.ts`.
+
+| Requirement | Status | Evidence / note |                                                                            | --- | --- | --- |
+| Free cursor by default; plain mouse movement never turns the camera; left-drag looks after 5 px, applying only
+ the excess; release, cancel, lost capture, blur or leaving the viewport ends it; a drag's click is swallowed; r
+ight-click keeps the menu | met | Journeys A, B; `DragLook` unit tests |                                              | HUD controls never start a gesture, mo HUD presses don't take the world's keys |
+| Look lock: explicit (button or **M**), "Free cursor" / "Look locked · Esc to release cursor"; Esc releases wit      hout pausing or re-locking; failure leavs) | Journey E. **L stays look-right**: the
+ brief asks for both L-toggle and keeping I/J/K/L, so the toggle is M. Under pointer lock, headless Chromium tur      ns synthetic moves into +N/−N pairs, so d pointer's relative event; a real mouse un
+der Look lock is a manual check |
+| Walk / Run / Fly: Walk 5 m/s (original), Run 15, Fly 35 on foot; airborne never below the original 15 (boost 3      2); Shift ×1.8, capped at 45 m/s horizonormalised; switching keeps pose and eases;
+Fly never auto-ascends; look sensitivity independent | met | `world-speed.test.ts`; journey D (Fly covers > 2.5×
+ Walk's distance in the same time). Default Run; remembered per browser (`stillwood.worldSpeed.v1`, validated) |      | Collision and boundary at max speed anhetic + L06/L16 colliders) | 10 fps runs in
+to a 0.6 m wall, the hard boundary, the ceiling, and 16 headings × 3 heights at Fly + boost into L06 and L16's r
+eal colliders, never inside a collider. Landmark colliders now join the grid within `COLLIDER_REACH` (≥ 2.4 s of
+ travel at max speed), independent of the visual far-file load |                                                      | Start exploring / Explore fullscreen; nt (one renderer); exit button; browser exi
+t handled; no forced Look lock; pose and speed kept | met | Journey G; resource probe: 10 fullscreen cycles crea      te no WebGL context, one canvas |
+| Wheel scrolls the page over the canvas; scrolling or page focus ends drag and stops movement keys; hovering do      esn't capture; rendering stops when the Journey F; WorldView's IntersectionObserver
+ |                                                                                                                    | Return to world from My Works, the crets and sign-in pages; restores route (home
+or /world/), pose and speed, free cursor, nothing held, no fullscreen; safe-point fallback; the editor's unplace
+d stick asks first | met | Journey H (including Stay / Leave and Back). Only the pose is kept (`sessionStorage`,       validated, 12 h TTL); the renderer is d 5 trips: one canvas, one new renderer per
+trip |
+| Tab change and blur: no stuck keys, capture or jump | met | Journey I |
+| Touch: stick, Up/Down/Boost, right-side drag; speed buttons tappable without steering; no HUD overlap | met (e
+mulated) | Journey J and `world-route.spec.ts` phone. A regression found by the phone route (holding Up was clea      red by the focus boundary) was fixed |
+| Physical phone, a real mouse under Look lock, Safari/Firefox fullscreen and pointer-lock behaviour | **not ver      ified** | Desktop emulation only |
+                                                                                                                      ## Not verifiable here, with the exact s
+
+- **Real-GPU frame rate (§10).** On a machine with a GPU: `pnpm build:world && pnpm build && pnpm start`; open        
+  Wrote 2 memories
+
+Finally, starting the preview server on the freshly built dist. No automated browser jobs are running.
+                                                                                                                                 Searched for 1 pattern, ran 2 shell commands
+                                                                                                                                 The interaction upgrade is implemented and built,t http://localhost:8080/ (island page:http://localhost:8080/world/). It serves the dist I built on 2026-11-06 at 00:27 from the current working tree; nothing in the source is newer. The landmark data was copied from the existing generation cache, not regenerated, because nothing here needed an asset change. No browser tests or builds are rkill $(cat /tmp/sw/preview-server.pid). Nothing isitted, pushed or deployed.
+
+Controls
+
+┌────────────┬────────────────────────────────────────────────────────────────────────────────┬────────────────────────┐
+│   Action   │                                Mou                │         Touch          │
+─────────┼────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+│ Look       │ Hold the left button and drag on the island (5 px before it turns), or I/J/K/L │ Drag on the right side │
+├────────────┼───────────────────────────────────────────────────┼────────────────────────┤
+─────────┼────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+│ Up / down  │ Space / C                                                                      │ Up / Down buttons      │
+├────────────┼───────────────────────────────────────────────────┼────────────────────────┤
+│ Boost      │ Shift                                                                          │ Boost toggle           │
+├────────────┼───────────────────────────────────────────────────┼────────────────────────┤
+│ Speed      │ 1 Walk · 2 Run · 3 Fly, or the buttons at the right-centre (Fly on top)        │ Same buttons           │
+├────────────┼───────────────────────────────────────────────────┼────────────────────────┤
+ok lock  │ M, or the "Free cursor" button below the speed buttons                         │ —                      │
+├────────────┼────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+│ Esc        │ Releases Look lock first; in fullserwise pauses   │ Pause button           │
+lscreen │ "Explore fullscreen" at the start, or Fullscreen / Exit fullscreen in the HUD  │ Same                   │
+└────────────┴────────────────────────────────────────────────────────────────────────────────┴────────────────────────┘
+
+- Look lock is on M, not L. Your brief asked for both an L toggle and keeping I/J/K/L for looking, so I kept L as look-right.
+- Island keys only work while the island is selecicking the island selects it. Scrolling, clickingthe page below, or the window losing focus deselects it and clears any held keys. The mouse wheel always scrolls the page.
+- Small visible changes: the home page's old "Fuls now labelled "Island page". The island alsostops drawing while it is scrolled completely out of view.
+
+──┬─────────────────┬────────────────────┬─────────────────┐
+│      │ On foot (Shift) │ In the air (Shift) │ Up/down (Shift) │
+├──────┼─────────────────┼────────────────────┼──
+│ Walk │ 5 (9)           │ 15 (32)            │ 10.5 (15)       │
+├──────┼─────────────────┼────────────────────┼──
+│ Run  │ 15 (27)         │ 15 (32)            │ 10.5 (15)       │
+├──────┼─────────────────┼────────────────────┼──
+  │ 35 (45)         │ 35 (45)            │ 17.5 (24)       │
+└──────┴─────────────────┴────────────────────┴─────────────────┘
+
+k is exactly the old controller, including its old faster pace once airborne. That old pace is also a floor for Run and Fly in the air, so Walk ≤ Run ≤ Fly everywhere.
+- The hard cap is 45 m/s horizontal and 24 m/s ve45, not 7 × the old boost.
+- Run is the default on first visit, and your choice is remembered across pages and reloads.
+- Buildings' collision now loads based on distancof travel at top speed), whether or not theirvisuals have arrived.
+
+n to world
+
+My Works, the create page, the editor, exhibits a a "Return to world" link. It goes back toever island you came from (home page or /world/) at the same position, heading and speed. You arrive paused with a free cursor, nothing held, and no fullscreen. If the saved spot is no longer valid you land on the nearest safe point. Only the
+position is remembered; the 3D view is fully closr. The site's ordinary header links behave as they always did and don't ask.
+
+Validation
+
+Every run was one at a time under the memory supee was 1.62 GiB, with no swapping.
+
+- Typecheck: clean.
+- Unit tests: 412 of 412 across 20 files (previou speed presets, the drag threshold, key bindings
+browser spec: 9 of 9. It covers your journeys A–I on desktop, plus a journey J on an emulated phone.
+- Full Playwright suite: 53 passed, 1 failed (crit9-reconnect F3, the known failure from before this work). The suite is not
+  fully passing.
+- Phone regression, found and fixed: the existing phone route test showed my new focus handling cleared the touch Up button the
+  moment it was pressed, so holding Up never flew
+- pnpm check: 53 of 53 against a local server. check:evidence also passes.
+- Resources: 10 fullscreen cycles created no extrs. Five portal and return trips created oneerer per visit, and the old one was cleaned up each time.
+- Evidence screenshots: the browser run rewrote seven tracked evidence images; I restored them from HEAD, and all 23 match their
+  pre-run checksums.
+
+- Look lock with a real mouse. In headless Chromium, mouse movement under Look lock cancels out to zero, so the test injects the
+  movement event directly. Please try it by hand.
+- Physical phone, and Safari or Firefox handling of fullscreen and Look lock. Only emulated Chrome was tested.
+- Still open from before: Medium/Low performance rowth, the L07/L14 flight-opening widths, andperformance on real devices.
+
+changed
+
+- Modified:
+c/client/router.ts, src/client/main.tsx
+  - src/client/workshop/Workshop.tsx, src/client/styles.css
+  - tests/world-collision.test.ts, docs/evidence/
+- New:
+  - src/client/world/input.ts, world-session.ts,
+sts/world-speed.test.ts, tests/world-input.test.ts, tests/e2e/world-interaction.spec.ts
+
+✻ Brewed for 2h 30m 47s · done 12:42 AM
+
+The island interaction upgrade is built and tested, and the preview is running at http://localhost:8080/ (one older reconnect test still fails). Next, please review it by hand, especially Look lock (press M) with a real mouse. (disable recaps in /config)

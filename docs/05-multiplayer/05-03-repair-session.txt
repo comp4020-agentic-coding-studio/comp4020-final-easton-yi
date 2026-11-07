@@ -1,0 +1,74 @@
+I found and fixed the slow-settling defect (for new works only), traced the reconnect-indicator failure to the test's disconnect method rather than the app, and moved the build-dependent test suite to its own command.
+
+1. Root causes
+
+Slow settling and blocked saving: a real defect, fixed for new works.
+- Cause: the physics engine handles the round centre of the table badly. A stick resting near the edge on one of the four diagonals sinks about 0.28 u into the table and keeps vibrating at about 1 u/s indefinitely.
+- Why saving was blocked: the "settled" check correctly sees that motion. Versions, and with them exhibits and push, wait for a settled structure, so they waited forever.
+- What it wasn't: not the save rule, not a step-scheduling problem in the test environment, not a measurement error, and not cured by more solver iterations.
+- How it was found: I rebuilt the browser's building sequence offline with the server's own code, at each run's recorded click times. The recorded schedules alone settled normally, but slightly varied timings left 5 of 20 never settling and 6 more taking 24–112 s. A single stick resting at a diagonal edge spot in an empty world never settles, while the s
+Slow settling and blocked saving: a real defect, fixed for new works.
+- Cause: the physics engine handles the round centre of the table badly. A stick resting near the edge on onof the four diagonals sinks about 0.28ibrating at about 1 u/s indefinitely.
+- Why saving was blocked: the "settled" check correctly sees that motion. Versions, and with them exhibits and push, wait for a settled structure, so they waited forever.
+- What it wasn't: not the save rule, not a step-scheduling problem in the test environment, not a measurement error, and not cured by more solver iterations.                                                           How it was found: I rebuilt the browse with the server's own code, at eachrun's recorded click times. The recorded schedules alone settled normally, but slightly varied timings lef5 of 20 never settling and 6 more takiesting at a diagonal edge spot in anempty world never settles, while the same stick elsewhere is fine.
+- Why runs differed: whether a collapsing stick happens to land in one of those zones is chance.            
+Reconnect indicator: the test's disconnect method, not the app.
+- In 20 instrumented disconnects, "Reconnecting…" appeared within 1.6 ms of the socket actually closing, evetime.
+- What failed was Playwright's offline mode. When the page closed its socket while offline, the close sometimes stalled and no close event ever fired, until offline was switched off. I reproduced this once inattempts while the server was streamin0 with an idle room.
+- The original check timed from asking the socket to close, not from it closing.
+- Also noted: Playwright never fires the browser's online event, so reconnects in that method only happened on the client's backoff timer. Real browsers fire it.
+                                                                                                            st commands: reorganised. The protocolild and added about 80 s to pnpmtest:unit. It now has its own command.                                                                      
+2. Changes and why                                                                                          
+Product (one change):
+- New physics config v3 for new works: the round centre of the table becomes 8 flat square boxes, rotated insteps, whose union matches the visible. The rim ring is unchanged.
+- Box-on-box contact gives full support anywhere on the surface.
+- Gravity, friction, solver settings, the settled check and the save rule are untouched. Nothing freezes    bodies.
+- Existing works keep v1 or v2, as the project's rule against changing saved physics requires.
+
+Tests:
+- tests/physics.test.ts adds 11 regression tests. Diagonal edge positions must never sink and must settle   quickly, new works must use v3, and a original sinking.
+- M08 now closes the socket while online and goes offline straight after, before the client's first retry, sB still stays disconnected while A buithat exactly one open socket was reallyclosed. The 5-second indicator check itself is unchanged.
+- New tests/e2e/crit9-reconnect.spec.ts covers both disconnect methods, five attempts each, with timestamps.It uses a new test-only server hook, / only when test hooks are on.
+
+Commands: the suite moved to tests/integration/ and runs with pnpm test:integration, which builds first. test:unit excludes it, and the README lists both.
+                                                                                                             Verification
+                                                                                                            l runs used the same loopback-only, ems before.
+                                                                                                            ───────────────────────────────────────────────────────────────────────────┐
+│                  Check                   │                            Result                            │ ───────────────────────────────────────────────────────────────────────────┤
+│ pnpm test:unit                           │ 110 passed, 23.5 s, no build                                 │
+├──────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤ pnpm test:integration                                                      │
+├──────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Contract spec, production build          │ 53 passed                                                    │
+├──────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤
+│ Crit 9 browser suite, production build   │ 8 of 8, run twice (second after the M08 change)              │ ───────────────────────────────────────────────────────────────────────────┤
+│ Sync smoke (those two runs)              │ 25–26 placements accepted, all 50–52 cross-session updates   │                                       , none over 1 s                      │
+├──────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤ Settling after the building loop (thre                                     │
+│ runs)                                    │                                                              │
+├──────────────────────────────────────────┼──────────────────────────────────────────────────────────────┤ Full browser suite (test-hooks build,                                      │
+│ before the M08 change)                   │                                                              │
+└──────────────────────────────────────────┴──────────────────────────────────────────────────────────────┘
+                                                                                                            e one full-suite failure was M08, the treaming stall; the corrected M08 passedafterwards. Every reconnect attempt is kept in the follow-up evidence folder, including the harness's own   iled rounds.
+                                                                                                             cost, v3's physics step is slower but
+
+┌────────────────┬────────────┬──────────────┐                                                              112-stick drop │     v2     │      v3
+├────────────────┼────────────┼──────────────┤
+│ Step p50       │ 0.64 ms    │ 0.96 ms      │
+├────────────────┼────────────┼──────────────┤
+│ Step p95       │ 0.90 ms    │ 1.14–1.22 ms │                                                              ───────────────┼────────────┼─────────
+│ Worst step     │ 5.3–5.6 ms │ 2.4–2.9 ms   │                                                              ───────────────┴────────────┴─────────
+
+The positional map went from 6 stuck positions to none, and the 20-variant sweep from 5 never settling to al settling within 1.6–4.7 s.
+
+4. Remaining issues                                                                                         
+- Existing v2 works can still get stuck "moving". If a stick rests in a diagonal edge zone, saving versions, publishing and push are blocked until something moves. Building and live sync are unaffected. Fixing them would mean rebuilding the table inside saved snapshots, which changes saved physics, so that's your decision.                                                                                                 Room capacity not re-measured under v3er room and well inside the 16.7 msbudget, but I haven't redone the 3-room capacity run.                                                     Reconnect: one unknown. The exact browled close isn't isolated; it's inferredfrom 1 of 5 attempts.                                                                                     Separate follow-ups, unchanged: the cok, dropped automated clicks (seen againonce in 26), a real background tab, a browser joining mid-build, and invitation expiry. None affects core sync or saving.
+- CI: the course workflow only ever ran pnpm check. I didn't add the other suites to it; that's a separate decision.                                                                                                  
+5. Files, isolation, deployment
+
+Product: src/shared/config.ts, src/server/core/physics.ts, src/server/main.ts (test-only hook).
+                                                                                                             Tests and config: tests/physics.test.ts,spec.ts,tests/e2e/crit9-reconnect.spec.ts, tests/integration/crit9-multiplayer.test.ts (moved), vitest.unit.config.tsvitest.integration.config.ts, package.js
+                                                                                                             Scripts: scripts/crit9/settle-diag.ts, tand run.sh.
+                                                                                                             Docs:
+- The report has a dated follow-up appended; the original text is unchanged apart from links on the affected rows.
+- Evidence is in docs/evidence/crit-9-local-multiplayer/20261012-followup/.                                  - Short entries in PROCESS.md, docs/measREADME.
+- reflections/crit-9.md is untouched.                                                                        
+Every run happened inside the loopback-only isolation. Afterwards I restored the tracked screenshots the old browser specs re-capture, removed the teirmed no test servers were left running.Nothing was deployed, pushed or committed, and your earlier uncommitted work is intact.
