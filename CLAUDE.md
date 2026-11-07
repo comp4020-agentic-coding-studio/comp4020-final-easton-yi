@@ -1,3 +1,12 @@
+## Governing product documents
+
+This reference was added to `CLAUDE.md` on 2026-11-07. The two documents below predate it: they were first committed in `a46e7ed` as `docs/BRIEF.md` and `docs/INITIAL_PROMPT.md`, revised in later commits, and moved to their current paths in `ba6c2fc`. Earlier work was directed through them rather than through this file. This section points to them; it adds no rules of its own.
+
+* [`docs/01-foundation/01-01-product-brief.md`](docs/01-foundation/01-01-product-brief.md) — the product brief. By its own definition (DOC-01, DOC-02) it defines what to build, why, behavioural boundaries and acceptance criteria; its numbered rules are acceptance requirements, and rules change only through the recorded, dated decisions in DOC-05.
+* [`docs/01-foundation/01-02-build-prompt.md`](docs/01-foundation/01-02-build-prompt.md) — the implementation directive. By its own definition (§1) it owns the selected technical design, implementation order and verification methods, while the product brief owns product behaviour.
+
+Both documents state that the official course pages and repository-supplied contracts remain authoritative for assessment requirements. `README.md` argues the definition of good, and `spec/` holds the checks.
+
 ## Process-logging harness (Ass1 feedback: process 72/100, D-band)
 
 The Assignment 1 marker wrote: “I would've liked to know more about the process that you used to get the agent to build your website.” The previous assignment's harness records this feedback and identifies `spec/improvement.png` in that repository as its source. Do not assume that the screenshot exists at the same path in this repository.

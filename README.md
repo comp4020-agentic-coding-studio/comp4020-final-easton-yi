@@ -1,73 +1,38 @@
 # Stillwood
 
-A few friends use one kind of wooden stick on a quiet tabletop to build
-something fragile, worth continuing and worth keeping.
+A few friends, one kind of wooden stick, and something worth returning to.
 
-Every stick is the same: 8 units long, 1 × 1 in section, the same weight and
-friction. You hold one as a ghost, adjust it until it's where you mean it, and
-place it. From then on the server's physics decides what happens. A bridge
-can settle; a lopsided tower can fall. Two to four people can build at once
-on their own devices, each with their own view, and everyone sees the same
-result.
-
-> **Draft for revision.** The coding agent drafted the "what good means"
-> section below from the project's design brief. The author still has to
-> revise it against their own reading; it isn't yet their position.
+Stillwood is a shared building table for two to four people. Each stick is 8 units long with a 1 × 1 section. You position a translucent preview, place it, and watch the server's physics decide whether it settles or falls. Everyone sees the same evolving structure.
 
 ## What good means
 
-A good session leaves a small group feeling they made something together that
-they'd want to come back to. For this app, that rests on four promises:
+Good means a group can recognise its decisions in what remains: a bridge someone extended, a support another person added, or a collapse that changed the next attempt. Another person's presence matters because their choices change what you can build next.
 
-1. **Considerate placement.** You can say exactly where a stick goes (slide
-   it, raise it, swing one end around the other, or type values) without
-   fighting your own hand to hold it still. Assistance helps the pose only;
-   whether it stands is still your judgement.
-2. **Legible collaboration.** You can see what a partner *intends* (their
-   translucent, outlined, named ghost) and tell it apart from what has
-   actually *happened* (real wood). Nobody takes turns and nobody locks the
-   table.
-3. **Credible consequences.** Imbalance and collisions can surprise you, but
-   no hidden rule decides failure. There's no invisible glue and no "stand
-   upright" force.
-4. **Work that lasts.** "Placed" means saved on the server, not "will never
-   fall". Named versions are immutable, exhibits are frozen copies, and a
-   collapse can't silently rewrite what you exhibited.
+Four promises support that experience:
 
-Height is a natural challenge, but bridges, pavilions and low sculptures are
-equally good outcomes. There are no leaderboards, chat, shop or feeds, and
-nothing about other people's activity is ever invented.
+- **Deliberate placement.** Sliding, rotation and numeric controls let you express a position precisely. Assistance guides the pose; balance remains your judgement.
+- **Visible intentions.** Named ghost sticks show what partners are preparing. Everyone can prepare concurrently; the server orders accepted placements. Occasional conflict rejection is the cost of avoiding turns and a locked table.
+- **Shared consequences.** The same physical outcome reaches every participant. A collapse should follow the structure's behaviour, and failed placement should explain what prevented it.
+- **Preserved work.** An accepted placement is saved before acknowledgement. Named versions and frozen exhibits let a group retain a result while continuing to experiment.
 
-Sources behind this position: *to be added by the author* (the Crit 8 brief
-points at the small web, games for a handful of friends, and tools built for
-one workshop).
+There are no leaderboards, feeds, shops or built-in chat. A height ranking would narrow success to one dimension; bridges and low sculptures should count too. Conversation can happen wherever friends already meet. The shared object carries the interaction here.
 
-## Using it
+Two sources provide retrospective comparisons for this position. Maggie Appleton's [*The Dark Forest and the Cozy Web*](https://maggieappleton.com/cozy-web) describes bounded spaces away from public attention pressures. Stillwood combines invitation-based building with optional public exhibits: privacy while making, visibility when chosen. Kleppmann and colleagues' [*Local-first software*](https://www.inkandswitch.com/essay/local-first/) argues for collaboration alongside lasting control of creative work. Stillwood retains a server-authoritative design to keep physics and saves ordered; its preservation promise therefore depends on the hosted service. Snapshots do not provide offline independence.
 
-The **exhibition** (`/`, below the island) shows public frozen exhibits without an account. In **My works**
-(`/works/`) you create or open a work; in its workshop, **Add** holds a ghost stick, **Place** submits it, **Versions**
-saves settled structures to restore or exhibit, and **People** manages invitations. Accounts use a handle, a password
-and a one-time recovery code, and can be deleted with everything they own.
+## From a table to a world
 
-## How it's built
+The explorable island gives this small activity a larger architectural context. Twenty authored timber landmarks explore how repeated members can become columns, arches, towers and spillways. They offer forms to notice and reinterpret, without setting a score or a required outcome.
 
-One Node process and one SQLite volume on one 256 MB Fly machine, deployed at
-`comp4020-final-easton-yi.fly.dev`. A worker thread owns the database and every live Rapier world, and each accepted
-placement is saved in one transaction before anyone is told it succeeded. Decisions: [`docs/adr/`](docs/adr/0001-stack.md);
-measurements: [`docs/measurements.md`](docs/measurements.md).
+These landmarks are static world presets with different construction constraints from the physical workshop. They are not player creations or proof that the same structures can be built on the table. Their purpose is to invite a next experiment together.
 
-## The island (local, not yet deployed)
+## Start building
 
-In the working tree, the home page opens on an explorable island of 20 generated timber landmarks, with the header,
-gallery and works pages unchanged ([protection matrix](docs/evidence/world/protection-matrix.md)). Status and
-evidence: [requirements-status.md](docs/evidence/world/requirements-status.md). Frame rate on a real GPU is unverified.
+Open [Stillwood](https://comp4020-final-easton-yi.fly.dev/). **Build Together** starts a work after sign-in; **My Works** opens saved work; **Explore the World** enters the island. Public player exhibits remain accessible without an account.
 
-## Running and testing
+In a workshop, **People** manages invitations. Send a friend an invitation and open it in their own browser. **Add** prepares a stick; **Place** submits it. **Versions** preserves settled structures for restoring or exhibiting.
 
-`pnpm install`, `pnpm build && pnpm start` (http://localhost:8080), then `APP_URL=http://localhost:8080 pnpm check`.
-The full set of suites, and the supervised commands for the island, are in [docs/running.md](docs/running.md).
+## What is checked, and what remains a judgement
 
-## Known limits
+The [product rules](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/blob/main/docs/01-foundation/01-01-product-brief.md) and [spec checks](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/tree/main/spec) cover enforceable promises such as permissions, persistence and shared state. [Verification records](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/blob/main/docs/06-verification/06-02-audit-report.md) document failures and retests. Whether collaboration feels considerate and the world inspires building remains a human judgement. My own visual review supports the world's architectural direction; independent visitor evaluation is outstanding.
 
-Capacity (3 live rooms, 4 editors each, 200 sticks per work) hasn't been measured on the Fly machine, and placement
-feel still needs people who didn't build it to try it.
+Fly capacity at the configured limits, real-GPU performance and physical-phone behaviour remain unverified in the preserved records. [Current documented limitations](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/blob/main/docs/90-reference/90-04-world-status.md), [setup and testing](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/blob/main/docs/90-reference/90-06-running.md), [architecture](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/blob/main/docs/01-foundation/01-04-adr-0001-stack.md) and [development process](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/blob/main/PROCESS.md) provide the details.
