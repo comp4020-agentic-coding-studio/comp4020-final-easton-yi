@@ -2,7 +2,7 @@
 // together, publish, the owner moves the work to the trash while the editor
 // is connected, restores it, then trashes and permanently deletes it.
 import { expect, test } from "@playwright/test";
-import { createWork, placeViaControls, register } from "./helpers.ts";
+import { createWork, placeViaControls, register, shotPath } from "./helpers.ts";
 
 test("trash while a collaborator is connected, restore, then delete permanently", async ({ browser }) => {
   const ctxA = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -81,7 +81,7 @@ test("trash while a collaborator is connected, restore, then delete permanently"
   await expect(b.locator(".ws-status")).not.toContainText("Connected");
   await expect(b.getByRole("button", { name: "Add a stick" })).toBeDisabled();
   await expect(b.locator(".draft-state")).toHaveCount(0);
-  await b.screenshot({ path: "docs/evidence/lifecycle-editor-trashed.png" });
+  await b.screenshot({ path: shotPath("lifecycle-editor-trashed.png") });
   await b.reload();
   await expect(b.getByRole("heading", { name: "Can't open this work" })).toBeVisible();
   await expect(b.getByText(/moved this work to the trash/)).toBeVisible();
@@ -101,7 +101,7 @@ test("trash while a collaborator is connected, restore, then delete permanently"
   // restore from the owner's Trash
   await a.getByRole("link", { name: "Go to Trash" }).click();
   await expect(a.getByRole("heading", { name: "Trash" })).toBeVisible();
-  await a.screenshot({ path: "docs/evidence/lifecycle-trash.png" });
+  await a.screenshot({ path: shotPath("lifecycle-trash.png") });
   await a.locator(".work-list li", { hasText: title }).getByRole("button", { name: "Restore work" }).click();
   await expect(a.getByText(/Restored “.*”\. Its exhibits stay withdrawn/)).toBeVisible();
   await a.getByRole("button", { name: "Works", exact: true }).click();
@@ -125,7 +125,7 @@ test("trash while a collaborator is connected, restore, then delete permanently"
   await b.getByRole("dialog").getByRole("button", { name: "Leave", exact: true }).click();
   await expect(b.getByText(/You left “.*”\. If its owner restores it, you won't be a member\./)).toBeVisible();
   await expect(b.getByRole("heading", { name: "Unavailable collaborations" })).toHaveCount(0);
-  await b.screenshot({ path: "docs/evidence/lifecycle-editor-left.png" });
+  await b.screenshot({ path: shotPath("lifecycle-editor-left.png") });
   await a.getByRole("button", { name: /^Trash/ }).click();
   await a.locator(".work-list li", { hasText: title }).getByRole("button", { name: "Delete permanently…" }).click();
   const purge = a.getByRole("dialog");

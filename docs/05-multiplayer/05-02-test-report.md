@@ -191,6 +191,11 @@ limitation, no product impact; T.1).
   the button disabled at that instant.
 - **Next:** record the button's disabled state and validity per frame around
   the click before treating it as a product issue.
+- *Retest 2026-11-08 (local, uncommitted):* recorded per state change. The held stick turns "✕ Intersecting;
+  adjust position" when a settling stick comes to rest inside it, at placements 23–25 on the tall stack; Place is then
+  correctly disabled and stays so without the person's input, and a click that lands as it turns is refused before
+  sending. Not a product defect: the test helper now cancels and adds again as the message asks, and new test M05b
+  covers it ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-08-multiplayer-m02-and-world-protection)). The occurrences above stand as recorded.
 
 **F3 — "Reconnecting…" sometimes not shown within 5 s after a forced socket
 close**
@@ -363,6 +368,12 @@ scripts/crit9/run.sh                      # optional: CRIT9_RUN_ID=<id>
 node scripts/crit9/summarize-timing.ts docs/05-multiplayer/evidence/<id>
 git restore docs/evidence/p3-*.png docs/evidence/lifecycle-*.png   # existing specs re-capture these
 ```
+
+*Note 2026-11-07:* `scripts/crit9/run.sh` now writes a run's summaries to `test-results/crit9/<id>/` (ignored by
+Git) unless `CRIT9_EVIDENCE_DIR` names a directory inside the repository, e.g.
+`CRIT9_EVIDENCE_DIR=docs/05-multiplayer/evidence/<id>` for a run kept as evidence; pass the same directory to
+`summarize-timing.ts`. Browser specs now write their screenshots under `test-results/`, so the `git restore` line is no
+longer needed. The commands above are kept as they were run.
 
 - **Requirements:** Linux with unprivileged user namespaces (`unshare
   --map-root-user --net`), and Playwright's Chromium in
@@ -613,7 +624,7 @@ server-to-render column is invalid, as in F1.
 | F4 settling | **Fixed for new works** (physics config v3). Existing v1/v2 works keep the defect |
 | F3 reconnect indicator | **Not a product defect**: the test mechanism stalls; M08 corrected and passing |
 | F1 clock step | Unchanged environment limitation |
-| F2 unlanded clicks | Separate follow-up; seen again (1 of 26 in one post-fix run) |
+| F2 unlanded clicks | Separate follow-up; seen again (1 of 26 in one post-fix run); *2026-11-08:* cause found and the test fixed ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-08-multiplayer-m02-and-world-protection)) |
 | F5 held-preview conflict message | Separate follow-up |
 | M07.3, M09.3, M11.5 | Still not run or blocked; separate follow-ups |
 

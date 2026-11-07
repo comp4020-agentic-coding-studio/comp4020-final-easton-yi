@@ -1,0 +1,149 @@
+Retest 2026-11-07 — spec/versions.test.ts rate-limit instability (docs/90-reference/90-01-implementation-status.md, Known limitations)
+Environment: local, WSL2, Node v24.21.0, production build with ENABLE_TEST_HOOKS=1, fresh DATA_DIR per server, one server per batch of 10 repeats.
+Code: base fa23e6a plus the uncommitted working tree (identity in 06-020).
+
+Cause (inspected, not reproduced): the versions spec's shared 'Owner' account draws on one per-user command bucket
+(src/server/core/coordinator.ts execute(), TokenBucket keyed by actor.userId; TRANSPORT.commandsPerSecond 2, commandBurst 4).
+The versions spec's tests run back to back on that account; a replay of the server's own command log through the bucket
+arithmetic (scripts/bucket_margin.py, outside the repository) shows the shared Owner reaching as low as 1.02 tokens before a
+take on the unchanged spec: one token from a RATE_LIMITED rejection. The 2026-10-06 failures (3 of 9 runs) were that
+rejection. The failure did not reproduce on this machine in 10 repeats before the change, so it is explained, not reproduced.
+
+Change (spec/versions.test.ts only; no server, limit or middleware change; no retries; no assertion removed):
+  - beforeEach waits until ceil(commandBurst / commandsPerSecond) = 2 s have passed since the previous test ended, so each
+    test starts with a full bucket. The constants are read from src/shared/config.ts, not copied.
+  - a separate test, 'command rate limit', registers its own account and sends commandBurst + 1 snapshot.create commands:
+    the first commandBurst are accepted, exactly one is RATE_LIMITED with 0 < retryAfterMs <= ceil(1000 / rate), no version
+    is created by the refused one, and a command after the refill is accepted. Signups stay within the spec budget (40).
+
+== 10 repeats BEFORE the change (unchanged spec, one server): logs/versions-before.log
+run 1: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 2: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 3: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 4: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 5: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 6: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 7: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 8: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 9: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+run 10: PASS (rate-limit mentions: 0)  Tests 8 passed (8)
+TOTAL before: 10 passed, 0 failed of 10
+
+== 10 repeats AFTER the change (one server): logs/versions-after.log
+run 1: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 2: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 3: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 4: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 5: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 6: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 7: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 8: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 9: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+run 10: PASS (rate-limit mentions: 0)  Tests 9 passed (9)
+TOTAL after: 10 passed, 0 failed of 10
+
+== Minimum tokens before a take for the shared Owner (the 26-command actor), per repeat
+before:  1 ; 9 1.02; 1 1.03;
+after:   1 ; 10 2.00;
+(the 6-command actor with one RATE_LIMITED in the 'after' log is the new explicit limiter test, as intended)
+
+== Full spec run in the gate (pnpm check, scratch server): 7 files, 54 tests passed; shared Owner minimum 2.00 tokens.
+
+Full replay output:
+# Token-bucket replay (scripts/bucket_margin.py) of the server logs from the versions-spec repeats and the gate's pnpm check
+# The shared Owner in spec/versions.test.ts is the actor with 26 counted commands; the 6-command actor with one RATE_LIMITED is the new explicit limiter test ("Limiter").
+
+== logs/server-versions-before.log
+rate=2.0/s burst=4.0; actors=30; commands counted=330
+actor 7a24ee18  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 05bfe46c  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 05cd24f3  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 19184c29  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 3bc0cd09  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 5c302c65  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 9a55a99f  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 05bde402  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 1c8c8e0d  commands   26  min tokens before take  1.02  takes with <2 tokens   3  RATE_LIMITED 0
+actor 14847720  commands   26  min tokens before take  1.03  takes with <2 tokens   3  RATE_LIMITED 0
+actor 8fec3680  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 1f47d56d  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 29dcd2b5  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 30bb3b69  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 7e52ecf2  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 83d61a98  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 9ef053f8  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor d218b61d  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor deb069ea  commands    5  min tokens before take  2.03  takes with <2 tokens   0  RATE_LIMITED 0
+actor 5e7ac92b  commands    5  min tokens before take  2.03  takes with <2 tokens   0  RATE_LIMITED 0
+actor 33e67742  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 34ebd795  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 4a5f47ba  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 58bf697a  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 68332824  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 6941276a  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 80887d68  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor b69ffcb7  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor cb509c9d  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor f6b63bca  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+
+== logs/server-versions-after.log
+rate=2.0/s burst=4.0; actors=40; commands counted=390
+actor e27acc30  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 05f75783  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 50a07729  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 9e5ff75e  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor e40b623b  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 09572980  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 284e099e  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 2e04a56c  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor f121c351  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor 5b3aa2e8  commands    6  min tokens before take  0.02  takes with <2 tokens   3  RATE_LIMITED 1
+actor 3334df79  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 62f2e76b  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 720bc688  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 9123f8cb  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor eeba66ec  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor d5e218b2  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 59589e78  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 9acc2b97  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 6132761b  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor bd135c8a  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 290abaca  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 32931e93  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 4e77365a  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor a8d8f536  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor af96877b  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor edfc73cf  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 6eb97862  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor cee507f6  commands    5  min tokens before take  2.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 9a7c283c  commands    5  min tokens before take  2.03  takes with <2 tokens   0  RATE_LIMITED 0
+actor d8c53052  commands    5  min tokens before take  2.03  takes with <2 tokens   0  RATE_LIMITED 0
+actor 06f7868c  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 11e0f1ff  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 13e91d49  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 14ccd94d  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 2882bb26  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 4b64f285  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 52986c45  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 598afa38  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor d4869c89  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor ec11c617  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+
+== logs/server-gate-check.log
+rate=2.0/s burst=4.0; actors=16; commands counted=84
+actor 1cdf662c  commands    6  min tokens before take  0.01  takes with <2 tokens   3  RATE_LIMITED 1
+actor b408635e  commands   15  min tokens before take  1.71  takes with <2 tokens   1  RATE_LIMITED 0
+actor 95caf06b  commands   26  min tokens before take  2.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 46b87f60  commands    5  min tokens before take  2.03  takes with <2 tokens   0  RATE_LIMITED 0
+actor aae3a604  commands    6  min tokens before take  2.28  takes with <2 tokens   0  RATE_LIMITED 0
+actor 7d02de92  commands    2  min tokens before take  3.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor e9e7bb20  commands    2  min tokens before take  3.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 314218f1  commands    4  min tokens before take  3.01  takes with <2 tokens   0  RATE_LIMITED 0
+actor 4ff4c471  commands    2  min tokens before take  3.01  takes with <2 tokens   0  RATE_LIMITED 0
+actor d0b15797  commands    4  min tokens before take  3.02  takes with <2 tokens   0  RATE_LIMITED 0
+actor 192106e9  commands    4  min tokens before take  3.03  takes with <2 tokens   0  RATE_LIMITED 0
+actor f05dc27d  commands    3  min tokens before take  3.24  takes with <2 tokens   0  RATE_LIMITED 0
+actor 56cd6c3e  commands    1  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 8543c174  commands    2  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor 97ecee54  commands    1  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0
+actor d4688376  commands    1  min tokens before take  4.00  takes with <2 tokens   0  RATE_LIMITED 0

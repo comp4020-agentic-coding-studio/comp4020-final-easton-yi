@@ -1614,3 +1614,478 @@ dialog.confirm input {
     min-height: 44px;
   }
 }
+
+/* ---------- island on phones and tablets (2026-11-07): the touch layout (WorldStage → TouchHud).
+   Everything below is scoped to .world-touch-layout, which is only rendered for a hand-held primary input
+   (touch-layout.ts: pointer coarse and no hover), never by width. The desktop overlay's rules above are unchanged.
+   Sizes in CSS px: targets ≥ 44 (usually 48), gaps 8–12, edges 12–16 plus the safe-area inset. */
+.world-touch-layout {
+  --t-edge: 12px;
+  --t-gap: 10px;
+  --t-l: max(var(--t-edge), env(safe-area-inset-left));
+  --t-r: max(var(--t-edge), env(safe-area-inset-right));
+  --t-t: max(var(--t-edge), env(safe-area-inset-top));
+  --t-b: max(var(--t-edge), env(safe-area-inset-bottom));
+  --t-stick: 108px;
+  --t-chip: rgba(24, 34, 30, 0.62);
+}
+.world-touch-layout.world-home {
+  /* the home page's island: the dynamic viewport where supported, so browser chrome changes don't clip it */
+  height: min(78vh, 760px);
+  height: min(78dvh, 760px);
+}
+.world-touch-layout .world-t {
+  /* the overlay is a positioning frame only; its children place themselves */
+  display: block;
+  padding: 0;
+}
+/* ---- before exploring and while paused: one card that is also the menu, scrollable inside the safe area */
+.world-touch-layout .world-t-sheet {
+  position: absolute;
+  left: var(--t-l);
+  right: var(--t-r);
+  bottom: var(--t-b);
+  max-height: calc(100% - var(--t-t) - var(--t-b));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 12px 14px;
+  box-sizing: border-box;
+}
+.world-touch-layout .world-t-sheet .world-opening {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+.world-touch-layout .world-t-sheet .world-actions button,
+.world-touch-layout .world-t-sheet .world-actions .button {
+  min-height: 48px;
+}
+.world-touch-layout .world-t-group {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.world-touch-layout .world-t-h {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+/* the paused actions: a plain stack inside the card (not the desktop's floating panel) */
+.world-touch-layout .world-t-sheet .world-menu {
+  position: static;
+  max-width: none;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+.world-touch-layout .world-t-sheet .world-menu button {
+  min-height: 48px;
+  justify-content: flex-start;
+}
+.world-touch-layout .world-t-sheet .world-jump select {
+  min-height: 48px;
+  width: 100%;
+}
+.world-touch-layout .world-t-dest {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-self: auto;
+  margin: 0;
+  opacity: 1;
+}
+.world-touch-layout .world-t-dest a {
+  min-height: 48px;
+  justify-content: center;
+  text-align: center;
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  background: var(--panel);
+}
+.world-touch-layout .world-t-light {
+  margin-top: 0;
+  gap: 6px;
+}
+.world-touch-layout .world-t-light button {
+  min-height: 44px;
+  min-width: 64px;
+}
+.world-touch-layout .world-t-sheet .world-help {
+  font-size: 0.85rem;
+}
+/* landscape phones and tablets: the card is a bounded side panel, not a sheet over the whole short screen */
+@media (orientation: landscape) {
+  .world-touch-layout .world-t-sheet {
+    left: var(--t-l);
+    right: auto;
+    top: var(--t-t);
+    bottom: auto;
+    width: min(25rem, 52%);
+    /* never taller than the stage: the card scrolls inside it */
+    max-height: calc(100% - var(--t-t) - var(--t-b));
+    margin: 0;
+  }
+}
+@media (min-width: 700px) and (orientation: portrait) {
+  .world-touch-layout .world-t-sheet {
+    left: var(--t-l);
+    right: auto;
+    width: min(26rem, 60%);
+    margin: 0;
+  }
+}
+
+/* ---- exploring: the compact label and its information button (upper left) */
+.world-touch-layout .world-t-label {
+  position: absolute;
+  left: var(--t-l);
+  top: var(--t-t);
+  /* bounded: never a full-width banner; leaves room for the Menu button at the right */
+  max-width: min(22rem, calc(100% - var(--t-l) - var(--t-r) - 112px));
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 0 0 12px;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--t-chip);
+  color: var(--glass-text);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  z-index: 2;
+}
+.world-touch-layout .world-t-title {
+  display: flex;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.world-touch-layout .world-t-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.world-touch-layout .world-t-preset {
+  flex: none;
+  margin-left: 0.3em;
+  font-weight: 500;
+  opacity: 0.9;
+}
+.world-touch-layout .world-t-info,
+.world-touch-layout .world-t-close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+.world-touch-layout .world-t-info:focus-visible,
+.world-touch-layout .world-t-menu:focus-visible,
+.world-touch-layout .world-t-mode:focus-visible,
+.world-touch-layout .world-t-fly button:focus-visible,
+.world-touch-layout .world-t-close:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: -3px;
+  box-shadow: 0 0 0 3px var(--focus);
+}
+/* ---- the Menu button (upper right) */
+.world-touch-layout .world-t-menu {
+  position: absolute;
+  right: var(--t-r);
+  top: var(--t-t);
+  min-height: 44px;
+  min-width: 44px;
+  gap: 6px;
+  padding: 0 14px 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: var(--t-chip);
+  color: var(--glass-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  pointer-events: auto;
+  z-index: 2;
+}
+/* ---- operational messages: below the top row, centred, compact; never the landmark text */
+.world-touch-layout .world-t-ops {
+  top: calc(var(--t-t) + 54px);
+  width: max-content;
+  max-width: min(28rem, calc(100% - var(--t-l) - var(--t-r)));
+  gap: 6px;
+  z-index: 1;
+}
+.world-touch-layout .world-t-ops p {
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+.world-touch-layout .world-t-toast strong {
+  font-weight: 600;
+  margin-right: 4px;
+}
+.world-touch-layout .world-t-enter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--t-b) + var(--t-stick) + 16px);
+  min-height: 48px;
+  max-width: calc(100% - var(--t-l) - var(--t-r));
+  pointer-events: auto;
+  z-index: 2;
+}
+.world-touch-layout .world-t-notice {
+  bottom: auto;
+  top: calc(var(--t-t) + 54px);
+  max-width: min(28rem, calc(100% - var(--t-l) - var(--t-r)));
+  font-size: 0.9rem;
+  z-index: 3;
+}
+/* ---- lower left: the move stick */
+.world-touch-layout .world-t-stickwrap {
+  inset: auto auto var(--t-b) var(--t-l);
+  display: block;
+}
+.world-touch-layout .world-t-stickwrap .world-stick {
+  width: var(--t-stick);
+  height: var(--t-stick);
+  pointer-events: auto;
+}
+.world-touch-layout .world-t-stickwrap .world-knob {
+  width: 46px;
+  height: 46px;
+}
+/* ---- lower right: speed selector and Up / Down / Boost */
+.world-touch-layout .world-t-cluster {
+  inset: auto var(--t-r) var(--t-b) auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--t-gap);
+  pointer-events: none;
+}
+.world-touch-layout .world-t-modewrap {
+  position: relative;
+  pointer-events: auto;
+}
+.world-touch-layout .world-t-mode,
+.world-touch-layout .world-t-fly button {
+  min-height: 48px;
+  min-width: 48px;
+  gap: 4px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: var(--t-chip);
+  color: var(--glass-text);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.world-touch-layout .world-t-caret {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+.world-touch-layout .world-t-fly {
+  flex-direction: row;
+  gap: 8px;
+}
+.world-touch-layout .world-t-fly button {
+  flex-direction: column;
+  gap: 0;
+  min-width: 56px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.world-touch-layout .world-t-fly button[aria-pressed="true"] {
+  background: rgba(253, 251, 245, 0.95);
+  color: #1d2a22;
+  text-shadow: none;
+  border: 2px solid #fdfbf5;
+}
+/* the open speed selector: above its button, three 48 px choices with the selected one marked */
+.world-touch-layout .world-t-modes {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-line);
+}
+.world-touch-layout .world-t-modes .world-speed-btn {
+  flex-direction: row;
+  gap: 8px;
+  min-width: 112px;
+  justify-content: flex-start;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+}
+.world-touch-layout .world-t-modes .world-speed-btn[aria-pressed="true"]::before {
+  display: none;
+}
+/* ---- the information panel: a bounded dialog; portrait phones get a bottom sheet, landscape a side panel */
+.world-touch-layout .world-t-panel {
+  position: absolute;
+  left: var(--t-l);
+  right: var(--t-r);
+  bottom: var(--t-b);
+  max-height: min(60%, 28rem);
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  background: rgba(252, 250, 245, 0.97);
+  color: var(--text);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 28px rgba(20, 30, 24, 0.28);
+  pointer-events: auto;
+  z-index: 5;
+}
+.world-touch-layout .world-t-panel-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 6px 4px 16px;
+}
+.world-touch-layout .world-t-panel-title {
+  flex: 1;
+  margin: 10px 0 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+.world-touch-layout .world-t-close {
+  color: var(--text);
+}
+.world-touch-layout .world-t-panel-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 0 16px 14px;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+.world-touch-layout .world-t-panel-body p {
+  margin: 0 0 8px;
+}
+.world-touch-layout .world-t-kind {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.world-touch-layout .world-t-facts {
+  margin: 0 0 10px;
+}
+.world-touch-layout .world-t-facts dt {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.world-touch-layout .world-t-facts dd {
+  margin: 0 0 6px;
+}
+.world-touch-layout .world-t-region {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.world-touch-layout .world-t-region h4 {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+}
+/* while the panel is open the movement controls stay put but are dimmed and inert (the panel holds the world) */
+.world-touch-layout .world-t.info-open .world-t-cluster,
+.world-touch-layout .world-t.info-open .world-t-stickwrap {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.world-touch-layout .world-t.info-open .world-t-cluster *,
+.world-touch-layout .world-t.info-open .world-t-stickwrap * {
+  pointer-events: none;
+}
+@media (orientation: landscape) {
+  .world-touch-layout .world-t-panel {
+    left: var(--t-l);
+    right: auto;
+    top: var(--t-t);
+    bottom: auto;
+    width: min(24rem, 50%);
+    max-height: calc(100% - var(--t-t) - var(--t-b));
+  }
+}
+@media (min-width: 700px) and (orientation: portrait) {
+  .world-touch-layout .world-t-panel {
+    left: var(--t-l);
+    right: auto;
+    top: calc(var(--t-t) + 54px);
+    bottom: auto;
+    width: min(26rem, 60%);
+    max-height: min(60%, 32rem);
+  }
+}
+/* tablets: slightly larger stick and the same compact controls (not scaled with width) */
+@media (min-width: 700px) and (min-height: 700px) {
+  .world-touch-layout {
+    --t-edge: 16px;
+    --t-stick: 124px;
+  }
+}
+/* short landscape phones: a smaller stick and tighter top offsets so nothing collides */
+@media (max-height: 420px) {
+  .world-touch-layout {
+    --t-stick: 100px;
+    --t-gap: 8px;
+  }
+  .world-touch-layout .world-t-fly button {
+    min-width: 52px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .world-touch-layout .world-t-sheet {
+    scroll-behavior: auto;
+  }
+}
+
+/* short landscape: the speed choices open sideways (left of the selector), clear of the Menu button */
+@media (max-height: 520px) {
+  .world-touch-layout .world-t-modes {
+    bottom: 0;
+    right: calc(100% + 8px);
+    flex-direction: row;
+  }
+  .world-touch-layout .world-t-modes .world-speed-btn {
+    min-width: 0;
+    padding: 4px 10px;
+  }
+}
+/* the information panel replaces the toast while it is open (the same text is inside it) */
+.world-touch-layout .world-t.info-open .world-t-toast {
+  display: none;
+}
+/* a quiet fade only where the panel's text continues below the fold */
+.world-touch-layout .world-t-panel-body.more {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent);
+}
+.world-touch-layout .world-t-paused {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}

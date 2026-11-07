@@ -1,0 +1,75 @@
+Retest 2026-11-07 — six-viewport verification matrix and desktop comparison (local, uncommitted working tree; identity in 06-020)
+Headless Chromium on SwiftShader against a local production build on a fresh DATA_DIR, one worker, under the supervisor.
+Emulation only: no physical phone or tablet, no real GPU, no Safari or Firefox.
+
+== Matrix (spec outside the repository: matrix.spec.ts) — logs/matrix.log
+Per viewport, guest then signed in: /readme/ (the new 'Verification and documentation' section present, the old section
+gone, all 10 README links present and absolute), home + Start exploring (layout model matches the input: coarse touch ->
+touch HUD with Menu; fine mouse -> desktop HUD with Pause), works list, a new work's workshop (Add a stick in view), and
+/world/ signed in (My Works -> /works/, Build Together -> /works/?new=1, via Menu on touch). Every page: no horizontal
+overflow (scrollWidth <= innerWidth), key controls visible and inside the viewport, no page errors or console errors
+(401/404 resource loads from signed-out probes excepted). Exhibit pages are covered by tests/e2e/exhibit.spec.ts.
+
+  ✓  1 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › phone-portrait › 390x844 touch: readme, home and world, works, workshop (guest and signed in) (7.5s)
+  ✓  2 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › phone-landscape › 844x390 touch: readme, home and world, works, workshop (guest and signed in) (10.4s)
+  ✓  3 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › tablet-portrait › 768x1024 touch: readme, home and world, works, workshop (guest and signed in) (8.6s)
+  ✓  4 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › tablet-landscape › 1024x768 touch: readme, home and world, works, workshop (guest and signed in) (11.7s)
+  ✓  5 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › laptop-1024-fine › 1024x768 mouse: readme, home and world, works, workshop (guest and signed in) (9.8s)
+  ✓  6 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › laptop › 1366x768 mouse: readme, home and world, works, workshop (guest and signed in) (9.9s)
+  ✓  7 [desktop] › ../COMP4020-final-fixes-20261107/scripts/matrix.spec.ts:67:9 › desktop › 1920x1080 mouse: readme, home and world, works, workshop (guest and signed in) (10.3s)
+  7 passed (1.2m)
+(The run's titles said 'exhibit'; the spec never opened an exhibit page, and its titles were corrected afterwards.)
+
+Viewports and input: 390x844, 844x390, 768x1024, 1024x768 with coarse touch (Pixel 7 user agent, DPR 2); 1024x768,
+1366x768, 1920x1080 with a fine mouse. 1024x768 was run with both inputs: touch gets the touch HUD, mouse the desktop HUD.
+
+Screenshots reviewed by the agent (not by the author): 06-025..06-028 are four of the 42, downscaled to CSS pixels.
+Observed: phone portrait shows the compact landmark label with an info button, Menu, joystick, Run, Up/Down/Boost and the
+page below; the signed-in phone Menu holds Resume, safe point, home, landmarks, the four destinations and Light; tablet
+landscape keeps the touch HUD at the edges; the 1024x768 mouse laptop shows the unchanged desktop HUD. Signed-in pages at
+390 px scroll the compact header's nav sideways (Favorites, About... clipped at the edge); that is the baseline design
+(styles.css '.site-header.compact nav { overflow-x: auto }' at fa23e6a), not a regression.
+
+== Desktop comparison: baseline fa23e6a build vs the changed build — captures/compare/desktop-compare.txt
+Same routes, viewports (1366x768, 1920x1080), world state, camera, light setting and settled frame; UI-only screenshots
+hide only the <canvas>, so every HUD control is painted; geometry dumps list each control's label, box and visibility.
+UI-only screenshots (canvas hidden; all HUD controls painted): baseline fa23e6a build vs changed build
+desktop-1366x768-home-1-idle.png                     IDENTICAL  (byte-identical file)
+desktop-1366x768-home-2-exploring.png                IDENTICAL  (byte-identical file)
+desktop-1366x768-home-3-controls.png                 IDENTICAL  (byte-identical file)
+desktop-1366x768-home-4-paused.png                   IDENTICAL  (byte-identical file)
+desktop-1366x768-world-1-idle.png                    IDENTICAL  (byte-identical file)
+desktop-1366x768-world-2-exploring.png               IDENTICAL  (byte-identical file)
+desktop-1366x768-world-3-controls.png                IDENTICAL  (byte-identical file)
+desktop-1366x768-world-4-paused.png                  IDENTICAL  (byte-identical file)
+desktop-1920x1080-home-1-idle.png                    IDENTICAL  (byte-identical file)
+desktop-1920x1080-home-2-exploring.png               IDENTICAL  (byte-identical file)
+desktop-1920x1080-home-3-controls.png                IDENTICAL  (byte-identical file)
+desktop-1920x1080-home-4-paused.png                  IDENTICAL  (byte-identical file)
+desktop-1920x1080-world-1-idle.png                   IDENTICAL  (byte-identical file)
+desktop-1920x1080-world-2-exploring.png              IDENTICAL  (byte-identical file)
+desktop-1920x1080-world-3-controls.png               IDENTICAL  (byte-identical file)
+desktop-1920x1080-world-4-paused.png                 IDENTICAL  (byte-identical file)
+
+HUD geometry, labels, visibility and control list (JSON dumps)
+desktop-1366x768-home-1-idle.json                    IDENTICAL  [10 controls, 6 HUD selectors]
+desktop-1366x768-home-2-exploring.json               IDENTICAL  [14 controls, 10 HUD selectors]
+desktop-1366x768-home-3-controls.json                IDENTICAL  [14 controls, 11 HUD selectors]
+desktop-1366x768-home-4-paused.json                  IDENTICAL  [13 controls, 7 HUD selectors]
+desktop-1366x768-world-1-idle.json                   IDENTICAL  [9 controls, 6 HUD selectors]
+desktop-1366x768-world-2-exploring.json              IDENTICAL  [14 controls, 10 HUD selectors]
+desktop-1366x768-world-3-controls.json               IDENTICAL  [14 controls, 11 HUD selectors]
+desktop-1366x768-world-4-paused.json                 IDENTICAL  [12 controls, 7 HUD selectors]
+desktop-1920x1080-home-1-idle.json                   IDENTICAL  [10 controls, 6 HUD selectors]
+desktop-1920x1080-home-2-exploring.json              IDENTICAL  [14 controls, 10 HUD selectors]
+desktop-1920x1080-home-3-controls.json               IDENTICAL  [14 controls, 11 HUD selectors]
+desktop-1920x1080-home-4-paused.json                 IDENTICAL  [13 controls, 7 HUD selectors]
+desktop-1920x1080-world-1-idle.json                  IDENTICAL  [9 controls, 6 HUD selectors]
+desktop-1920x1080-world-2-exploring.json             IDENTICAL  [14 controls, 10 HUD selectors]
+desktop-1920x1080-world-3-controls.json              IDENTICAL  [14 controls, 11 HUD selectors]
+desktop-1920x1080-world-4-paused.json                IDENTICAL  [12 controls, 7 HUD selectors]
+
+Re-captured after the safe-point change (which also applies on desktop: recovery now lands). The comparison covers
+appearance, labels and layout; desktop interaction is covered by world-interaction, world-keyboard, world-route,
+world-protection and graphics in the gate. Known and unchanged on desktop: 'View player works' sets #exhibits-h but
+does not scroll to the exhibition (also at fa23e6a); left open because desktop behaviour must not change.

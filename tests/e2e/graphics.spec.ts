@@ -4,7 +4,7 @@
 // Render counts come from the opt-in test probe; they show behaviour in
 // headless SwiftShader, not player-device frame rates.
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
-import { createWork, register } from "./helpers.ts";
+import { createWork, register, shotPath } from "./helpers.ts";
 
 const KEY = "stillwood.graphicsQuality.v1";
 type Stats = { renders: number; mode: string; tier: string; pixelRatio: number; shadows: boolean; shadowMapSize: number; programs: number; textures: number; geometries: number; auto: { warmupLeft: number; consecutiveBad: number } };
@@ -113,7 +113,7 @@ test.describe("graphics modes (2× screen)", () => {
     await expect(page.getByLabel("Graphics quality")).toHaveValue("auto");
     await expect(page.getByText("Auto balances detail and smoothness. This setting only affects this device.")).toBeVisible();
     await expect(page.getByText("Currently: High")).toBeVisible();
-    await page.screenshot({ path: "docs/evidence/p8-graphics-panel.png" });
+    await page.screenshot({ path: shotPath("p8-graphics-panel.png") });
 
     await chooseQuality(page, "low");
     expect(await stats(page)).toMatchObject({ tier: "low", pixelRatio: 1, shadows: false });
@@ -553,7 +553,7 @@ test.describe("phone (390×844 marking viewport)", () => {
     expect(panel.x + panel.width).toBeLessThanOrEqual(390);
     const select = (await page.getByLabel("Graphics quality").boundingBox())!;
     expect(select.height).toBeGreaterThanOrEqual(44);
-    await page.screenshot({ path: "docs/evidence/p8-graphics-phone.png" });
+    await page.screenshot({ path: shotPath("p8-graphics-phone.png") });
     await page.getByLabel("Graphics quality").selectOption("low");
     await expect.poll(async () => (await stats(page)).pixelRatio).toBe(1);
     await page.getByLabel("Graphics quality").selectOption("high");

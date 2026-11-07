@@ -22,10 +22,12 @@ import { horizontalSpeed, SPEED_MODES, type SpeedMode } from "../../world/flight
 import { DRAG_SENSITIVITY, DragLook, HELD_KEYS, KEYS, LOCK_SENSITIVITY, LOOK_KEY_STEP, LOOK_LOCK_KEY, LOOK_LOCK_LABEL, SPEED_KEYS, heldToInput, isFormField } from "./input.ts";
 import { loadReturn, loadSpeed, saveReturn, saveSpeed, type WorldRoute } from "./world-session.ts";
 import { LIGHT_MODES, loadLightMode, saveLightMode, type EnvironmentStatus, type LightMode } from "./daynight.ts";
+import { TOUCH_LAYOUT_QUERY, prefersTouchLayout } from "./touch-layout.ts";
+import { TouchHud } from "./TouchHud.tsx";
+import { LIGHT_LABEL, PHASE_LABEL, SPEED_LABEL, SpeedIcon } from "./world-ui.tsx";
 
 export const OPENING = "From the first lintel to towers above the clouds. Follow the valley and discover how imagination becomes space, one piece at a time.";
 
-const SPEED_LABEL: Record<SpeedMode, string> = { walk: "Walk", run: "Run", fly: "Fly" };
 const SPEED_KEY: Record<SpeedMode, string> = { walk: "1", run: "2", fly: "3" };
 
 /** Is this event's target one of the HUD's own controls (never a camera gesture)? */
@@ -67,6 +69,12 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
   const [notice, setNotice] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [touch] = useState(() => matchMedia("(pointer: coarse)").matches);
+  /**
+   * The phone/tablet layout (touch-layout.ts): a hand-held primary input, chosen by capability, not width. It
+   * follows the device's report live (a tablet docked to a mouse changes it) without remounting the world: only
+   * the overlay changes; the canvas, camera, light and speed belong to the runtime and are kept.
+   */
+  const [touchLayout, setTouchLayout] = useState(() => prefersTouchLayout());
   const [boostLatched, setBoostLatched] = useState(false);
   const [speed, setSpeedState] = useState<SpeedMode>(loadSpeed);
   /** The day/night preference (a local viewing preference, remembered per browser) and what the island shows now. */
@@ -91,6 +99,8 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
   const fsExitAt = useRef(-Infinity);
   const activeRef = useRef(false);
   activeRef.current = active;
+  /** The touch layout's information panel is open: canvas look gestures are held off (never set on desktop). */
+  const overlayHold = useRef(false);
 
   // ---- one place that stops all input: held keys, drag gesture, look deltas, Look lock
   const endInput = (opts: { releaseLock?: boolean } = {}): void => {
@@ -398,6 +408,7 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
       const v = view.current;
       if (!v || e.target !== v.renderer.domElement) return;
       if (v.getStatus().control !== "exploring") return;
+      if (overlayHold.current) return;
       if (v.getStatus().pointerLocked) return;
       // the left mouse button only (right-click keeps the normal context menu; middle-click keeps autoscroll);
       // any touch or pen contact that reaches the canvas (the stick and buttons stop theirs), one gesture at a time
@@ -517,6 +528,33 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
     if (view.current) view.current.input.boostLatched = boostLatched;
   }, [boostLatched]);
 
+  // the touch layout follows the browser's report of the primary input (one listener, removed on unmount); a
+  // change clears held input, as any layout change under the fingers does
+  useEffect(() => {
+    if (typeof matchMedia !== "function") return;
+    const mq = matchMedia(TOUCH_LAYOUT_QUERY);
+    const onChange = (): void => {
+      endInputRef.current({ releaseLock: false });
+      setTouchLayout(mq.matches);
+    };
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
+  // a rotation or a browser-chrome height change in the touch layout: what was held under the fingers ends
+  // (pointer capture can be lost silently during a rotation)
+  useEffect(() => {
+    if (!touchLayout) return;
+    const onOrient = (): void => endInputRef.current({ releaseLock: false });
+    const so = (screen as unknown as { orientation?: EventTarget }).orientation;
+    so?.addEventListener?.("change", onOrient);
+    window.addEventListener("orientationchange", onOrient);
+    return () => {
+      so?.removeEventListener?.("change", onOrient);
+      window.removeEventListener("orientationchange", onOrient);
+    };
+  }, [touchLayout]);
+
   // focus follows the overlay: opening the pause menu (Esc or Pause) moves focus to "Resume
   // exploring" — the Pause button that had it is gone — and closing it returns focus to the world
   useEffect(() => {
@@ -558,7 +596,7 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
   const safe = (): void => {
     const v = view.current;
     const sp = v?.nearestSafePoint();
-    if (v && sp) void v.jumpTo(sp).then(() => setNotice("Returned to the nearest safe point."));
+    if (v && sp) void v.jumpTo(sp, { land: true }).then(() => setNotice("Returned to the nearest safe point."));
   };
   const home = (): void => {
     void view.current?.goHome().then(() => setNotice("Back at the home meadow."));
@@ -597,13 +635,23 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
   const exploring = s?.control === "exploring";
   const ready = s?.phase === "ready";
   const locked = !!s?.pointerLocked;
+  /**
+   * "View player works" in the touch layout's menu: the same action as the desktop link. The app router follows
+   * the link and owns the scroll (on the home page, to the exhibition list); elsewhere the pose is remembered.
+   */
+  const viewPlayerWorks = (): void => {
+    if (mode === "home") {
+      if (fullscreenElement()) exitFullscreen();
+    } else rememberPose();
+  };
+
   const helpText = touch
     ? "Left stick moves; drag on the right to look; Up and Down fly; Walk, Run and Fly set the speed."
     : `Drag with the left mouse button to look (or I/J/K/L). WASD or arrows move, Space up, C down, Shift boosts. 1 Walk · 2 Run · 3 Fly. ${LOOK_LOCK_LABEL} or Look lock: look by moving the mouse; Esc gives the cursor back. E enters a portal. Esc pauses when the cursor is free.`;
   return (
     <section
       ref={stage}
-      className={`world-stage world-${mode}${exploring ? " exploring" : ""}${active ? " active" : ""}${locked ? " locked" : ""}${fullscreen ? " is-fullscreen" : ""}`}
+      className={`world-stage world-${mode}${touchLayout ? " world-touch-layout" : ""}${exploring ? " exploring" : ""}${active ? " active" : ""}${locked ? " locked" : ""}${fullscreen ? " is-fullscreen" : ""}`}
       aria-labelledby="world-h"
       aria-describedby="world-help"
       // one Tab stop for the world's keys: keyboard users reach it (or return to it from the HUD) like any control
@@ -617,6 +665,45 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
         The island
       </h2>
       <div className="world-host" ref={host} />
+      {touchLayout ? (
+      <TouchHud
+        mode={mode}
+        view={view}
+        status={s}
+        user={!!user}
+        menu={menu}
+        setMenu={setMenu}
+        notice={notice}
+        setNotice={setNotice}
+        light={light}
+        env={env}
+        onLight={chooseLight}
+        speed={speed}
+        onSpeed={chooseSpeed}
+        boostLatched={boostLatched}
+        setBoostLatched={setBoostLatched}
+        fullscreen={fullscreen}
+        canFullscreen={canFullscreen}
+        onTake={take}
+        onPause={pause}
+        onSafe={safe}
+        onHome={home}
+        onToggleFullscreen={toggleFullscreen}
+        onExitFullscreen={exitFullscreen}
+        onEnterPortal={(id) => void enterPortal(id)}
+        onRememberPose={rememberPose}
+        onViewPlayerWorks={viewPlayerWorks}
+        endInput={() => endInputRef.current({ releaseLock: false })}
+        onOverlayHold={(on) => {
+          overlayHold.current = on;
+          if (on) endInputRef.current({ releaseLock: false });
+        }}
+        opening={OPENING}
+        takeRef={takeRef}
+        stick={<TouchControls view={view} boostLatched={boostLatched} setBoostLatched={setBoostLatched} sticksOnly />}
+        landmarkJump={<LandmarkJump view={view} onJump={(t) => setNotice(`At ${t}. Start exploring to look around.`)} />}
+      />
+      ) : (
       <div className="world-overlay">
         {!exploring && (
           <div className="world-intro">
@@ -670,11 +757,11 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
           </a>
           <a
             href="/#exhibits-h"
-            onClick={(e) => {
+            onClick={() => {
+              // the app router follows the link and owns the scroll (src/client/router.ts navigate): on the home
+              // page it scrolls to the exhibition; from /world/ it opens the home page, remembering the pose
               if (mode === "home") {
-                e.preventDefault();
                 if (fullscreenElement()) exitFullscreen();
-                document.getElementById("exhibits-h")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
               } else rememberPose();
             }}
           >
@@ -760,12 +847,11 @@ export function WorldStage({ mode }: { mode: "home" | "full" }) {
           </div>
         )}
       </div>
+      )}
     </section>
   );
 }
 
-const LIGHT_LABEL: Record<LightMode, string> = { auto: "Auto", day: "Day", night: "Night" };
-const PHASE_LABEL: Record<EnvironmentStatus["phase"], string> = { dawn: "dawn", day: "day", dusk: "dusk", night: "night" };
 
 /**
  * Auto / Day / Night (courtyard/day-night directive §6): a local viewing preference, remembered per browser. Auto
@@ -831,30 +917,6 @@ function SpeedRail({ speed, onSpeed, locked, onLookLock, touch, keepFocus }: { s
   );
 }
 
-function SpeedIcon({ mode }: { mode: SpeedMode }) {
-  // simple line icons that read on bright sky and dark stone alike (stroke follows the button's text colour)
-  const common = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
-  if (mode === "fly")
-    return (
-      <svg {...common}>
-        <path d="M3 13c3-1 5-4 9-4s6 3 9 4" />
-        <path d="M7 12.5 4 17M17 12.5l3 4.5M12 9v8" />
-      </svg>
-    );
-  if (mode === "run")
-    return (
-      <svg {...common}>
-        <circle cx="15" cy="4.5" r="1.8" />
-        <path d="M9 20l3-5 3 2v4M12 15l1-5 4 3h3M13 10l-4-1-3 3" />
-      </svg>
-    );
-  return (
-    <svg {...common}>
-      <circle cx="12" cy="4.5" r="1.8" />
-      <path d="M12 8v6l-2 6M12 14l2 6M9 11l3-2 3 2" />
-    </svg>
-  );
-}
 
 function LandmarkJump({ view, onJump }: { view: React.RefObject<WorldView | null>; onJump: (title: string) => void }) {
   const m = view.current?.manifest;
@@ -885,9 +947,11 @@ function LandmarkJump({ view, onJump }: { view: React.RefObject<WorldView | null
 }
 
 /** Left virtual stick, right-side drag look (handled by the stage), ascend/descend and a boost toggle (44 px targets). */
-function TouchControls({ view, boostLatched, setBoostLatched }: { view: React.RefObject<WorldView | null>; boostLatched: boolean; setBoostLatched: (b: boolean) => void }) {
+function TouchControls({ view, boostLatched, setBoostLatched, sticksOnly }: { view: React.RefObject<WorldView | null>; boostLatched: boolean; setBoostLatched: (b: boolean) => void; sticksOnly?: boolean }) {
   const stick = useRef<HTMLDivElement>(null);
   const [knob, setKnob] = useState<[number, number]>([0, 0]);
+  /** Knob travel in px: 32 for the original 120 px stick, scaled with the stick's actual size (phone/tablet sizes differ). */
+  const [travel, setTravel] = useState(32);
   const active = useRef<number | null>(null);
   const setMove = (x: number, y: number): void => {
     const v = view.current;
@@ -912,6 +976,7 @@ function TouchControls({ view, boostLatched, setBoostLatched }: { view: React.Re
       x /= l;
       y /= l;
     }
+    if (r.width > 0) setTravel(Math.round((r.width * 32) / 120));
     setKnob([x, y]);
     setMove(x, y);
   };
@@ -940,11 +1005,16 @@ function TouchControls({ view, boostLatched, setBoostLatched }: { view: React.Re
       if (view.current) view.current.input[key] = false;
     },
   });
+  const stickEl = (
+    <div className="world-stick" ref={stick} role="img" aria-label="Move stick" onMouseDown={(e) => e.preventDefault()} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onLostPointerCapture={onUp}>
+      <div className="world-knob" style={{ transform: `translate(${knob[0] * travel}px, ${knob[1] * travel}px)` }} />
+    </div>
+  );
+  // the phone/tablet layout draws its own Up/Down/Boost cluster (TouchHud) with the same hold semantics
+  if (sticksOnly) return <div className="world-touch world-t-stickwrap">{stickEl}</div>;
   return (
     <div className="world-touch">
-      <div className="world-stick" ref={stick} role="img" aria-label="Move stick" onMouseDown={(e) => e.preventDefault()} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onLostPointerCapture={onUp}>
-        <div className="world-knob" style={{ transform: `translate(${knob[0] * 32}px, ${knob[1] * 32}px)` }} />
-      </div>
+      {stickEl}
       <div className="world-fly">
         <button type="button" {...hold("ascend")}>
           Up

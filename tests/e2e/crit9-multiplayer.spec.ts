@@ -115,33 +115,113 @@ interface Placed {
   commandId: string | null;
   result: { outcome: string; code?: string; message?: string } | null;
   draftBeforeClick: string | null;
+  /** Held sticks the world moved into before Place could be clicked, each cancelled and added again (see placeVia). */
+  readded: string[];
 }
+const MAX_READD = 2;
 /**
  * Add a stick through the UI and place it. Records the command the page sent
  * (if any) and the server's result for that command ID, so an unplaced stick is
  * explained rather than guessed at.
+ *
+ * A held stick is checked against the authoritative poses on every world frame, and once more when Place is
+ * clicked. It is added 0.1 u above the surface below it, and while sticks are still settling the surface can rise
+ * into it: the draft then reads "Intersecting; adjust position", Place is disabled, and a click that lands just as
+ * it turns is refused before anything is sent (M05 checks that contract). Neither changes without the person's
+ * input. Before 2026-11-07 this helper clicked Place and waited for it to be re-enabled (M02 stalled for the
+ * 5-minute test timeout), or, when the click landed and was refused, returned no stick (an M09 cycle then failed).
+ * Here the click keeps its normal actionability wait, and only when the draft shows exactly that refusal, with no
+ * place command sent, does the helper do what the message asks: cancel and add again, so the stick goes on a free
+ * spot. Each re-add is recorded with the text that caused it; any other refusal, or more than MAX_READD, fails.
  */
-async function placeVia(p: Page): Promise<Placed> {
+async function placeVia(p: Page, opts: { held?: boolean } = {}): Promise<Placed> {
   const wait = 700 - (Date.now() - (lastPlaced.get(p) ?? 0)); // stay under 2 commands/s per account
   if (wait > 0) await p.waitForTimeout(wait);
   const before = new Set(await ids(p));
   const sentBefore = (await c9<unknown[]>(p, "commands")).length;
-  await p.getByRole("button", { name: "Add a stick" }).click();
-  await expect(p.locator(".draft-state")).toBeVisible();
-  const draftBeforeClick = await p.locator(".draft-state").innerText().catch(() => null);
-  await p.getByRole("button", { name: "Place", exact: true }).click();
-  lastPlaced.set(p, Date.now());
-  const id = await until(async () => (await ids(p)).find((x) => !before.has(x)), 5000);
-  const cmds = (await c9<{ commandId: string; kind: string }[]>(p, "commands")).slice(sentBefore).filter((c) => c.kind === "place");
+  const readded: string[] = [];
+  const refusal = p.locator(".draft-state.tone-bad", { hasText: "Intersecting; adjust position" });
+  const sentPlaces = async (): Promise<{ commandId: string; kind: string }[]> => (await c9<{ commandId: string; kind: string }[]>(p, "commands")).slice(sentBefore).filter((c) => c.kind === "place");
+  const readd = async (): Promise<void> => {
+    readded.push((await refusal.innerText()).trim());
+    await p.keyboard.press("Escape");
+    await expect(p.locator(".draft-state")).toHaveCount(0);
+  };
+  let draftBeforeClick: string | null = null;
+  let id: string | null = null;
+  // opts.held: the page already holds a stick (M05b), so start at Place instead of Add
+  for (let add = !opts.held; ; add = true) {
+    if (add) await p.getByRole("button", { name: "Add a stick" }).click();
+    await expect(p.locator(".draft-state")).toBeVisible();
+    draftBeforeClick = await p.locator(".draft-state").innerText().catch(() => null);
+    try {
+      await p.getByRole("button", { name: "Place", exact: true }).click({ timeout: 2000 });
+    } catch (e) {
+      // Place stayed disabled: only the moved-into refusal is followed
+      if (!(await refusal.count()) || readded.length >= MAX_READD) throw e;
+      await readd();
+      continue;
+    }
+    lastPlaced.set(p, Date.now());
+    // the stick appears, or the click was refused before sending (the same refusal, nothing sent)
+    let refused = false;
+    id = await until(async () => {
+      const got = (await ids(p)).find((x) => !before.has(x));
+      if (got) return got;
+      if ((await refusal.count()) && (await sentPlaces()).length === 0) refused = true;
+      return refused ? "refused" : undefined;
+    }, 5000);
+    if (id === "refused") {
+      id = null;
+      if (readded.length >= MAX_READD) break;
+      await readd();
+      continue;
+    }
+    break;
+  }
+  const cmds = await sentPlaces();
   const commandId = cmds[cmds.length - 1]?.commandId ?? null;
   const result = commandId ? await until(() => p.evaluate((c) => (window as any).__c9.results[c], commandId), id ? 1000 : 3000) : null;
   if (!id) {
     const message = await p.locator(".ws-stage").innerText().catch(() => null);
     await p.keyboard.press("Escape");
-    return { id: null, message, commandId, result, draftBeforeClick };
+    return { id: null, message, commandId, result, draftBeforeClick, readded };
   }
   await expect(p.locator(".draft-state")).toHaveCount(0);
-  return { id, message: null, commandId, result, draftBeforeClick };
+  return { id, message: null, commandId, result, draftBeforeClick, readded };
+}
+/**
+ * From a second socket in p's own browser: take over editing and commit a stick exactly at the given pose (a partner's
+ * ghost). Ghosts don't reserve space (ADR-0006), so the server accepts it and the partner's held stick now intersects it.
+ */
+async function commitAt(p: Page, work: string, pose: unknown): Promise<{ outcome: string; code?: string; stickId: string }> {
+  return p.evaluate(
+    async ({ workId, pose }) => {
+      const s = await (await fetch("/api/session")).json();
+      const ws = new WebSocket(`ws://${location.host}/ws`);
+      const next = (pred: (m: any) => boolean): Promise<any> =>
+        new Promise((res) => {
+          const l = (e: MessageEvent): void => {
+            const m = JSON.parse(String(e.data));
+            if (pred(m)) (ws.removeEventListener("message", l), res(m));
+          };
+          ws.addEventListener("message", l);
+        });
+      await new Promise((r) => ws.addEventListener("open", r));
+      ws.send(JSON.stringify({ type: "hello", csrf: s.csrf }));
+      await next((m) => m.type === "hello.ok");
+      ws.send(JSON.stringify({ type: "room.join", workId }));
+      const snap = await next((m) => m.type === "room.snapshot");
+      ws.send(JSON.stringify({ type: "lease.takeover" }));
+      const lease = await next((m) => m.type === "lease.changed" && m.lease);
+      const commandId = crypto.randomUUID();
+      ws.send(JSON.stringify({ v: 1, type: "command", commandId, workId, worldEpoch: snap.epoch, streamId: snap.streamId, lastSeenTick: snap.tick + 1000, leaseId: lease.lease.leaseId, kind: "place", payload: { pose } }));
+      const r = await next((m) => m.type === "command.result" && m.commandId === commandId);
+      ws.close();
+      return { outcome: r.outcome, code: r.code, stickId: r.stickId };
+    },
+    { workId: work, pose },
+  );
 }
 /** Page clock minus controller clock, from round trips (both are wall-clock based on one host). */
 async function offset(p: Page): Promise<{ offsetMs: number; halfRttMs: number }> {
@@ -254,7 +334,7 @@ test.describe.serial("Crit 9 local multiplayer (browser)", () => {
       const r = await placeVia(sender);
       const clicks = await c9<number[]>(sender, "clicks");
       const clickAt = clicks[clicks.length - 1]! - offsets[s].offsetMs;
-      const row: Record<string, unknown> = { n: i + 1, sender: s, stickId: r.id, accepted: !!r.id, commandId: r.commandId, serverResult: r.result, draftBeforeClick: r.draftBeforeClick, unplacedStageText: r.message, clickAt };
+      const row: Record<string, unknown> = { n: i + 1, sender: s, stickId: r.id, accepted: !!r.id, commandId: r.commandId, serverResult: r.result, draftBeforeClick: r.draftBeforeClick, readded: r.readded, unplacedStageText: r.message, clickAt };
       for (const rcv of (["A", "B", "C"] as const).filter((x) => x !== s)) {
         const sid = r.id;
         const got = sid ? await until(() => pages[rcv].evaluate((id) => (window as any).__c9.rendered[id] as number | undefined, sid), 5000) : null;
@@ -308,7 +388,7 @@ test.describe.serial("Crit 9 local multiplayer (browser)", () => {
     mkdirSync(OUT, { recursive: true });
     const cols = ["n", "sender", "accepted", "commandId", "serverOutcome", "clickAt", "serverAcceptedAt", "A_received", "A_rendered", "B_received", "B_rendered", "C_received", "C_rendered"];
     writeFileSync(join(OUT, "timing-samples.csv"), [cols.join(","), ...samples.map((x) => cols.map((c) => (x[c] == null ? "" : typeof x[c] === "number" ? (x[c] as number).toFixed(1) : String(x[c]))).join(","))].join("\n") + "\n");
-    observations.timing = { offsets, serverMatchedByCommandId: mapped, serverAccepts: accepts.length, attempted: plan.length, accepted: acceptedRows.length, samples };
+    observations.timing = { offsets, serverMatchedByCommandId: mapped, serverAccepts: accepts.length, attempted: plan.length, accepted: acceptedRows.length, readded: samples.filter((x) => (x.readded as string[]).length).map((x) => ({ n: x.n, sender: x.sender, readded: x.readded })), samples };
     observations.M02 = { sticksEverywhere: sid.length, duplicates: 0, settled, settleWaitMs: settleMs, maxPositionDeltaFromServer: maxDelta, statusAtEnd: await A.locator(".ws-status").innerText(), senders: { A: 12, B: 12, C: 2 } };
   });
 
@@ -319,33 +399,7 @@ test.describe.serial("Crit 9 local multiplayer (browser)", () => {
     const ghost = await until(() => A.evaluate((u) => (window as any).__c9.drafts[u] as { pose: unknown } | undefined, bId), 3000);
     expect(ghost).not.toBeNull();
     // A, from a second socket in A's own browser, takes over editing and commits exactly at B's ghost
-    const conflict = await A.evaluate(
-      async ({ workId, pose }) => {
-        const s = await (await fetch("/api/session")).json();
-        const ws = new WebSocket(`ws://${location.host}/ws`);
-        const next = (pred: (m: any) => boolean): Promise<any> =>
-          new Promise((res) => {
-            const l = (e: MessageEvent): void => {
-              const m = JSON.parse(String(e.data));
-              if (pred(m)) (ws.removeEventListener("message", l), res(m));
-            };
-            ws.addEventListener("message", l);
-          });
-        await new Promise((r) => ws.addEventListener("open", r));
-        ws.send(JSON.stringify({ type: "hello", csrf: s.csrf }));
-        await next((m) => m.type === "hello.ok");
-        ws.send(JSON.stringify({ type: "room.join", workId }));
-        const snap = await next((m) => m.type === "room.snapshot");
-        ws.send(JSON.stringify({ type: "lease.takeover" }));
-        const lease = await next((m) => m.type === "lease.changed" && m.lease);
-        const commandId = crypto.randomUUID();
-        ws.send(JSON.stringify({ v: 1, type: "command", commandId, workId, worldEpoch: snap.epoch, streamId: snap.streamId, lastSeenTick: snap.tick + 1000, leaseId: lease.lease.leaseId, kind: "place", payload: { pose } }));
-        const r = await next((m) => m.type === "command.result" && m.commandId === commandId);
-        ws.close();
-        return { outcome: r.outcome, code: r.code, stickId: r.stickId };
-      },
-      { workId, pose: (ghost as { pose: unknown }).pose },
-    );
+    const conflict = await commitAt(A, workId, (ghost as { pose: unknown }).pose);
     expect(conflict.outcome).toBe("accepted");
     await until(async () => (await ids(B)).includes(conflict.stickId), 3000);
     const sentBefore = (await c9<string[]>(B, "sent")).filter((x) => x === "command:place").length;
@@ -367,6 +421,65 @@ test.describe.serial("Crit 9 local multiplayer (browser)", () => {
     // closing the second socket frees the seat, and the server gives it back to A's workshop window
     await expect(A.getByRole("button", { name: "Add a stick" })).toBeEnabled({ timeout: 5000 });
     observations.M05 = { partnerCommitAtGhost: conflict.outcome, path: sentAfter > sentBefore ? "sent to server" : "refused by the client's advisory check before sending", placeDisabled, feedback, draftKept: true, phantomSticks: 0, convergedWithServer: true };
+  });
+
+  test("M05b a held stick the world has moved into stays refused until the person moves it; placeVia cancels and adds again, then places", async () => {
+    // The M02 stall (2026-11-07): a sender's held stick turned "Intersecting" when a settling stick came to rest inside
+    // it; Place stayed disabled (correctly: a draft is re-checked against the world on every frame, and nothing moves
+    // it out of a resting stick without the person's input) and the helper waited on it for the whole test timeout.
+    // The same state, made deterministically on a fresh work with an empty table: a partner's stick committed lying
+    // flat on the table exactly under B's held stick, where it can't fall or slide away.
+    const work2 = await createWork(A, label("W2"));
+    await skipIntro(A);
+    await A.getByRole("button", { name: "People" }).click();
+    await A.getByRole("button", { name: "Make an invitation link" }).click();
+    const link2 = await A.getByLabel("Send this link to a friend (shown once):").inputValue();
+    await A.getByRole("button", { name: "Close panel" }).click();
+    await B.goto(link2);
+    await B.getByRole("button", { name: `Join as ${label("B")}` }).click();
+    await B.waitForURL(new RegExp(`/works/${work2}/`));
+    await expect(B.locator(".conn-open")).toBeVisible();
+    await skipIntro(B);
+    await B.getByRole("button", { name: "Add a stick" }).click();
+    await expect(B.locator(".draft-state")).toContainText("Ready to place · drops 0.10 u onto the surface below"); // over the empty table
+    const bId = (await api(B, "GET", "/api/session")).body.user.id;
+    const ghost = (await until(() => A.evaluate((u) => (window as any).__c9.drafts[u] as { pose: { p: number[]; q: number[] } } | undefined, bId), 3000))!;
+    expect(ghost).not.toBeNull();
+    const resting = { p: [ghost.pose.p[0], 0.5, ghost.pose.p[2]], q: ghost.pose.q }; // on the tabletop (top 0, half height 0.5)
+    const before = new Set(await ids(B));
+    const sentBefore = (await c9<string[]>(B, "sent")).filter((x) => x === "command:place").length;
+    const hit = await commitAt(A, work2, resting);
+    expect(hit.outcome).toBe("accepted");
+    const place = B.getByRole("button", { name: "Place", exact: true });
+    await expect(B.locator(".draft-state.tone-bad")).toContainText("Intersecting; adjust position", { timeout: 3000 });
+    await expect(place).toBeDisabled();
+    // once the world is still, nothing else can re-enable it: the stall's state, without any input from B
+    await expect(B.locator(".save-saved")).toBeVisible({ timeout: 60_000 });
+    await expect(B.locator(".draft-state.tone-bad")).toContainText("Intersecting; adjust position");
+    await expect(place).toBeDisabled();
+    // the old helper's action, a plain Place click, can only time out here (bounded to 2 s instead of the test timeout)
+    const plainClick = await place.click({ timeout: 2000 }).then(() => "clicked", (e: Error) => (/Timeout/.test(e.message) ? "timed out" : e.message));
+    expect(plainClick).toBe("timed out");
+    expect((await c9<string[]>(B, "sent")).filter((x) => x === "command:place").length).toBe(sentBefore); // nothing was sent
+    // the helper follows the message: Escape (cancel) and Add again put the stick on a free spot, then Place lands it
+    await expect(A.getByRole("button", { name: "Add a stick" })).toBeEnabled({ timeout: 5000 });
+    const r = await placeVia(B, { held: true });
+    expect(r.readded).toEqual(["✕ Intersecting; adjust position"]);
+    expect(r.id).not.toBeNull();
+    expect(r.result?.outcome).toBe("accepted");
+    expect(before.has(r.id!)).toBe(false);
+    const srv2 = (await api(A, "GET", `/api/works/${work2}/state`)).body.sticks.map((x: { id: string }) => x.id).sort();
+    for (const x of await Promise.all([A, B].map(ids))) expect(x).toEqual(srv2);
+    expect(srv2).toEqual([hit.stickId, r.id].sort());
+    observations.M05b = { freshWork: true, partnerCommitUnderHeldStick: hit.outcome, refusedAfterSettling: true, plainPlaceClick: plainClick, placeCommandsWhileRefused: 0, readded: r.readded, placedAfterReadd: r.result?.outcome, convergedWithServer: true };
+    // back to the shared work for the remaining tests
+    for (const pg of [A, B]) {
+      await pg.goto(`/works/${workId}/`);
+      await expect(pg.locator(".conn-open")).toBeVisible();
+      await skipIntro(pg);
+    }
+    await expect(A.getByRole("button", { name: "Add a stick" })).toBeEnabled({ timeout: 5000 });
+    await expect(B.getByRole("button", { name: "Add a stick" })).toBeEnabled({ timeout: 5000 });
   });
 
   test("M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates", async () => {

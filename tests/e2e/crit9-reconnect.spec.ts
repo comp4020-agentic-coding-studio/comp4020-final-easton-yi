@@ -16,7 +16,7 @@
 // `offline`, the client drops its own socket first (as it should), and "an open
 // socket existed" fails (docs/evidence/crit-10-verification.md, D-2).
 import { expect, test, type Page } from "@playwright/test";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createWork, register } from "./helpers.ts";
 
@@ -24,6 +24,25 @@ const OUT = process.env.CRIT9_EVIDENCE_DIR ?? "test-results/crit9";
 const base = new URL(process.env.APP_URL ?? "http://localhost:8099");
 if (!["127.0.0.1", "localhost"].includes(base.hostname)) throw new Error(`refusing a non-local APP_URL: ${base.origin}`);
 const ATTEMPTS = 5;
+
+/**
+ * Methods A and M need a loopback-only network namespace (see the header). On Linux /proc/net/dev lists the current
+ * namespace's interfaces (sysfs isn't remounted by `unshare --net` and still shows the host's); only "lo" means
+ * loopback-only (`unshare --map-root-user --net` with lo up, as scripts/crit9/run.sh sets up for its own suites). Elsewhere those methods are skipped with the reason recorded,
+ * not run and reported as failures; method B (server terminate) is environment-independent and always runs when
+ * requested. A and B are different evidence: B shows recovery from a server-side drop, A shows the indicator for a
+ * client-observed loss with no offline event.
+ */
+const interfaces = ((): string[] => {
+  try {
+    if (!existsSync("/proc/net/dev")) return [];
+    return readFileSync("/proc/net/dev", "utf8").split("\n").slice(2).map((l) => l.split(":")[0]!.trim()).filter(Boolean);
+  } catch {
+    return [];
+  }
+})();
+const loopbackOnly = interfaces.length > 0 && interfaces.every((i) => i === "lo");
+const NEEDS_NETNS = new Set(["A", "M"]);
 const OBSERVE_MS = 8000;
 
 function instrument(): void {
@@ -137,7 +156,11 @@ test("F3: the indicator follows a lost socket (methods via CRIT9_RECONNECT_METHO
     return out;
   };
 
-  const methods = (process.env.CRIT9_RECONNECT_METHODS ?? "A,B").split(",");
+  const requested = (process.env.CRIT9_RECONNECT_METHODS ?? "A,B").split(",");
+  const skipped = loopbackOnly ? [] : requested.filter((m) => NEEDS_NETNS.has(m));
+  const methods = requested.filter((m) => !skipped.includes(m));
+  for (const m of skipped) test.info().annotations.push({ type: "skipped-method", description: `${m}: needs a loopback-only network namespace (this namespace has ${interfaces.join(", ") || "unknown"} interfaces); run the spec inside one, e.g. unshare --map-root-user --net with lo up, as scripts/crit9/run.sh sets up` });
+  test.skip(methods.length === 0, `requested methods ${requested.join(",")} all need a loopback-only network namespace; none can run here`);
   const all = { A: "A offline + client close", B: "B server terminate", M: "A offline + client close while frames stream", S: "S client close, then offline, while frames stream" } as const;
   // A drops sticks from a raw socket in its own page (it leaves the workshop, so this socket holds its lease)
   if (methods.includes("M") || methods.includes("S")) {
@@ -219,7 +242,7 @@ test("F3: the indicator follows a lost socket (methods via CRIT9_RECONNECT_METHO
   }
 
   mkdirSync(OUT, { recursive: true });
-  writeFileSync(join(OUT, process.env.CRIT9_RECONNECT_FILE ?? "reconnect-attempts.json"), JSON.stringify(attempts, null, 2));
+  writeFileSync(join(OUT, process.env.CRIT9_RECONNECT_FILE ?? "reconnect-attempts.json"), JSON.stringify({ requested, ran: methods, skipped: skipped.map((m) => ({ method: m, reason: "needs a loopback-only network namespace" })), attempts }, null, 2));
   for (const x of attempts) {
     expect.soft(x.closedBeforeTrigger, `${x.method} #${x.n}: an open socket existed`).toBe(1);
     // The product's contract: the indicator follows the socket's actual close within one frame or so.

@@ -1,0 +1,106 @@
+Retest 2026-11-08 — multiplayer M02 stall: diagnosis, fix and regression evidence (local; uncommitted working tree, identity in 06-020 addendum section)
+
+== Symptom (2026-11-07, unmodified spec)
+At a sender's 21st-24th placement Playwright waited 5 minutes for Place to be enabled; the serial suite then skipped
+M05, M08, M09, M10 and L03. This tree failed 3 of 10 runs, the clean fa23e6a build 1 of 9 (06-020, M02 section).
+
+== Every condition that disables Place (src/client/workshop/Workshop.tsx:874)
+  disabled = !canEdit || phase !== "draft" || validityText(validity, phase).tone === "bad"
+  canEdit  = room.live && room.lease && room.mode === "build" && connStatus === "open" && !ended   (line 179)
+  phase    : idle -> draft (Add) -> submitting (Place sent) -> idle (accepted) | draft (rejected) | unknown-result
+  validity : validate(draft, sticks' latest authoritative poses, table, bounds) - re-run on every world.frame,
+             sticks.added, snapshot and result (revalidate), and once more inside place() before sending.
+  tone bad : intersecting, out of bounds, capacity, invalid. place() also returns without sending unless the
+             click-time validity is ready or unsupported.
+
+== Captured transitions (minimal recorder; 06-031)
+Every placement in the failing run: Place enabled with 'Ready to place · drops 0.10 u', then 'Waiting for server',
+then idle. At the stuck placement: Add -> 'Ready to place · drops 0.10 u' (Place enabled) -> 'drops 0.11 u' ->
+about 14 ms later '✕ Intersecting; adjust position' with Place disabled, Add disabled (phase draft), connection
+Connected; no further transition for the 30 s window. No place command was sent for it.
+
+== Cause
+Product behaviour is as designed and already specified by M05: a held stick is added 0.1 u above the surface
+below it; while the stack under it is still settling (partners' sticks placed 0.7 s apart on a tall stack), a
+settling stick comes to rest inside the held stick; the per-frame re-check marks it intersecting and disables
+Place; nothing re-enables it without the person's input. canEdit, the lease, the connection and the command
+state were all fine - the refusal is the client's advisory check doing its job, before anything is sent.
+Test defect: placeVia clicked Place and waited for it to become enabled, a state only a person's action (move the
+stick, or cancel and add again, as the message says) can produce. A second form of the same cause: the click
+lands just as the stick turns, place() re-checks, sends nothing, and placeVia returned no stick (seen 2026-11-08 in
+plan 2, P1 run 6: M09 failed with A's draft.start but no command.place in the server log).
+Where it happens: all 11 re-adds recorded in M02 (plans 2 and 3) were at placements 23-25 (A 23 x2, B 24 x6, C 25 x3), the top
+of the 26-stick stack - the same positions as the 2026-10-12 finding F2 (run 1 #24 B, run 2 #23 A, run 4 #24 B).
+
+== Why the diagnostic copy passed 10/10 on 2026-11-07
+Not established. The refusal occurs in about half of the fixed runs (plan 3: 9 of 20 runs), yet the diagnostic
+copy, which added an isEnabled() round trip before each click, never met it in 10 runs; its extra round trip may
+have let the stack settle before Add, but this was not measured.
+
+== Fix (tests/e2e/crit9-multiplayer.spec.ts only; no product change)
+placeVia keeps its normal Add/Place actions. Only when the draft shows exactly '✕ Intersecting; adjust position'
+(tone bad) and no place command was sent - either Place stayed disabled for its normal 2 s actionability wait, or
+the click was refused before sending - it does what the message asks: Escape (cancel) and Add again. At most 2
+re-adds per placement; each is recorded (Placed.readded; observations.timing.readded). Any other refusal fails.
+Nothing force-enables Place, bypasses validation, changes rate limits or adds a blind retry.
+
+== Regression check: M05b (new, in the same serial suite, before M08)
+On a fresh work with an empty table: B adds a stick; A commits a stick lying flat on the table under it (second
+socket, as M05). Asserts: B's draft reads Intersecting with Place disabled; still so after the room reports saved
+(world still); a plain Place click (the old helper's action) times out; no place command sent; placeVia then
+re-adds exactly once and places; server and both pages agree on exactly the two sticks.
+Mutation (old plain click restored, scratch copy): M05b hangs until the test timeout - logs/m02-fix-mutant2.
+
+== Bounded repeat plans (written before running; every result kept)
+Plan 2 (first version of the fix, timeout path only):
+  P1 1 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 2 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P1 3 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P2 1 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 4 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P1 5 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 6 exit 1 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  1 failed; 2 did not run; 6 passed (1.2m);
+  P2 2 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 7 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 8 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 9 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P2 3 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 10 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P1 11 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 12 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P2 4 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P1 13 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P1 14 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P1 15 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P2 5 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  done
+  -> P1 run 6 failed in M09 through the click-time form of the cause; placeVia was extended. M05b passed 20/20.
+Plan 3 (final fix; P3 = changed build x15, P4 = fa23e6a build with this spec x5):
+  P3 1 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P3 2 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 3 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (59.6s);
+  P4 1 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P3 4 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P3 5 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 6 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P4 2 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P3 7 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 8 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 9 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P4 3 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 10 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P3 11 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 12 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P4 4 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P3 13 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.1m);
+  P3 14 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (59.9s);
+  P3 15 exit 0 readded(M02,M05b)=1 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  P4 5 exit 0 readded(M02,M05b)=0 ['✕ Intersecting; adjust position'] :  9 passed (1.0m);
+  done
+  -> 20 of 20 runs 9/9. M02's own placements needed one re-add in 9 runs; M05b always exactly one.
+
+== Formerly blocked tests
+The five tests that did not run in the 2026-11-07 gate (serial suite stopped at M02): M05 (conflicting placement
+refused with a reason), M08 (socket closes, recovery without duplicates), M09 (hidden tab), M10 (another work's
+window sees nothing), L03 (visitor sees the frozen exhibit and the withdrawal). Plan 3 ran all of them, after
+their serial prerequisites M01, M03 and M02, in all 20 runs; see also the 2026-11-08 gate (06-020 addendum).

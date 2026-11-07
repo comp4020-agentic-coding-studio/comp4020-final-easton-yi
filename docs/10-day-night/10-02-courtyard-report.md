@@ -189,6 +189,13 @@ were not changed:
 The ground viewpoints of L02, L06, L13 and L16 are 2–8.5 m above the terrain at eye height. L13's "long" entry runs
 into the hillside past local x ≈ 166, and L16's toe entry crosses the river cut.
 
+*Retest 2026-11-07 (local, uncommitted, not deployed):* measured again against the runtime's terrain and collision,
+5 safe points stand more than 1 m above the ground (L06 `outside` and `arena`, L09 `keep-top`, L13 `west`, L16 `toe`),
+L05 `streambed` is 5 m below it, and two route points (`route-1800`, `route-1950`) are inside the dam. The recorded
+points are still unchanged, but "Return to nearest safe point" now stands the explorer on the surface under the point
+and skips one inside collision (`tests/e2e/world-safe-points.spec.ts`, 8/8). The ground viewpoints and the two entries
+above are unchanged and still open ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification)).
+
 ## Not verified
 
 - Frame rate and GPU memory on a real GPU.

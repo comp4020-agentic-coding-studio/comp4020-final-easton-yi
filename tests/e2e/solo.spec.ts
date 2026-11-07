@@ -1,14 +1,14 @@
 // AT-01 in a real browser: a new user registers, creates a work, places
 // sticks through the controls, and finds them after refresh and re-login.
 import { expect, test } from "@playwright/test";
-import { createWork, PASSWORD, placeViaControls, register } from "./helpers.ts";
+import { createWork, PASSWORD, placeViaControls, register, shotPath } from "./helpers.ts";
 
 test("new user creates a work, places sticks, and they survive refresh and logout", async ({ page }) => {
   const h = await register(page, "Solo Builder");
   await createWork(page, "First bridge");
   await expect(page.getByRole("heading", { name: "Getting started" })).toBeVisible();
   await page.getByRole("button", { name: "Skip" }).click();
-  await page.screenshot({ path: "docs/evidence/p1-empty-work.png" });
+  await page.screenshot({ path: shotPath("p1-empty-work.png") });
 
   await placeViaControls(page);
   await placeViaControls(page, async () => {
@@ -18,7 +18,7 @@ test("new user creates a work, places sticks, and they survive refresh and logou
     await page.getByRole("button", { name: "Snap to support" }).click();
   });
   await expect(page.locator(".save-saved")).toBeVisible({ timeout: 20_000 });
-  await page.screenshot({ path: "docs/evidence/p1-two-sticks.png" });
+  await page.screenshot({ path: shotPath("p1-two-sticks.png") });
 
   await page.reload();
   await page.getByRole("button", { name: "Sticks" }).click();

@@ -6,11 +6,29 @@ const listeners = new Set<() => void>();
 export type NavigationKind = "initial" | "push" | "replace" | "pop";
 let lastNavigation: NavigationKind = "initial";
 export const navigationKind = (): NavigationKind => lastNavigation;
+const hashTarget = (hash: string): HTMLElement | null => {
+  try {
+    return document.getElementById(decodeURIComponent(hash.slice(1)));
+  } catch {
+    return null; // a malformed escape in the hash: no target, so the page starts at the top as before
+  }
+};
+/**
+ * Go to an in-app URL. The router owns the scroll for every in-app navigation: a new page starts at the top, and a
+ * hash on the current page (same path and query, e.g. the home page's "View player works" → /#exhibits-h) scrolls
+ * its target into view instead, smoothly unless the person prefers reduced motion. Following a link to the URL that
+ * is already current replaces the history entry rather than adding a duplicate, as a native anchor does.
+ */
 export const navigate = (to: string, replace = false): void => {
-  lastNavigation = replace ? "replace" : "push";
-  if (replace) history.replaceState(null, "", to);
+  const next = new URL(to, location.href);
+  const samePage = next.pathname === location.pathname && next.search === location.search;
+  const target = samePage && next.hash ? hashTarget(next.hash) : null;
+  const useReplace = replace || next.href === location.href;
+  lastNavigation = useReplace ? "replace" : "push";
+  if (useReplace) history.replaceState(null, "", to);
   else history.pushState(null, "", to);
-  window.scrollTo(0, 0);
+  if (target) target.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  else window.scrollTo(0, 0);
   listeners.forEach((l) => l());
 };
 window.addEventListener("popstate", () => {

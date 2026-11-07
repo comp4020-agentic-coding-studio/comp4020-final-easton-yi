@@ -1,5 +1,11 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
+
+/**
+ * Where a routine screenshot goes: this test's own output directory under test-results/ (ignored by Git, unique per
+ * test and retry). Ordinary test runs never write into docs/; curated evidence is copied there deliberately.
+ */
+export const shotPath = (name: string): string => test.info().outputPath(name);
 
 export const handle = (): string => `e2e_${randomUUID().replace(/-/g, "").slice(0, 12)}`;
 export const PASSWORD = "correct horse battery";

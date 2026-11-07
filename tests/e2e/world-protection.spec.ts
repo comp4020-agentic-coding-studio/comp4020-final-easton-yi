@@ -176,12 +176,23 @@ test.describe("fallbacks: never a blank page", () => {
 
   test("a failed landmark asset leaves the rest of the island and says so", async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem("stillwood.test", "1"));
-    await page.route(/\/world-data\/landmarks\/L03\.far\.[0-9a-f]{8}\.bin/, (route) => route.fulfill({ status: 404, body: "" }));
+    let l03Requests = 0;
+    await page.route(/\/world-data\/landmarks\/L03\.far\.[0-9a-f]{8}\.bin/, (route) => (l03Requests++, route.fulfill({ status: 404, body: "" })));
     await page.goto("/");
     await expect(page.getByText("Ridge Doric Temple couldn't load. The rest of the island is still here.")).toBeVisible({ timeout: 60_000 });
-    const ready = await page.evaluate(() => (window as unknown as { __stillwoodWorld: { stats(): { landmarksReady: string[] } } }).__stillwoodWorld.stats().landmarksReady);
-    expect(ready).toHaveLength(19);
-    expect(ready).not.toContain("L03");
+    // The notice appears as soon as L03's third attempt fails, about 3 s after it was first requested (retries after
+    // 1 s and 2 s); the other far files stream two at a time and may still be arriving then (2026-11-07: 3 or 15 of
+    // 19 ready at the notice in failing runs). Reading the count once at the notice raced that loading. "The rest of
+    // the island is still here" means the other 19 do finish: wait for exactly that, then check L03 stays out.
+    const ready = (): Promise<string[]> => page.evaluate(() => (window as unknown as { __stillwoodWorld: { stats(): { landmarksReady: string[] } } }).__stillwoodWorld.stats().landmarksReady);
+    await expect.poll(async () => (await ready()).length, { timeout: 60_000, message: "every landmark but L03 finishes loading after L03 fails" }).toBe(19);
+    expect(await ready()).not.toContain("L03");
+    // L03 failed for good after its three attempts: no further requests, and it never becomes ready
+    expect(l03Requests).toBe(3);
     await expect(page.getByRole("button", { name: "Start exploring" })).toBeEnabled();
+    await page.getByRole("button", { name: "Start exploring" }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as { __stillwoodWorld: { stats(): { control: string } } }).__stillwoodWorld.stats().control)).toBe("exploring");
+    expect(l03Requests).toBe(3);
+    expect(await ready()).not.toContain("L03");
   });
 });

@@ -1,10 +1,25 @@
 // SAVE-01, SAVE-04..08, PUSH-01..03, HEIGHT-02, AUTH-04/05, AT-10, AT-11.
-import { afterEach, describe, expect, it } from "vitest";
-import { Client, FLAT, VERTICAL, Window, shared } from "./helpers.ts";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { TRANSPORT } from "../src/shared/config.ts";
+import { Client, FLAT, VERTICAL, Window, shared, sleep } from "./helpers.ts";
 
 const open: Window[] = [];
 afterEach(() => {
   for (const w of open.splice(0)) w.close();
+  lastTestEnd = performance.now();
+});
+
+// The tests in this file share accounts (shared("Owner"), shared("Ed")), and the server keeps one command bucket per
+// account (TRANSPORT.commandBurst, refilling at commandsPerSecond). Back-to-back tests used to inherit each other's
+// spent tokens: a test ending in a burst of 3–4 commands left the next test's first command ~10 ms from a 429
+// (measured: minimum 1.02 tokens before a take). Each test now starts after the bucket has refilled, exactly as a
+// person pausing between tasks would; nothing inside a test is delayed (some assert on timing, e.g. NOT_STABLE right
+// after a placement). The limit itself is asserted separately below ("command rate limit").
+const BUCKET_REFILL_MS = Math.ceil((TRANSPORT.commandBurst / TRANSPORT.commandsPerSecond) * 1000);
+let lastTestEnd = -Infinity;
+beforeEach(async () => {
+  const wait = lastTestEnd + BUCKET_REFILL_MS - performance.now();
+  if (wait > 0) await sleep(wait);
 });
 const win = async (c: Client, workId: string): Promise<Window> => {
   const w = await Window.open(c, workId);
@@ -262,5 +277,30 @@ describe("archive", () => {
     expect(back.snapshot.live).toBe(true);
     const again = await back.result(back.command("place", { pose: { p: [0, 0.505, 5], q: FLAT } }));
     expect(again.code ?? again.outcome).toBe("accepted");
+  });
+});
+
+describe("command rate limit", () => {
+  it("allows a burst of commandBurst commands per account, refuses the next with RATE_LIMITED and a retry delay, and recovers after refill", async () => {
+    const c = await new Client().register("Limiter");
+    const workId = await c.createWork();
+    const w = await win(c, workId);
+    // commands that don't change the world and are decided after the bucket check: an empty snapshot request on an
+    // empty, stable table is accepted; each draws one token
+    const results = [];
+    for (let i = 0; i <= TRANSPORT.commandBurst; i++) results.push(await w.result(w.command("snapshot.create", { title: `Burst ${i}` })));
+    const refused = results.filter((r) => r.code === "RATE_LIMITED");
+    expect(results.slice(0, TRANSPORT.commandBurst).every((r) => r.outcome === "accepted"), JSON.stringify(results.map((r) => r.code ?? r.outcome))).toBe(true);
+    expect(refused).toHaveLength(1);
+    expect(results[TRANSPORT.commandBurst]!.outcome).toBe("rejected");
+    // the client is told when to try again (one token at commandsPerSecond: at most 1000 / rate ms)
+    expect(refused[0]!.retryAfterMs).toBeGreaterThan(0);
+    expect(refused[0]!.retryAfterMs).toBeLessThanOrEqual(Math.ceil(1000 / TRANSPORT.commandsPerSecond));
+    // the refusal is explicit and doesn't create a version
+    const versions = (await c.req("GET", `/api/works/${workId}/versions`)).body.versions.map((v: { title: string }) => v.title);
+    expect(versions).not.toContain(`Burst ${TRANSPORT.commandBurst}`);
+    // after one token's refill time the next command is accepted again
+    await sleep(Math.ceil(1000 / TRANSPORT.commandsPerSecond) + 100);
+    expect((await w.result(w.command("snapshot.create", { title: "After refill" }))).outcome).toBe("accepted");
   });
 });

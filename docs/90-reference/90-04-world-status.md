@@ -20,6 +20,11 @@ the island was uncommitted on top of `b13ecae` when this was written. It has sin
 deployed by CI (2026-11-06). The courtyard and day/night round below is uncommitted on top of `b30a9bb` and not
 deployed.
 
+*Update 2026-11-07:* the courtyard and day/night round was later committed as
+[`be91ad1`](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/commit/be91ad1) and deployed by CI
+run [42300308549](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/actions/runs/42300308549)
+(check and deploy succeeded). The 2026-11-07 retest addendum at the end of this file covers later, **uncommitted** work.
+
 ## §0, §2, §3: scope, existing features, the opening
 
 | Requirement | | Status | Evidence |
@@ -29,7 +34,7 @@ deployed.
 | Three portals to real destinations; "View player works" to the original list; no redirect of old URLs (§0.3, §3.1, §3.3) | required | met | `world-protection.spec.ts` (Build Together creates a real work; deep links not redirected) |
 | Workbench, physics, saving, permissions untouched (§0.4, §0.6) | required | met | No schema, API, permission or workbench change in the diff. The one server change is static: `src/server/main.ts` serves the island's pre-built data under `/world-data/` (an allow-listed path pattern, a 404 for anything else) and adds `/world/` and `/world/inspect/` to the app-shell pages. The existing suites pass (final regression run, below) |
 | No presence, chat, rankings or new backend (§0.5) | required | met | Nothing added; the diff is client, generator, tests and static file serving for the generated world data (no new API, storage or socket message) |
-| Portal labels within ~6 m, enter prompt within ~2 m, one transition per crossing, cooldown (§3.1) | required | met | `WorldView.updateProximity`; `world-route.spec.ts` |
+| Portal labels within ~6 m, enter prompt within ~2 m, one transition per crossing, cooldown (§3.1) | required | met | `WorldView.updateProximity`; `world-route.spec.ts`. *Retest 2026-11-07 (local, uncommitted):* one transition per crossing, re-arm beyond 4 m, lock and cooldown are now asserted by `world-interaction.spec.ts` K and K2 ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification)) |
 | Opening and regional copy; "World preset · Inspired by …" labels (§3.2, App. C2) | required | met | Plaques in every viewpoint screenshot ([landmarks/](../08-world-build/evidence/landmarks)) |
 | Read-only spatial stands of real works (§3.3, P4) | **optional** | not built | The brief makes them conditional. The gallery stays the existing page below the island |
 | Protection matrix from baseline source, pre-existing failures kept apart (§2) | required | met | [protection-matrix.md](../08-world-build/08-07-protection-matrix.md); `crit9-reconnect` F3 is pre-existing (below) |
@@ -59,7 +64,7 @@ deployed.
 | Touch controls, 44 px targets, safe areas at 390 × 844 (§5.2) | required | met in emulation; **unverified on a phone** | `world-route.spec.ts` at 390 × 844 (touch controls). A desktop browser with a mobile viewport is not a phone |
 | Swept collision, wall sliding, corners, ramps, high-speed impacts, substep budget (§6) | required | met | `world-collision.test.ts` |
 | Coastline boundary: soft band, outward-only removal, non-convex nearest boundary, ceiling ≥ highest top + 100 (§6) | required | met | `world-collision.test.ts`; manifest boundary (ceiling from the measured highest top) |
-| Safe points, recovery that never touches works (§6) | required | met | `world-landmarks.test.ts` "every safe point has a clear, standable capsule"; `world-route.spec.ts` recovery |
+| Safe points, recovery that never touches works (§6) | required | met | `world-landmarks.test.ts` "every safe point has a clear, standable capsule"; `world-route.spec.ts` recovery. *Retest 2026-11-07 (local, uncommitted):* that test uses flat ground; on the loaded terrain 5 points sit more than 1 m above it, 1 below and 2 inside the dam. Recovery now lands on the surface and skips a blocked point (`world-safe-points.spec.ts`, 8/8); the world data are unchanged ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification)) |
 
 ## §7, App. A–C: landmarks
 
@@ -104,7 +109,7 @@ deployed.
 
 | Requirement | | Status | Evidence |
 | --- | --- | --- | --- |
-| No WebGL, failed manifest, failed landmark: usable page with retry (§11) | required | met | `world-protection.spec.ts` |
+| No WebGL, failed manifest, failed landmark: usable page with retry (§11) | required | met | `world-protection.spec.ts`. *Retest 2026-11-08 (local, uncommitted):* the failed-landmark test was intermittent because it counted ready landmarks once at the notice, while the others were still loading; it now waits for the other 19 and checks L03 failed for good and the island is usable (15/15; a broken fallback fails it) ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-08-multiplayer-m02-and-world-protection)) |
 | Keyboard-only, focus after overlays, Escape releases, no traps (§11) | required | met | `world-keyboard.spec.ts` (found and fixed: focus lost to `<body>` on pause) |
 | `/readme/` readable; no visible-but-unclickable controls (§11) | required | met | `world-protection.spec.ts` |
 | §13.1 captures: home, close grass, ridge reveal, capital detail, shallow steps, dam toe looking up, dam side section, dome interior, low coastal flight, highest-tower valley view, mobile controls | required | partial | Inspected, [contact sheet](../08-world-build/evidence/landmarks/08-019-sheet-named.jpg): home, close grass, ridge reveal, capital detail (L03), shallow steps (L04), dam toe looking up and dam side (L16), dome interior (L08), low coastal flight and the river show what they are named for. **The highest-tower valley view does not**: from L20's platform the valley and the earlier landmarks are visible, but across the tower's own lower setback roofs, which fill most of the frame ([capture](../08-world-build/evidence/landmarks/08-007-named-highest-tower-valley-view.jpg)); an open overlook would need a change to L20's recipe. Mobile controls: `world-route.spec.ts` at 390 × 844 (emulated) |
@@ -178,6 +183,9 @@ details, numbers and screenshots are in [courtyard.md](../10-day-night/10-02-cou
 
 **Pre-existing, found here and not fixed:** four recipe safe points and four ground viewpoints are off the terrain
 where a pad ends or the river is cut (listed in [courtyard.md](../10-day-night/10-02-courtyard-report.md#found-and-not-fixed-pre-existing)).
+*Retest 2026-11-07 (local, uncommitted, not deployed):* "Return to nearest safe point" now stands the explorer on the
+loaded surface and skips a point inside collision, checked on the real terrain for all eight problem points; the ground
+viewpoints and the L13/L16 entries are unchanged and still open ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification)).
 
 ## Not verifiable here, with the exact steps
 
@@ -193,3 +201,20 @@ where a pad ends or the river is cut (listed in [courtyard.md](../10-day-night/1
   /tmp/sw/gpu.jsonl -- node scripts/world/tour.ts --stage gpu --cycles 30 --out /tmp/sw` with the browser on the real
   GPU (drop `--use-angle=swiftshader`), and compare with [memory-incident.md §9](../08-world-build/08-04-memory-report.md).
 - **People who didn't build it** (§13.1 "if the browser view still feels like a toy").
+
+## Retest addendum (2026-11-07): phone and tablet layout, portals, safe points
+
+Added on 2026-11-07; the sections above are unchanged. Tested locally on base `fa23e6a` plus an **uncommitted** working
+tree (identity in [06-020](../06-verification/evidence/06-020-retest-2026-11-07-gate.txt)); **not deployed**. Same
+environment as above: headless Chromium on SwiftShader, one worker, under the supervisor. Full record:
+[verification records, retest addendum](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification).
+
+| Requirement | Earlier status | Status now | Evidence |
+| --- | --- | --- | --- |
+| Touch layout on phones and tablets in both orientations, including a compact landmark label with an information panel (§5.2) | met in emulation at 390 × 844 only | met in emulation at 8 sizes (390 × 844 to 1366 × 1024); **unverified on a phone or tablet** | `world-touch-layout.spec.ts` (20 tests: label and panel, one Menu, controls fit and ≥ 44 px, rotation, two fingers, safe-area variables); `world-touch-layout.test.ts`; screenshots [06-025](../06-verification/evidence/06-025-retest-2026-11-07-phone-390x844-touch.png), [06-026](../06-verification/evidence/06-026-retest-2026-11-07-phone-390x844-menu-signed-in.png), [06-027](../06-verification/evidence/06-027-retest-2026-11-07-tablet-1024x768-touch.png) |
+| Layout follows the input, not the width: a fine pointer keeps the desktop HUD | — | met (emulated) | 1024 × 768 with a mouse shows the desktop HUD, with touch the touch HUD ([06-028](../06-verification/evidence/06-028-retest-2026-11-07-laptop-1024x768-mouse.png), [06-029](../06-verification/evidence/06-029-retest-2026-11-07-matrix-and-desktop.txt)); the touch input model is decided by `(pointer: coarse) and (hover: none)` |
+| Desktop appearance and HUD unchanged by the phone/tablet work | — | met (1366 × 768, 1920 × 1080) | 16 UI screenshots and 16 control-geometry dumps byte-identical to the `fa23e6a` build ([06-029](../06-verification/evidence/06-029-retest-2026-11-07-matrix-and-desktop.txt)) |
+| Portal: one transition per crossing, lock, cooldown, re-arm (§3.1) | met (proximity code; no assertion) | met, asserted | `world-interaction.spec.ts` K, K2; a broken re-arm fails K |
+| Safe-point recovery on the real terrain (§6) | met on flat ground; four off-terrain points recorded as not fixed | recovery met for all 8 problem points; **ground viewpoints still open** | `world-safe-points.spec.ts` (8/8; 7 fail with the fix removed) |
+| Desktop "View player works" scrolls to the exhibition | not recorded | **open**: the URL changes to `#exhibits-h` but the page stays put, also on `fa23e6a`; not changed, because desktop behaviour must stay as it is. The touch Menu's button scrolls | `world-touch-layout.spec.ts` T8 (touch only); *2026-11-08:* the author's manual check of the current local build found that it does scroll to the exhibition (browser and sign-in state not reported); automated headless Chromium on the same product source still doesn't, in 12 conditions, because the router's `scrollTo(0, 0)` runs right after the link's scroll; no code changed ([06-034](../06-verification/evidence/06-034-retest-2026-11-08-view-player-works.txt)); *2026-11-08, later:* **fixed locally**: the app router now owns the scroll and scrolls to a same-page anchor instead of to the top; new test L (both desktop sizes, signed out and in, reduced motion on and off, repeat click, Back and Forward) passes and fails on the old build; not deployed ([06-034](../06-verification/evidence/06-034-retest-2026-11-08-view-player-works.txt)) |
+| Physical phone or tablet, real safe areas and browser toolbars, real GPU, Safari or Firefox | not verified | **not verified** | Emulation only; steps in "Not verifiable here" above |

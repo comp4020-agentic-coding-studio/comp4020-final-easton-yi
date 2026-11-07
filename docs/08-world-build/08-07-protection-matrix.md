@@ -29,7 +29,7 @@ headless Chromium on SwiftShader, one Playwright worker, under
 | --- | --- | --- | --- |
 | "Start exploring" | captures control only on a gesture; no gate before the scene shows | §0.1, §3.1 | signed out (visible), `tour.ts --stage fly` |
 | Portal links: Explore the World · My Works · Build Together · View player works | stay in the island · `/works/` (existing sign-in redirect when signed out) · `/works/?new=1` (focused name field) or register with that return-to · `#exhibits-h` | §0.3, §3.1, §3.3 | both home tests (labels, order, hrefs, clickability); signed-in test follows Build Together into a real new work |
-| Spatial portals | the same `portalTarget()` mapping (`src/client/world/bridge.ts`); one crossing, one transition (lock + cooldown + re-arm) | §3.1 | `tour.ts --stage context` walked into a portal once and landed on `/register/` (observed; not an assertion) |
+| Spatial portals | the same `portalTarget()` mapping (`src/client/world/bridge.ts`); one crossing, one transition (lock + cooldown + re-arm) | §3.1 | `tour.ts --stage context` walked into a portal once and landed on `/register/` (observed; not an assertion); *2026-11-07:* now asserted by `world-interaction.spec.ts` K and K2 (local, uncommitted; [retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification)) |
 | Pause menu: Return to nearest safe point · Return home · Go to a landmark | local exploration state only | §5.2, §6 | `tour.ts --stage fly` (both viewports) |
 
 ## Other protected rows
@@ -38,7 +38,7 @@ headless Chromium on SwiftShader, one Playwright worker, under
 | --- | --- | --- | --- |
 | Login, registration, logout, return-to | existing flows reused; exploring presets needs no account | kept | signed-out island needs no account; header Sign in keeps `next`; `access.spec.ts`, `account-deletion.spec.ts` pass |
 | My Works and the workbench | create, resume, edit, camera, controls unchanged | kept | `solo.spec.ts`, `access.spec.ts`, `graphics.spec.ts` pass; the workbench files changed only in `viewport.ts` disposal (leak fix, §8 of the incident report) |
-| Invitation, joining, collaboration | protocol, sync, rejection reasons unchanged | kept | `together.spec.ts`, `crit9-multiplayer.spec.ts` M01–M10 (two or three independent identities) pass |
+| Invitation, joining, collaboration | protocol, sync, rejection reasons unchanged | kept | `together.spec.ts`, `crit9-multiplayer.spec.ts` M01–M10 (two or three independent identities) pass; *2026-11-08:* M02's intermittent stall was a test-helper defect, now fixed with new test M05b; M01–M10 and L03 pass (local, uncommitted; [retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-08-multiplayer-m02-and-world-protection)) |
 | Saving and recovery | server confirmation; refresh recovery | kept | `solo.spec.ts` (survive refresh and logout), `lifecycle.spec.ts` |
 | Gallery, exhibits, sharing, deep links | pages and bookmarks still work; nothing redirected to the world | kept | `exhibit.spec.ts`; `world-protection.spec.ts` (deep links: workshop, works, favorites, account, unknown exhibit) |
 | Publish / withdraw / archive / trash / restore / delete | no semantic change | kept | `exhibit.spec.ts`, `lifecycle.spec.ts`; no server or schema change |
@@ -52,3 +52,8 @@ headless Chromium on SwiftShader, one Playwright worker, under
 the same assertion before any island work ("an open socket existed",
 expected 1, received 0) and still does. It is a timing measurement of the
 socket close, unrelated to the island.
+
+*Retest 2026-11-07 (local, uncommitted):* the cause was later found to be the environment
+([D-2](../06-verification/06-02-audit-report.md#d-2--f3-method-a-fails-outside-a-loopback-only-namespace-a-testautomation-defect)).
+The spec now skips method A outside a loopback-only network namespace and records why; method B runs. In a namespace
+method A passed 5 of 5 ([retest](../06-verification/06-02-audit-report.md#retest-addendum-2026-11-07-final-fixes-and-verification)). The failures recorded above stand.

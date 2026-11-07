@@ -2,7 +2,7 @@
 // gesture ownership, phone layout with touch, wide desktop, resize during a
 // held draft, reduced motion.
 import { expect, test, type Page } from "@playwright/test";
-import { createWork, register } from "./helpers.ts";
+import { createWork, register, shotPath } from "./helpers.ts";
 
 const framing = (p: Page) => p.evaluate(() => (window as any).__stillwood.framing());
 const sticks = (p: Page) => p.evaluate(() => (window as any).__stillwood.sticks());
@@ -18,8 +18,13 @@ test("keyboard only: build and place a stick, then focus an existing one", async
   await page.keyboard.press("Tab"); // the intro card has focus; Skip is reachable by keyboard
   await page.getByRole("button", { name: "Skip" }).focus();
   await page.keyboard.press("Enter");
-  // start without touching the canvas
+  // start without touching the canvas. Add is disabled until the room grants this window its editing seat, a few
+  // ms after "Connected"; focus() on a disabled button does nothing, so Enter then went to the page (2026-11-08:
+  // 1 of 6 cold runs, the trace shows Add disabled at the focus and enabled at the Enter). Wait for it as a keyboard
+  // user would.
+  await expect(page.getByRole("button", { name: "Add a stick" })).toBeEnabled();
   await page.getByRole("button", { name: "Add a stick" }).focus();
+  await expect(page.getByRole("button", { name: "Add a stick" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.locator(".draft-state")).toBeVisible();
   const x0 = await readout(page, "Left / right (X)");
@@ -116,7 +121,7 @@ test.describe("phone with touch (390×844 marking viewport)", () => {
     const inc = (await page.getByRole("button", { name: "Height increase" }).boundingBox())!;
     expect(Math.min(inc.width, inc.height)).toBeGreaterThanOrEqual(44);
     await page.getByRole("button", { name: "Height increase" }).tap();
-    await page.screenshot({ path: "docs/evidence/p5-phone-390x844.png", fullPage: true });
+    await page.screenshot({ path: shotPath("p5-phone-390x844.png"), fullPage: true });
     await page.getByRole("button", { name: "Place", exact: true }).tap();
     await expect(page.locator(".toast-ok").last()).toContainText("Placed and saved.");
     // no horizontal page scroll at phone width
@@ -136,7 +141,7 @@ test.describe("desktop (1920×1080 marking viewport)", () => {
     await page.getByRole("button", { name: "Add a stick" }).click();
     await page.locator("body").press("PageUp");
     const height = await readout(page, "Height");
-    await page.screenshot({ path: "docs/evidence/p5-desktop-1920x1080.png" });
+    await page.screenshot({ path: shotPath("p5-desktop-1920x1080.png") });
     const f0 = await framing(page);
     await page.setViewportSize({ width: 1100, height: 760 });
     await page.waitForTimeout(400);

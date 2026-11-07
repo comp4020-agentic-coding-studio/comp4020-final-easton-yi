@@ -5,7 +5,10 @@
 # namespace that has only loopback, so neither the server, the test runners nor
 # the browser can open any connection off this host. Everything mutable lives in
 # a fresh /tmp/stillwood-crit9-<run-id>/ that is removed at the end; only
-# sanitized summaries are copied to docs/evidence/crit-9-local-multiplayer/<run-id>/.
+# sanitized summaries are copied to test-results/crit9/<run-id>/ (ignored by Git).
+# A run meant as curated evidence names its destination explicitly:
+#   CRIT9_EVIDENCE_DIR=docs/05-multiplayer/evidence/<run-id> scripts/crit9/run.sh
+# (relative to the repo root); ordinary runs never write into docs/.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/../.." && pwd -P)"
@@ -17,7 +20,7 @@ if [[ "${CRIT9_INSIDE:-}" != "1" ]]; then
   [[ "$RUN_ID" =~ ^[0-9A-Za-z-]+$ ]] || { echo "bad run id" >&2; exit 2; }
   [[ -f "$REPO/dist/server/main.js" && -f "$REPO/dist/client/index.html" ]] || { echo "run pnpm build first" >&2; exit 2; }
   # Only these variables cross into the run; FLY_*, tokens and mise env don't.
-  exec env -i PATH="$NODE_BIN:/usr/sbin:/usr/bin:/bin" CRIT9_INSIDE=1 CRIT9_RUN_ID="$RUN_ID" \
+  exec env -i PATH="$NODE_BIN:/usr/sbin:/usr/bin:/bin" CRIT9_INSIDE=1 CRIT9_RUN_ID="$RUN_ID" CRIT9_EVIDENCE_REL="${CRIT9_EVIDENCE_DIR:-}" \
     CRIT9_REPO="$REPO" PLAYWRIGHT_BROWSERS_PATH="$BROWSERS" LANG=C.UTF-8 TZ="${TZ:-Australia/Sydney}" \
     unshare --map-root-user --net bash "$0"
 fi
@@ -28,7 +31,9 @@ RUN_DIR="$(mktemp -d "/tmp/stillwood-crit9-$RUN_ID-XXXX")"
 RUN_DIR="$(realpath -e "$RUN_DIR")"
 case "$RUN_DIR" in /tmp/stillwood-crit9-"$RUN_ID"-*) ;; *) echo "run dir escaped /tmp: $RUN_DIR" >&2; exit 3 ;; esac
 [[ -L "$RUN_DIR" ]] && { echo "run dir is a symlink" >&2; exit 3; }
-EVIDENCE="$CRIT9_REPO/docs/evidence/crit-9-local-multiplayer/$RUN_ID"
+EVIDENCE_REL="${CRIT9_EVIDENCE_REL:-test-results/crit9/$RUN_ID}"
+case "$EVIDENCE_REL" in /*|*..*) echo "CRIT9_EVIDENCE_DIR must be a relative path inside the repo" >&2; exit 2 ;; esac
+EVIDENCE="$CRIT9_REPO/$EVIDENCE_REL"
 mkdir -p "$RUN_DIR"/{data,home,tmp,results} "$EVIDENCE"
 export HOME="$RUN_DIR/home" TMPDIR="$RUN_DIR/tmp" CRIT9_RUN_DIR="$RUN_DIR" CRIT9_EVIDENCE_DIR="$EVIDENCE"
 manifest() { echo "$1" >> "$EVIDENCE/isolation-manifest.txt"; }

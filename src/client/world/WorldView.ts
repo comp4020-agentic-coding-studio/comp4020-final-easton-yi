@@ -1463,7 +1463,7 @@ export class WorldView {
   }
 
   /** Teleport to a world safe point, a landmark viewpoint or home; loads the destination first. */
-  async jumpTo(target: { feet: number[]; yaw: number; pitch?: number }): Promise<boolean> {
+  async jumpTo(target: { feet: number[]; yaw: number; pitch?: number }, opts: { land?: boolean } = {}): Promise<boolean> {
     if (!this.flight || !this.world || this.transitionLock) return false;
     this.transitionLock = true;
     const prev = this.status.control;
@@ -1475,8 +1475,12 @@ export class WorldView {
       const feet: [number, number, number] = [target.feet[0]!, target.feet[1]!, target.feet[2]!];
       const ground = groundUnder(this.world, this.grid, feet[0], feet[2], feet[1] + 0.5);
       if (feet[1] < ground) feet[1] = ground;
+      // a recovery (a safe point) stands on the surface under the point: some recipe safe points sit above the
+      // loaded terrain where a pad ends or a river is cut (docs/10-day-night/10-02-courtyard-report.md), and
+      // "return to a safe point" must not leave the explorer hovering there
+      if (opts.land) feet[1] = ground;
       // a destination in the air (a flight viewpoint) is reached flying: the explorer hovers there instead of dropping
-      this.flight.teleport({ feet, yaw: target.yaw, pitch: target.pitch ?? 0, flying: feet[1] > ground + 1 });
+      this.flight.teleport({ feet, yaw: target.yaw, pitch: target.pitch ?? 0, flying: !opts.land && feet[1] > ground + 1 });
       this.placeCamera();
       // terrain steps, grass and streaming follow the new pose now: tick() only follows the camera when a frame's
       // own movement changed it, so a teleport left the departure point's terrain detail until the explorer walked
@@ -1492,20 +1496,46 @@ export class WorldView {
     }
   }
 
-  /** The nearest safe point to the camera, or to a given position (stable ids from the manifest). */
+  /**
+   * The nearest usable safe point to the camera, or to a given position (stable ids from the manifest). Candidates
+   * are tried nearest first; one whose capsule, stood on the surface under it, overlaps a building's collision
+   * (two route points fall inside the dam's body) is skipped. If none of the nearest few is clear, the nearest
+   * is returned as before.
+   */
   nearestSafePoint(at?: readonly number[]): { feet: number[]; yaw: number; id: string } | null {
     if (!this.manifest || !this.flight || !this.world) return null;
     const f = at ?? this.flight.feet;
-    let best: { feet: number[]; yaw: number; id: string } | null = null;
-    let bd = Infinity;
-    for (const s of this.manifest.safePoints) {
-      const d = Math.hypot(s.feet[0] - f[0], s.feet[1] - f[1], s.feet[2] - f[2]);
-      if (d < bd) {
-        bd = d;
-        best = s;
-      }
-    }
-    return best;
+    const ranked = this.manifest.safePoints
+      .map((s) => ({ s, d: Math.hypot(s.feet[0] - f[0], s.feet[1] - f[1], s.feet[2] - f[2]) }))
+      .sort((a, b) => a.d - b.d);
+    if (!ranked.length) return null;
+    for (const { s } of ranked.slice(0, 6)) if (this.safePointClear(s.feet)) return s;
+    return ranked[0]!.s;
+  }
+
+  /**
+   * Test probe (opt-in, read-only): the standable surface under a point and whether a capsule there is clear, with
+   * the same loaded terrain and collision that movement and recovery use. Loads nearby building collision.
+   */
+  probeGround(x: number, z: number, fromY: number): number {
+    if (!this.world) return NaN;
+    this.addCollidersAround(x, z);
+    return groundUnder(this.world, this.grid, x, z, fromY);
+  }
+  probeClear(feet: readonly number[]): boolean {
+    if (!this.world) return false;
+    this.addCollidersAround(feet[0]!, feet[2]!);
+    return clearAt(this.world, this.grid, [feet[0]!, feet[1]!, feet[2]!]).ok;
+  }
+
+  /** A safe point stood on the surface under it: a clear, standable capsule (loaded terrain and nearby collision). */
+  private safePointClear(p: readonly number[]): boolean {
+    if (!this.world || !this.terrain) return true; // nothing loaded to test against: keep the declared point
+    const idx = this.terrain.indexAt(p[0]!, p[2]!);
+    if (idx >= 0 && !this.terrain.has(idx)) return true; // terrain not resident yet: jumpTo loads it; trust the point
+    this.addCollidersAround(p[0]!, p[2]!);
+    const ground = groundUnder(this.world, this.grid, p[0]!, p[2]!, p[1]! + 0.5);
+    return clearAt(this.world, this.grid, [p[0]!, Math.max(p[1]!, ground) + 0.02, p[2]!]).ok;
   }
 
   goHome(): Promise<boolean> {
@@ -1611,7 +1641,7 @@ export class WorldView {
         const msg = f.fault;
         f.fault = null;
         const sp = this.nearestSafePoint();
-        if (sp) void this.jumpTo(sp);
+        if (sp) void this.jumpTo(sp, { land: true });
         this.events.onFault?.(`You were returned to a safe point (${msg}).`);
       }
       this.placeCamera();

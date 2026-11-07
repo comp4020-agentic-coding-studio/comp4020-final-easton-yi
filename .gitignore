@@ -25,3 +25,6 @@ mise.local.toml
 .world-cache/
 test-results/
 playwright-report/
+
+# the working process log (CLAUDE.md, "Working process log"): local and append-only, never submitted
+/PROCESS_LOG.md

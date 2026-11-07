@@ -1,7 +1,7 @@
 // AT-10 in the browser: save a settled version, exhibit it, see it in the
 // gallery and the read-only 3D viewer, favorite it, withdraw it.
 import { expect, test } from "@playwright/test";
-import { createWork, placeViaControls, register } from "./helpers.ts";
+import { createWork, placeViaControls, register, shotPath } from "./helpers.ts";
 
 test("publish, view, favorite and withdraw an exhibit", async ({ page, browser }) => {
   await register(page, "Curator");
@@ -26,13 +26,13 @@ test("publish, view, favorite and withdraw an exhibit", async ({ page, browser }
   visitor.on("dialog", (d) => (dialogs++, void d.dismiss()));
   await visitor.goto("/");
   await expect(visitor.getByRole("link", { name: title })).toBeVisible();
-  await visitor.screenshot({ path: "docs/evidence/p4-gallery.png" });
+  await visitor.screenshot({ path: shotPath("p4-gallery.png") });
   await visitor.getByRole("link", { name: title }).click();
   await expect(visitor.getByRole("heading", { name: title })).toBeVisible();
   await expect(visitor.getByText("<img src=x onerror=alert(1)> plain words")).toBeVisible(); // shown as text
   await expect(visitor.locator("canvas.scene-canvas")).toBeVisible();
   await visitor.waitForTimeout(800);
-  await visitor.screenshot({ path: "docs/evidence/p4-exhibit.png" });
+  await visitor.screenshot({ path: shotPath("p4-exhibit.png") });
   expect(dialogs).toBe(0);
   await expect(visitor.getByText("to keep favorites.")).toBeVisible();
 

@@ -1,0 +1,207 @@
+Retest 2026-11-07 — normal verification gate, working-tree identity and pending live checks
+
+== What was tested
+Base commit fa23e6a plus an uncommitted working tree. Nothing was staged, committed, pushed or deployed.
+Identity: base commit, SHA-256 of 'git diff --binary HEAD' outside docs/, and SHA-256 of each untracked file outside
+docs/ (the two agent prompt files excluded). Short identity = first 16 hex of the SHA-256 of that listing.
+
+-- identity when the gate started (21:09 AEDT):
+base fa23e6acbc1fcd746e372bb2ba94c437a5ff5289
+tracked-diff (excluding docs/) c773f6cd403d8938d5d3449373013db592ba472612a281440da399710f6ad8a5
+untracked 1af9469dd1ec921dc24f9cb15acae4c1b10e1a295ec9d3b2c5ab1f42270d963f src/client/world/TouchHud.tsx
+untracked f732d2e10fb38954e1d2c74d724c1e46ebf01acad2612c6392082f044d0e5017 src/client/world/touch-layout.ts
+untracked 199c4cb585c64b40d6f0744d79fb9790e5a4efb06992aeaa623731061f565946 src/client/world/world-ui.tsx
+untracked 95e55972c31a6b092eaeacc8f746a7b202ab9a309da13daa61b04d9a2f1adfa6 tests/e2e/world-safe-points.spec.ts
+untracked a5edac4d23c68e5e51be81250d3b51753d18f09775169e0e2a3ae3ca43f88880 tests/e2e/world-touch-layout.spec.ts
+untracked 1753166beecaa1d1465261f209c3ed55918f93959714a8cb80056deb50fb4b8b tests/limits.test.ts
+untracked baeea8072819c32124c659fdfa7c2a41c739cf84ca998f39d9dcb6dfc289f4b9 tests/world-touch-layout.test.ts
+worktree-id c78a62dc881bbdaa
+
+-- identity of the final working tree:
+base fa23e6acbc1fcd746e372bb2ba94c437a5ff5289
+tracked-diff (excluding docs/) 00084f227ffcc77eccd1994c7f5fe27dd861088df3b7fc5d8b582183d3c48b1d
+untracked 1af9469dd1ec921dc24f9cb15acae4c1b10e1a295ec9d3b2c5ab1f42270d963f src/client/world/TouchHud.tsx
+untracked f732d2e10fb38954e1d2c74d724c1e46ebf01acad2612c6392082f044d0e5017 src/client/world/touch-layout.ts
+untracked 199c4cb585c64b40d6f0744d79fb9790e5a4efb06992aeaa623731061f565946 src/client/world/world-ui.tsx
+untracked 95e55972c31a6b092eaeacc8f746a7b202ab9a309da13daa61b04d9a2f1adfa6 tests/e2e/world-safe-points.spec.ts
+untracked a5edac4d23c68e5e51be81250d3b51753d18f09775169e0e2a3ae3ca43f88880 tests/e2e/world-touch-layout.spec.ts
+untracked 1753166beecaa1d1465261f209c3ed55918f93959714a8cb80056deb50fb4b8b tests/limits.test.ts
+untracked baeea8072819c32124c659fdfa7c2a41c739cf84ca998f39d9dcb6dfc289f4b9 tests/world-touch-layout.test.ts
+worktree-id 3c05316f0baf2471
+
+Between the two, only non-product files changed: a comment in scripts/crit9/run.sh (the curated-evidence example path),
+spec/README.md (two coverage rows), and the text of crit9-reconnect.spec.ts's skip annotation (no logic). Product source
+(src/) and the build were the same for every result below. The reconnect spec was re-run on the final tree (below).
+
+== Environment
+Local, WSL2 (Linux 6.18), Node 24.21.0, pnpm via mise; Playwright 1.63.0, headless Chromium on SwiftShader; one worker;
+every heavy job sequential under scripts/world/supervise.ts (memory cgroup, no swap). Servers: production build
+(dist/server/main.js) on port 8099, fresh mktemp DATA_DIR each, ENABLE_TEST_HOOKS=1 for the browser suite.
+
+== Gate (run once after the targeted checks), 2026-11-07 21:09-21:28 AEDT
+pnpm typecheck               exit 0
+pnpm test:unit               exit 0 — 27 files, 609 tests passed (includes tests/limits.test.ts, tests/restart.test.ts)
+pnpm check (scratch server)  exit 0 — 7 files, 54 tests passed (spec/; includes the new limiter test)
+pnpm check:evidence          exit 0 — reflections 8/9/10 present; PROCESS.md 6 cited commits resolve
+pnpm test:integration        exit 0 — builds, then 13 tests passed
+pnpm test:e2e (all 16 specs) exit 1 — 83 passed, 1 failed (crit9-multiplayer M02), 5 did not run (the rest of that serial suite)
+
+Supervisor peaks:
+  gate-typecheck: exit 0 · peak group 1066 MiB · peak RSS sum 844 MiB · min MemAvailable 12711 MiB · swap in/out 0/0 pages · 5.3 s
+  gate-unit: exit 0 · peak group 2553 MiB · peak RSS sum 2670 MiB · min MemAvailable 10858 MiB · swap in/out 0/0 pages · 68.8 s
+  gate-integration: exit 0 · peak group 1229 MiB · peak RSS sum 1342 MiB · min MemAvailable 12083 MiB · swap in/out 0/0 pages · 83.2 s
+  gate-check: exit 0 · peak group 1011 MiB · peak RSS sum 1011 MiB · min MemAvailable 12300 MiB · swap in/out 0/0 pages · 79.6 s
+  gate-e2e: exit 1 · peak group 1917 MiB · peak RSS sum 2330 MiB · min MemAvailable 11839 MiB · swap in/out 0/0 pages · 914.8 s
+
+Browser suite, per test (gate run):
+  ✓   1 access.spec.ts:14:1 › keyboard only: build and place a stick, then focus an existing one (1.2s)
+  ✓   2 access.spec.ts:62:1 › pointer: dragging the ghost moves it and not the camera; dragging the background orbits (3.3s)
+  ✓   3 access.spec.ts:100:3 › phone with touch (390×844 marking viewport) › layout keeps the scene large, separates Observe/Adjust, and places with buttons (1.7s)
+  ✓   4 access.spec.ts:130:3 › desktop (1920×1080 marking viewport) › resizing while holding a ghost keeps the ghost and the view; reduced motion is instant (1.7s)
+  ✓   5 access.spec.ts:153:1 › slow connection: the workshop loads, says it's waiting, and the placement lands once (4.0s)
+  ✓   6 account-deletion.spec.ts:7:1 › confirmation dialog: cancel, keyboard, wrong password, one submission at a time, and a lost answer (2.1s)
+  ✓   7 account-deletion.spec.ts:73:1 › deleting from the account page: that session goes to the start page, the other session and the collaborator lose access (7.1s)
+  ✓   8 crit9-multiplayer.spec.ts:181:3 › Crit 9 local multiplayer (browser) › M01 separate identities join one work through the invitation; an outsider can't open it (3.2s)
+  ✓   9 crit9-multiplayer.spec.ts:218:3 › Crit 9 local multiplayer (browser) › M03 a partner's held stick shows as a ghost, apart from real sticks, and clears on cancel, place and leave (2.1s)
+  ✘  10 crit9-multiplayer.spec.ts:244:3 › Crit 9 local multiplayer (browser) › M02 + timing: placements from A, B and C appear in every other open session without reload (5.0m)
+  -  11 crit9-multiplayer.spec.ts:315:3 › Crit 9 local multiplayer (browser) › M05 a placement that conflicts with a partner's just-committed stick is refused with a reason and the draft is kept
+  -  12 crit9-multiplayer.spec.ts:372:3 › Crit 9 local multiplayer (browser) › M08 B's socket really closes; A keeps building; B recovers the authoritative state without duplicates
+  -  13 crit9-multiplayer.spec.ts:446:3 › Crit 9 local multiplayer (browser) › M09 a hidden tab draws nothing, then shows the latest state on return without interaction (simulated visibility)
+  -  14 crit9-multiplayer.spec.ts:472:3 › Crit 9 local multiplayer (browser) › M10 a window on another work sees nothing from this one
+  -  15 crit9-multiplayer.spec.ts:493:3 › Crit 9 local multiplayer (browser) › L03 a visitor sees the frozen exhibit, gets no editing, and sees the withdrawal on reload
+  ✓  16 crit9-reconnect.spec.ts:126:1 › F3: the indicator follows a lost socket (methods via CRIT9_RECONNECT_METHODS, default A,B; 5 attempts each) (44.0s)
+  ✓  17 exhibit.spec.ts:6:1 › publish, view, favorite and withdraw an exhibit (7.1s)
+  ✓  18 graphics.spec.ts:104:3 › graphics modes (2× screen) › each mode applies its preset, High restores the original after Low, and the choice survives reload (2.1s)
+  ✓  19 graphics.spec.ts:144:3 › graphics modes (2× screen) › blocked storage still renders, starts in Auto and applies a choice for the session (1.4s)
+  ✓  20 graphics.spec.ts:170:1 › switching tiers keeps the camera, the held stick and the session; placing still works after resize and DPR changes (6.9s)
+  ✓  21 graphics.spec.ts:248:1 › an idle viewer still sees a partner's ghost, placement and motion; renders stop when still and while hidden (27.1s)
+  ✓  22 graphics.spec.ts:309:1 › after going idle, a viewer follows a partner's release, a collapse, an expired ghost and its own reconnect (25.6s)
+  ✓  23 graphics.spec.ts:367:1 › switching tiers while holding a stick and while a partner moves theirs leaves no stale shadows or lost state (17.8s)
+  ✓  24 graphics.spec.ts:446:1 › repeated mode changes and remounts don't add loops, errors or unbounded GPU resources (17.1s)
+  ✓  25 graphics.spec.ts:508:1 › the public exhibit viewer uses the same setting and idles too (7.4s)
+  ✓  26 graphics.spec.ts:542:3 › phone (390×844 marking viewport) › the graphics control fits the phone layout and the coarse-pointer cap stays 1.5 in High (1.2s)
+  ✓  27 lifecycle.spec.ts:7:1 › trash while a collaborator is connected, restore, then delete permanently (15.3s)
+  ✓  28 solo.spec.ts:6:1 › new user creates a work, places sticks, and they survive refresh and logout (6.0s)
+  ✓  29 together.spec.ts:8:1 › two people build together: ghosts, concurrent placement, own cameras, reconnect (10.9s)
+  ✓  30 world-daynight.spec.ts:30:3 › day and night › Auto at 23:30 opens at night with no blend from day; the moon is the key light and candles are lit (2.9s)
+  ✓  31 world-daynight.spec.ts:44:3 › day and night › Auto at noon is day: cups stay, flames and lights are off (2.9s)
+  ✓  32 world-daynight.spec.ts:56:3 › day and night › Night blends in over a few seconds, is remembered across a reload, and Day takes it back (14.3s)
+  ✓  33 world-daynight.spec.ts:80:3 › day and night › with reduced motion the change is immediate (3.3s)
+  ✓  34 world-daynight.spec.ts:88:3 › day and night › the light control never moves the camera or starts exploring (3.1s)
+  ✓  35 world-interaction.spec.ts:48:3 › island interaction › A: on the home page the cursor is free, mouse movement never turns the camera, page controls stay clickable (5.0s)
+  ✓  36 world-interaction.spec.ts:71:3 › island interaction › B: left-drag turns the camera only past the threshold; release or leaving the viewport stops it; a right press doesn't (3.3s)
+  ✓  37 world-interaction.spec.ts:117:3 › island interaction › C, D: HUD controls never move the camera; Walk → Run → Fly by buttons and keys keeps position and heading (10.2s)
+  ✓  38 world-interaction.spec.ts:166:3 › island interaction › E: Look lock engages only by a deliberate action; Esc gives the cursor back and leaves the HUD usable (3.7s)
+  ✓  39 world-interaction.spec.ts:199:3 › island interaction › F: with half the island scrolled away, the wheel scrolls the page, mouse movement and page interaction leave the world still (4.5s)
+  ✓  40 world-interaction.spec.ts:234:3 › island interaction › G: fullscreen in and out keeps position, heading and speed; layout and a free cursor return (3.9s)
+  ✓  41 world-interaction.spec.ts:267:3 › island interaction › H: a portal destination offers Return to world, restoring route, pose and speed; an unplaced stick asks first (11.3s)
+  ✓  42 world-interaction.spec.ts:320:3 › island interaction › K: a portal fires once per crossing; standing on or re-crossing its threshold doesn't re-enter until you've left 4 m (2.2s)
+  ✓  43 world-interaction.spec.ts:365:3 › island interaction › K2: the transition lock and cooldown refuse a second portal transition started immediately after the first (4.3s)
+  ✓  44 world-interaction.spec.ts:386:3 › island interaction › I: blur and a hidden tab drop held keys; returning brings no stuck movement, capture or jump (4.8s)
+  ✓  45 world-interaction.spec.ts:427:3 › island interaction on an emulated phone (390×844, touch; not a physical device) › J: speed buttons are tappable without steering; Up/Down still fly; the speed control clears the touch controls (3.1s)
+  ✓  46 world-keyboard.spec.ts:21:3 › keyboard-only island › Tab reaches Start exploring; keys move; Esc pauses with focus on Resume; menu actions are keyboard-operable; Tab leaves the island (4.7s)
+  ✓  47 world-keyboard.spec.ts:81:3 › keyboard-only island › keys typed into the page's search field never move the camera (2.7s)
+  ✓  48 world-keyboard.spec.ts:96:3 › slow resources › a slow manifest shows progress, the page stays usable, and the island arrives (5.1s)
+  ✓  49 world-keyboard.spec.ts:113:3 › slow resources › slow landmark files: the island is explorable before they arrive and fills in (25.6s)
+  ✓  50 world-keyboard.spec.ts:128:3 › tab suspension › a hidden tab stops rendering and pauses exploring; showing it again resumes cleanly (4.3s)
+  ✓  51 world-keyboard.spec.ts:165:3 › level of detail › a landmark at the near level with its detail resident is drawn by its cells only (no far-mesh double draw) (4.6s)
+  ✓  52 world-keyboard.spec.ts:190:3 › level of detail › after a jump the terrain's detail follows the new position without walking (no stale coarse ground) (2.7s)
+  ✓  53 world-protection.spec.ts:28:3 › protection matrix: home controls with the island behind them › signed out: header, primary action, search and portals keep their labels, order, destinations and clickability (4.5s)
+  ✓  54 world-protection.spec.ts:79:3 › protection matrix: home controls with the island behind them › signed in: header gains My works/Favorites/account/Sign out; primary action and portals go to the existing works flows (1.2s)
+  ✓  55 world-protection.spec.ts:113:3 › protection matrix: home controls with the island behind them › deep links and pages are not redirected into the world; /readme/ stays readable (1.6s)
+  ✓  56 world-protection.spec.ts:133:3 › protection matrix: home controls with the island behind them › the world page is its own route and leaves the header usable (366ms)
+  ✓  57 world-protection.spec.ts:144:3 › fallbacks: never a blank page › without WebGL the island becomes a flat section with the existing links, and the gallery works (213ms)
+  ✓  58 world-protection.spec.ts:162:3 › fallbacks: never a blank page › a failed island manifest shows an error with Try again; the page stays usable; retry recovers (2.6s)
+  ✓  59 world-protection.spec.ts:177:3 › fallbacks: never a blank page › a failed landmark asset leaves the rest of the island and says so (3.1s)
+  ✓  60 world-route.spec.ts:119:5 › the island route › desktop 1920×1080, keyboard and mouse › home → building → fly to the top → recover → My Works → exhibition (44.5s)
+  ✓  61 world-route.spec.ts:127:5 › the island route › phone 390×844, touch › home → building → fly to the top → recover → My Works → exhibition (44.6s)
+  ✓  62 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L06-outside (above the terrain (≈ 9 m)): recovery stands on a surface, clear, not flying (2.7s)
+  ✓  63 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L06-arena (above the terrain (≈ 3 m)): recovery stands on a surface, clear, not flying (2.7s)
+  ✓  64 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L09-keep-top (above the terrain (≈ 12 m)): recovery stands on a surface, clear, not flying (3.1s)
+  ✓  65 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L13-west (above the terrain (≈ 4 m)): recovery stands on a surface, clear, not flying (3.3s)
+  ✓  66 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L16-toe (above the river cut (≈ 2 m)): recovery stands on a surface, clear, not flying (3.0s)
+  ✓  67 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L05-streambed (below the terrain (≈ 5 m)): recovery stands on a surface, clear, not flying (3.1s)
+  ✓  68 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › route-1800 (inside the dam's collision): recovery stands on a surface, clear, not flying (3.4s)
+  ✓  69 world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › route-1950 (inside the dam's collision): recovery stands on a surface, clear, not flying (3.2s)
+  ✓  70 world-touch-layout.spec.ts:69:3 › phone and tablet layout (emulated touch; not physical devices) › T1: compact label · Preset with an information button; the panel shows the full facts and keeps its subject (4.0s)
+  ✓  71 world-touch-layout.spec.ts:124:3 › phone and tablet layout (emulated touch; not physical devices) › T2: while the panel is open, the stick and canvas drags don't move or turn the explorer; closing resumes nothing (4.3s)
+  ✓  72 world-touch-layout.spec.ts:154:3 › phone and tablet layout (emulated touch; not physical devices) › T3: one Menu holds Resume, every destination, Auto/Day/Night, fullscreen, help, home and the safe point (3.3s)
+  ✓  73 world-touch-layout.spec.ts:194:3 › phone and tablet layout (emulated touch; not physical devices) › T4: the speed selector shows only the current mode, opens Walk/Run/Fly, and Up still flies (3.3s)
+  ✓  74 world-touch-layout.spec.ts:226:3 › phone and tablet layout (emulated touch; not physical devices) › T5: two touch points at once (stick + look) work independently; pointercancel leaves nothing held (5.9s)
+  ✓  75 world-touch-layout.spec.ts:260:3 › phone and tablet layout (emulated touch; not physical devices) › T6: rotating with the information panel open keeps it usable; the world and choices are kept (4.0s)
+  ✓  76 world-touch-layout.spec.ts:284:3 › phone and tablet layout (emulated touch; not physical devices) › T9: repeated rotation adds no listeners, canvases or render loops, and idle rendering still stops (8.2s)
+  ✓  77 world-touch-layout.spec.ts:344:3 › phone and tablet layout (emulated touch; not physical devices) › T10: edge controls follow the safe-area variables; a browser-chrome height change keeps the menu inside the stage (3.6s)
+  ✓  78 world-touch-layout.spec.ts:380:3 › phone and tablet layout (emulated touch; not physical devices) › T7: a portal destination from the menu returns to the same place, paused, nothing held (4.4s)
+  ✓  79 world-touch-layout.spec.ts:398:3 › phone and tablet layout (emulated touch; not physical devices) › T8: home page (signed in): the same compact label and menu; 'View player works' scrolls to the exhibition (3.3s)
+  ✓  80 world-touch-layout.spec.ts:429:5 › touch layout 390×844 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.6s)
+  ✓  81 world-touch-layout.spec.ts:429:5 › touch layout 844×390 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.7s)
+  ✓  82 world-touch-layout.spec.ts:429:5 › touch layout 360×640 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.4s)
+  ✓  83 world-touch-layout.spec.ts:429:5 › touch layout 667×375 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.5s)
+  ✓  84 world-touch-layout.spec.ts:429:5 › touch layout 768×1024 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.5s)
+  ✓  85 world-touch-layout.spec.ts:429:5 › touch layout 1024×768 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.6s)
+  ✓  86 world-touch-layout.spec.ts:429:5 › touch layout 1024×1366 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.4s)
+  ✓  87 world-touch-layout.spec.ts:429:5 › touch layout 1366×1024 (emulated) › controls fit, don't overlap, are ≥ 44 px and leave the centre free (3.8s)
+  ✓  88 world-touch-layout.spec.ts:475:3 › desktop model kept for a fine primary pointer › a narrow desktop window (390 wide, mouse) keeps the desktop HUD (2.3s)
+  ✓  89 world-touch-layout.spec.ts:484:3 › desktop model kept for a fine primary pointer › a touch-capable laptop with a mouse as primary input keeps the desktop HUD (simulated media report) (2.6s)
+      - waiting for getByRole('button', { name: 'Place', exact: true })
+        - locator resolved to <button type="button" title="Place (Enter)" class="primary rail-place">Place</button>
+      - attempting click action
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+            - element is not enabled
+          - retrying click action
+            - waiting 500ms
+
+== Docs untouched by ordinary test runs
+SHA-256 of every docs file (tracked list and filesystem walk, 652 lines) taken immediately before and after the gate:
+identical. 'git status --porcelain -- docs' empty after the gate. Docs file count 326 before and 326 after.
+(Earlier, at the start of the task, the same check around a run of the screenshot-writing specs: identical.)
+
+== M02 failure (crit9-multiplayer.spec.ts, 'M02 + timing')
+Symptom: at one sender's 21st-24th placement, Playwright waited 5 minutes for the Place button to become enabled and the
+test timed out; M05-M10 and L03 then did not run (the suite is serial). The server accepted every command that was sent
+(e.g. 24 of 24 in one failing run); the click that failed never sent one. In the one trace examined, the sender's page at
+that click read "Ready to place" with no disabled attribute on Place, and no later frame was captured.
+
+Repeats of the unmodified spec, alone, each with its own fresh server, under the supervisor:
+  changed build:   gate run failed (#24, B); repeats 1-3: pass, FAIL (#24, B), pass; 6 more: 5 pass, 1 FAIL (#21)  -> 3 of 10 failed
+  baseline fa23e6a (clean clone, own build): repeats 1-3: pass x3; 6 more: 5 pass, 1 FAIL (#22)                   -> 1 of 9 failed
+A diagnostic copy of the spec (outside the repository) that records the draft text and Place's state before every click,
+with a 20 s click timeout: 10 of 10 runs passed (5 per build, alternating); 360 clicks, Place enabled before every one
+(358 "Ready to place", 2 "Unsupported; will fall").
+
+Reading: the failure occurs on the unchanged baseline, so it predates this working tree, and it matches the open Crit 9
+finding F2 ("Place clicks didn't reach an enabled Place button", docs/05-multiplayer/05-02-test-report.md, run 1 #24 (B),
+run 2 #23 (A), run 4 #24 (B)), now seen as a long stall instead of a missed click. The counts (3/10 vs 1/9) are too few
+to say whether this tree changes its rate, so this record does not claim independence from the change. The changed
+product code is the island and its touch layout (src/client/world/*, styles.css rules scoped to .world-touch-layout);
+the workshop, server and shared code are byte-identical to fa23e6a. Status: open, pre-existing, cause not established.
+Logs: m02-new-*, m02-more-*, m02-diag-* and gate-e2e in the work folder; traces of the failing runs kept there.
+
+== Re-run on the final working tree
+On the final working tree (identity above), after the gate:
+  pnpm typecheck: exit 0.
+  crit9-reconnect.spec.ts on the host network (interfaces from /proc/net/dev: more than lo): 1 passed. Method A not run,
+  recorded as skipped ("needs a loopback-only network namespace") with an annotation; method B 5/5, an open socket before
+  each trigger, indicator 1.7-3 ms after the close -> 06-022.
+  The same spec inside unshare --map-root-user --net with only lo: 1 passed. Method A 5/5 and method B 5/5, an open socket
+  before each trigger; indicator A 1.2-3.6 ms, B 1.1-2.2 ms after the close -> 06-023.
+  (The gate's own host run of this spec, before its skip message was reworded, gave the same: A skipped, B 5/5.)
+
+== Pending live checks (the tested tree is not deployed; the live app runs fa23e6a)
+1. Deployed revision matches the tested tree: after the author commits and pushes, the CI 'checks' run for that commit
+   succeeds in both jobs (check, deploy) and the Fly release is that commit.
+2. CI and deploy healthy: /healthz returns {"ok":true} and /readyz 200 on https://comp4020-final-easton-yi.fly.dev/.
+3. /readme/ on the live site shows 'Verification and documentation' and not 'What is checked, and what remains a
+   judgement'; all ten links open.
+4. Two independent sessions (two Chrome profiles or two people) join one work through an invitation and each places a
+   stick; each sees the other's within about a second, without reloading.
+5. Refresh in both sessions: the sticks and the latest saved state are still there.
+6. Regression on the live site: a phone at 390x844 (touch HUD, Menu, landmark info, safe point), a tablet in both
+   orientations, and a desktop at 1920x1080 (unchanged HUD, Pause, portals). A real phone and tablet if available.
+(Read-only checks done on 2026-11-07 against the live app at fa23e6a, not against this tree: CI run 42328525834 check
+and deploy succeeded; /healthz returned {"ok":true}.)

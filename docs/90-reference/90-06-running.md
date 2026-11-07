@@ -13,6 +13,16 @@ pnpm test:integration              # builds, then runs suites against the produc
 pnpm test:e2e                      # Playwright, against APP_URL (some specs need ENABLE_TEST_HOOKS=1)
 ```
 
+Added 2026-11-07:
+
+- `pnpm check` and `pnpm test:e2e` register accounts, so point them at a server started with a scratch `DATA_DIR`
+  (`test:e2e` also needs `ENABLE_TEST_HOOKS=1`; its default `APP_URL` is `http://localhost:8099`).
+- Browser tests write screenshots and traces under `test-results/` (ignored by Git); ordinary runs never change `docs/`.
+- `tests/e2e/crit9-reconnect.spec.ts` method A needs a loopback-only network namespace. Elsewhere it is skipped with
+  the reason recorded and method B runs. To run A, start the server and the spec inside one, e.g.
+  `unshare --map-root-user --net` with `ip link set lo up`, as `scripts/crit9/run.sh` does for its own suites.
+- What each kind of check covers, and the rule-to-test map: [`spec/README.md`](../../spec/README.md).
+
 
 ## The island (heavy jobs)
 

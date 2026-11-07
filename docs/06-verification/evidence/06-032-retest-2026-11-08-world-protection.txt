@@ -1,0 +1,59 @@
+Retest 2026-11-08 — world-protection 'a failed landmark asset leaves the rest of the island and says so': diagnosis, fix, evidence
+(local; uncommitted working tree; headless Chromium on SwiftShader; one worker; supervisor; fresh data dir per run)
+
+== Symptom (2026-11-07, earlier phone/tablet work)
+Whole spec file (7 tests) x5 per build: the unchanged fa23e6a build failed this test in 2 of 5 runs, the changed
+build in 1 of 5; 12 isolated repeats passed on both. The failures:
+  prot-suite-baseline-1: Received length: 9  (expected length 19)
+  prot-suite-baseline-3: Received length: 14  (expected length 19)
+  prot-suite-new-1: Received length: 11  (expected length 19)
+
+== How the product handles a failed landmark (src/client/world/WorldView.ts)
+Far files stream nearest first, two at a time (updateStreaming). A failed far file is retried after 1 s and 2 s;
+the third failure sets it to 'error' and raises the notice '<title> couldn't load. The rest of the island is still
+here.' (loadFar .catch). Each other far file that finishes calls updateStreaming, which starts the next one; the
+error doesn't stop them. L03 is near home, so it is requested early and its notice comes about 2 s after load.
+
+== Cause: test synchronisation, not a fallback defect
+The test read stats().landmarksReady once, the instant the notice appeared, and required 19. The notice depends
+only on L03's three attempts; the other far files may still be arriving. Measured with a probe copy of the test
+(outside the repository) that records the count at the notice and then polls to the end, 8 runs, whole file:
+  W1 1 exit 0 WPPROBE {"atNotice":19,"noticeMs":2120,"final":19,"toAllMs":0,"l03Requests":3} :  7 passed (12.9s);
+  W1 2 exit 0 WPPROBE {"atNotice":19,"noticeMs":2091,"final":19,"toAllMs":0,"l03Requests":3} :  7 passed (11.3s);
+  W1 3 exit 0 WPPROBE {"atNotice":15,"noticeMs":2143,"final":19,"toAllMs":108,"l03Requests":3} :  7 passed (11.9s);
+  W1 4 exit 0 WPPROBE {"atNotice":11,"noticeMs":1896,"final":19,"toAllMs":105,"l03Requests":3} :  7 passed (11.8s);
+  W1 5 exit 0 WPPROBE {"atNotice":19,"noticeMs":2115,"final":19,"toAllMs":0,"l03Requests":3} :  7 passed (14.0s);
+  W1 6 exit 0 WPPROBE {"atNotice":19,"noticeMs":2345,"final":19,"toAllMs":0,"l03Requests":3} :  7 passed (12.2s);
+  W1 7 exit 0 WPPROBE {"atNotice":19,"noticeMs":2088,"final":19,"toAllMs":0,"l03Requests":3} :  7 passed (11.1s);
+  W1 8 exit 0 WPPROBE {"atNotice":19,"noticeMs":2169,"final":19,"toAllMs":0,"l03Requests":3} :  7 passed (11.1s);
+In 2 of 8 runs only 15 and 11 of 19 were ready at the notice (the original assertion would have failed); all 19
+were ready 105-108 ms later. L03 was requested exactly 3 times every time: no endless retry, no cached failure.
+Request interception: page.route fulfils L03's far file with 404 for the worker's fetch in every run; each test
+has its own browser context, so no cache or route state carries over; nothing depends on test order (the race
+is inside one test).
+
+== Fix (tests/e2e/world-protection.spec.ts only)
+After the notice, wait (expect.poll, up to 60 s) until exactly 19 landmarks are ready, then assert L03 is not among
+them, that L03 was requested exactly 3 times (failed for good), and that the island is usable: Start exploring is
+enabled and puts the world into exploring, after which L03 is still not requested again or ready.
+
+== Evidence
+Fixed test, whole file, 15 runs:
+  W2 1 exit 0 :  7 passed (12.6s);
+  W2 2 exit 0 :  7 passed (11.8s);
+  W2 3 exit 0 :  7 passed (12.5s);
+  W2 4 exit 0 :  7 passed (12.2s);
+  W2 5 exit 0 :  7 passed (12.6s);
+  W2 6 exit 0 :  7 passed (11.7s);
+  W2 7 exit 0 :  7 passed (12.0s);
+  W2 8 exit 0 :  7 passed (12.2s);
+  W2 9 exit 0 :  7 passed (13.9s);
+  W2 10 exit 0 :  7 passed (11.4s);
+  W2 11 exit 0 :  7 passed (14.2s);
+  W2 12 exit 0 :  7 passed (12.1s);
+  W2 13 exit 0 :  7 passed (12.3s);
+  W2 14 exit 0 :  7 passed (12.2s);
+  W2 15 exit 0 :  7 passed (12.3s);
+Mutation (scratch copy: a failed landmark marks every unloaded landmark as failed - the defect the test must
+catch): the fixed test fails - 'Received: 3' (expected 19), logs/wp-mutant.
+Whole-suite ordering: the 2026-11-08 gate's full browser suite (06-020 addendum section).

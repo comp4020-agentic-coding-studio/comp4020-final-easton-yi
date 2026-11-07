@@ -1,0 +1,309 @@
+{
+ "what": "Recorder copy of crit9-multiplayer.spec.ts (outside the repository), run m02-rec-1 on the changed build, 2026-11-07: a MutationObserver in the existing init script appended every change of Place (enabled/disabled), Add, the connection label and the draft-state text to an in-page array; nothing extra ran per click. Dumped once, when the Place click timed out (30 s). Times are ms from the first entry.",
+ "draftBeforeClick": "✕ Intersecting; adjust position",
+ "transitions": [
+  {
+   "ms": 0,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 882,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 1131,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.11 u onto the surface below"
+  },
+  {
+   "ms": 1135,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 1140,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 2407,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 2600,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.12 u onto the surface below"
+  },
+  {
+   "ms": 2612,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 2628,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 3628,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 3822,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "↓ Unsupported; will fall"
+  },
+  {
+   "ms": 3825,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 3851,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 12765,
+   "place": "absent",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 12779,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 19692,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 19779,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 19786,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 20584,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 20757,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.11 u onto the surface below"
+  },
+  {
+   "ms": 20765,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 20780,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 21543,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 21722,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 21736,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 23484,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 23658,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.11 u onto the surface below"
+  },
+  {
+   "ms": 23743,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 23787,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 24547,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 24737,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.11 u onto the surface below"
+  },
+  {
+   "ms": 24747,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 24780,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 25606,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 25865,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.11 u onto the surface below"
+  },
+  {
+   "ms": 25878,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "… Waiting for server"
+  },
+  {
+   "ms": 25911,
+   "place": "absent",
+   "add": "enabled",
+   "connection": "Connected",
+   "draft": null
+  },
+  {
+   "ms": 26648,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.10 u onto the surface below"
+  },
+  {
+   "ms": 26744,
+   "place": "enabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✓ Ready to place · drops 0.11 u onto the surface below"
+  },
+  {
+   "ms": 26758,
+   "place": "disabled",
+   "add": "disabled",
+   "connection": "Connected",
+   "draft": "✕ Intersecting; adjust position"
+  }
+ ],
+ "lastPlaceCommandsSent": [
+  {
+   "commandId": "3db301f3-89d3-4467-8561-b815612dd6d5",
+   "kind": "place",
+   "at": 1794051571167.2
+  },
+  {
+   "commandId": "12cef324-229d-4ee8-897c-a1e5b395052e",
+   "kind": "place",
+   "at": 1794051573188.4
+  },
+  {
+   "commandId": "373421a3-1708-46a1-aaa3-d08e846253a1",
+   "kind": "place",
+   "at": 1794051574192.2
+  },
+  {
+   "commandId": "5cf86570-41e4-4cdb-a1b3-7cfb772a21d1",
+   "kind": "place",
+   "at": 1794051575323
+  }
+ ],
+ "sticksInScene": 34
+}

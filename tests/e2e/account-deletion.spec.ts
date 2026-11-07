@@ -2,7 +2,7 @@
 // account page with two sessions of the owner and one collaborator open in
 // separate browser contexts.
 import { expect, test } from "@playwright/test";
-import { PASSWORD, createWork, register } from "./helpers.ts";
+import { PASSWORD, createWork, register, shotPath } from "./helpers.ts";
 
 test("confirmation dialog: cancel, keyboard, wrong password, one submission at a time, and a lost answer", async ({ page }) => {
   await register(page, "Careful Cy");
@@ -20,7 +20,7 @@ test("confirmation dialog: cancel, keyboard, wrong password, one submission at a
   const confirm = dialog.getByRole("button", { name: "Permanently delete account" });
   await expect(pw).toBeFocused();
   await expect(confirm).toBeDisabled();
-  await page.screenshot({ path: "docs/evidence/account-deletion-dialog.png" });
+  await page.screenshot({ path: shotPath("account-deletion-dialog.png") });
 
   // Escape cancels, clears the password and returns focus; Enter reopens
   await pw.fill("typed then abandoned");
@@ -115,7 +115,7 @@ test("deleting from the account page: that session goes to the start page, the o
   await expect(b!).toHaveURL(/\/works\/$/, { timeout: 5000 });
   await expect(b!.locator(".notice-region")).toHaveText("This work was deleted, so it's no longer available.");
   await expect(b!.getByRole("link", { name: title })).toHaveCount(0);
-  await b!.screenshot({ path: "docs/evidence/account-deletion-collaborator.png" });
+  await b!.screenshot({ path: shotPath("account-deletion-collaborator.png") });
 
   // refreshing brings nothing back
   for (const p of [a1!, a2!]) {

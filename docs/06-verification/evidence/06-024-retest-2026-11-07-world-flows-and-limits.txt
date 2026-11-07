@@ -1,0 +1,78 @@
+Retest 2026-11-07 — island flows and account limits (local, uncommitted working tree; identity in 06-020)
+Browser: headless Chromium (Playwright 1.63.0) on SwiftShader, 1366x768 unless stated, one worker, under scripts/world/supervise.ts,
+against a local production build (ENABLE_TEST_HOOKS=1) on a fresh DATA_DIR. Not a real GPU, not a phone, not Fly.
+
+== 1. Safe points measured against the runtime's own terrain decoder and collision (before any change)
+Method: every manifest safe point (95) placed on TerrainField/chunkFromTerrain (16-bit chunks) plus the courtyard ground,
+as WorldView loads them, with all landmark colliders; 'blocked' = clearAt() fails for a capsule stood on the surface.
+Script: safe-measure.ts (outside the repository). Output, unchanged:
+{"total":95,"onSurface":87,"aboveSurfaceOver1m":5,"belowSurface":1,"blocked":2}
+high {"id":"L06-outside","y":96.5,"ground":87.45,"above":9.05,"clear":true,"why":""}
+high {"id":"L06-arena","y":99.5,"ground":96.5,"above":3,"clear":true,"why":""}
+high {"id":"L09-keep-top","y":177.5,"ground":165.5,"above":12,"clear":true,"why":""}
+high {"id":"L13-west","y":81,"ground":77.07,"above":3.93,"clear":true,"why":""}
+high {"id":"L16-toe","y":20.5,"ground":18.5,"above":2,"clear":true,"why":""}
+low {"id":"L05-streambed","y":35.5,"ground":40.63,"above":-5.13,"clear":true,"why":""}
+blocked {"id":"route-1800","y":29.563,"ground":29.56,"above":0,"clear":false,"why":"inside a box of L16 by 6.06"}
+blocked {"id":"route-1950","y":53.884,"ground":53.9,"above":-0.02,"clear":false,"why":"inside a box of L16 by 4.21"}
+
+Before the fix, 'Return to nearest safe point' teleported to the recorded point: above the terrain it left the explorer
+flying (jumpTo kept height > ground + 1 as flight); inside the dam's body it put the capsule inside collision.
+
+Fix (src/client/world/WorldView.ts, src/client/world/WorldStage.tsx): recovery calls jumpTo(sp, { land: true }), which
+stands on the loaded surface under the point and is never left flying; nearestSafePoint() tries the nearest six and skips
+one whose stood capsule is blocked. World data, landmark recipes and the manifest are unchanged. Viewpoints (Go to a
+landmark) are not changed: a ground viewpoint above the terrain still arrives flying (open; 10-02).
+
+== 2. tests/e2e/world-safe-points.spec.ts (8 cases through the real pause-menu button) — logs/safe-points.log
+  ✓  1 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L06-outside (above the terrain (≈ 9 m)): recovery stands on a surface, clear, not flying (2.6s)
+  ✓  2 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L06-arena (above the terrain (≈ 3 m)): recovery stands on a surface, clear, not flying (2.9s)
+  ✓  3 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L09-keep-top (above the terrain (≈ 12 m)): recovery stands on a surface, clear, not flying (3.3s)
+  ✓  4 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L13-west (above the terrain (≈ 4 m)): recovery stands on a surface, clear, not flying (3.1s)
+  ✓  5 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L16-toe (above the river cut (≈ 2 m)): recovery stands on a surface, clear, not flying (3.5s)
+  ✓  6 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L05-streambed (below the terrain (≈ 5 m)): recovery stands on a surface, clear, not flying (3.2s)
+  ✓  7 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › route-1800 (inside the dam's collision): recovery stands on a surface, clear, not flying (2.6s)
+  ✓  8 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › route-1950 (inside the dam's collision): recovery stands on a surface, clear, not flying (3.6s)
+  8 passed (26.4s)
+
+Mutation check (same spec, a disposable copy with the fix removed: no landing, no clear check) — logs/safe-points-mutant.log
+  ✘  1 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L06-outside (above the terrain (≈ 9 m)): recovery stands on a surface, clear, not flying (2.6s)
+  ✘  2 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L06-arena (above the terrain (≈ 3 m)): recovery stands on a surface, clear, not flying (2.6s)
+  ✘  3 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L09-keep-top (above the terrain (≈ 12 m)): recovery stands on a surface, clear, not flying (2.6s)
+  ✘  4 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L13-west (above the terrain (≈ 4 m)): recovery stands on a surface, clear, not flying (2.5s)
+  ✘  5 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L16-toe (above the river cut (≈ 2 m)): recovery stands on a surface, clear, not flying (2.5s)
+  ✓  6 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › L05-streambed (below the terrain (≈ 5 m)): recovery stands on a surface, clear, not flying (2.4s)
+  ✘  7 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › route-1800 (inside the dam's collision): recovery stands on a surface, clear, not flying (3.0s)
+  ✘  8 [desktop] › tests/e2e/world-safe-points.spec.ts:51:5 › safe-point recovery on the real terrain › route-1950 (inside the dam's collision): recovery stands on a surface, clear, not flying (2.6s)
+  7 failed
+  1 passed (28.0s)
+(L05-streambed passes either way: a point below the terrain was already lifted to the surface.)
+
+== 3. Portal crossing: world-interaction.spec.ts K and K2 — logs/portal-k.log
+  ✓  1 [desktop] › tests/e2e/world-interaction.spec.ts:320:3 › island interaction › K: a portal fires once per crossing; standing on or re-crossing its threshold doesn't re-enter until you've left 4 m (2.2s)
+  ✓  2 [desktop] › tests/e2e/world-interaction.spec.ts:365:3 › island interaction › K2: the transition lock and cooldown refuse a second portal transition started immediately after the first (4.2s)
+  2 passed (8.5s)
+K walks the explorer frame by frame through the manifest's 'works' portal and back, counting onPortal events: one per
+crossing; standing on or re-crossing within 4 m adds none; after leaving 4 m it fires again. K2 starts a second
+transition immediately after the first and expects the lock and the 1.5 s cooldown to refuse it, and one after 1.6 s to
+proceed. Mutation (portals always re-armed) — logs/portal-k-mutant.log:
+  ✘  1 [desktop] › tests/e2e/world-interaction.spec.ts:320:3 › island interaction › K: a portal fires once per crossing; standing on or re-crossing its threshold doesn't re-enter until you've left 4 m (3.4s)
+    Error: one crossing fires the portal once
+    Expected: 1
+    Received: 8
+    > 358 |     expect(fired.log.afterFirstCrossing, "one crossing fires the portal once").toBe(1);
+
+== 4. Account limits: tests/limits.test.ts (own servers on disposable data dirs) — logs/limits.log
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+Mutation (both limits off by one in coordinator.ts, disposable copy) — logs/limits-mutant.log:
+     × allows 20, refuses the next with LIMIT; archived and trashed still count; permanent deletion frees a slot 638ms
+     × two creates sent at once at one below the limit: exactly one succeeds 639ms
+     × allows 100, refuses the next with LIMIT, stays idempotent at the limit, and removing one frees a slot 1192ms
+AssertionError: expected 200 to be 409 // Object.is equality
+AssertionError: expected [ { status: 200, …(1) }, …(1) ] to have a length of 1 but got 2
+AssertionError: expected 200 to be 409 // Object.is equality
+
+== 5. The same specs in the normal gate's full browser run (06-020): world-safe-points 8/8, world-interaction 11/11
+(A–K2, J), world-route 2/2, world-touch-layout 20/20, world-keyboard 7/7, world-daynight 5/5, world-protection 7/7.
+limits.test.ts ran inside pnpm test:unit (609/609).

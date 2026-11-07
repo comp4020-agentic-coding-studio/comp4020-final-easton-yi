@@ -1,7 +1,7 @@
 // AT-03, AT-05, AT-07 (browser part), SYNC-01/05, CAM-01: two independent
 // authenticated browser contexts, joined through the real invitation flow.
 import { expect, test, type Page } from "@playwright/test";
-import { createWork, register } from "./helpers.ts";
+import { createWork, register, shotPath } from "./helpers.ts";
 
 const framing = (p: Page) => p.evaluate(() => (window as any).__stillwood.framing());
 
@@ -42,7 +42,7 @@ test("two people build together: ghosts, concurrent placement, own cameras, reco
   for (let i = 0; i < 70; i++) await b.getByRole("button", { name: "Back / front (Z) increase" }).click();
   await expect(b.locator(".ghost-label")).toContainText("Avery");
   await expect(a.locator(".ghost-label")).toContainText("Blake");
-  await a.screenshot({ path: "docs/evidence/p3-partner-ghost.png" });
+  await a.screenshot({ path: shotPath("p3-partner-ghost.png") });
 
   // place at (nearly) the same moment
   await Promise.all([
@@ -70,7 +70,7 @@ test("two people build together: ghosts, concurrent placement, own cameras, reco
   await b.getByRole("button", { name: "Place", exact: true }).click();
   await expect(b.locator(".toast-ok").last()).toContainText("Placed and saved.");
   await expect.poll(() => a.evaluate(() => (window as any).__stillwood.sticks())).toBe(3);
-  await b.screenshot({ path: "docs/evidence/p3-after-reconnect.png" });
+  await b.screenshot({ path: shotPath("p3-after-reconnect.png") });
   await ctxA.close();
   await ctxB.close();
 });

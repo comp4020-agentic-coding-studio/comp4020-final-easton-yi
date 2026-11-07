@@ -219,3 +219,105 @@ Done after the last code change, against the files above.
   - Latency for real users on other networks (the probe ran from this
     machine only).
   - Anything about whether classmates find the app usable.
+
+## Retest addendum, 2026-11-07: final fixes and verification
+
+Added on 2026-11-07. Everything above this heading is the Crit 10 record of 2026-10-21 and is unchanged. This
+addendum records a later local retest of items that report and the other status documents left open. It supersedes
+none of them: a historical failure stays a historical failure, and the rows below link its retest.
+
+**What was tested.** Base commit `fa23e6a` plus an **uncommitted** working tree: the phone/tablet layout, the
+safe-point recovery fix, the test and documentation changes listed in
+[06-020](evidence/06-020-retest-2026-11-07-gate.txt), which also gives the working-tree identity (the base commit,
+a SHA-256 of the tracked diff outside `docs/`, and a SHA-256 of each new file). Nothing here is committed or deployed.
+The live app still runs `fa23e6a` (CI run
+[42328525834](https://github.com/comp4020-agentic-coding-studio/comp4020-final-easton-yi/actions/runs/42328525834):
+check and deploy succeeded), so **no result below is a deployed result**.
+
+**Where.** Local only: WSL2, Node 24.21.0, a production build of the working tree, a fresh data directory per
+server, Playwright 1.63.0 with headless Chromium on SwiftShader (software WebGL), one worker, every heavy job under
+`scripts/world/supervise.ts`. Phone and tablet results are browser emulation, not devices.
+
+### Items
+
+| Item | Earlier status (where) | Status now | Scenario | Expected → observed | Check | Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| `pnpm check` intermittently red: shared Owner in `spec/versions.test.ts` rate-limited | open known limitation ([90-01](../90-reference/90-01-implementation-status.md#known-limitations); 3 of 9 runs failed on 2026-10-06) | **fixed locally** (cause inspected; not reproduced here before the fix) | 10 repeats of the spec before and after the change on one server each; then the normal `pnpm check` once | No `RATE_LIMITED` for the functional tests, and the limit itself still asserted → before: 10/10 passed, but the shared Owner fell to 1.02 tokens, one token from a refusal; after: 10/10 passed, minimum 2.00 tokens; the new limiter test passed each time; `pnpm check` 54/54 | `spec/versions.test.ts` (paced `beforeEach`; new "command rate limit" test); `pnpm check` | [06-021](evidence/06-021-retest-2026-11-07-versions-rate-limit.txt) |
+| F3 method A fails on a host network (D-2, C10-15) | test/automation defect; host failure recorded ([D-2](#d-2--f3-method-a-fails-outside-a-loopback-only-namespace-a-testautomation-defect)) | **method A skipped with its reason on a host; passes in a loopback-only namespace.** The 2026-10-21 host failure stands | Host: default methods `A,B`. Namespace: `unshare --map-root-user --net`, only `lo` | Host → A not run, recorded as "needs a loopback-only network namespace"; B 5/5 (indicator 1.7–3 ms after the close). Namespace → A 5/5 and B 5/5, an open socket before each trigger (indicator 1.1–3.6 ms) | `tests/e2e/crit9-reconnect.spec.ts` (interfaces read from `/proc/net/dev`) | [06-022](evidence/06-022-retest-2026-11-07-reconnect-host.json) (host), [06-023](evidence/06-023-retest-2026-11-07-reconnect-netns.json) (namespace) |
+| Browser tests overwrite screenshots in `docs/evidence/` | recorded above ("Not defects": seven screenshots restored by hand) | **fixed locally** | Full browser suite, then hashes of every docs file | Screenshots go to each test's own `test-results/` folder (ignored by Git) → the 652 docs hashes were identical before and after the run; `git status docs` clean; 326 docs files before and after | `tests/e2e/helpers.ts` `shotPath()` (15 writers in 7 specs); `scripts/crit9/run.sh` now defaults to `test-results/crit9/<run-id>/` | [06-020](evidence/06-020-retest-2026-11-07-gate.txt) |
+| Portal crossing: one transition per crossing, lock, cooldown, re-arm beyond 4 m | observed once by a tour, "not an assertion" ([08-07](../08-world-build/08-07-protection-matrix.md#island-additions-new-controls-not-renames)) | **asserted (local)** | Explorer walked frame by frame through the `works` portal and back; a second transition started at once and after 1.6 s | One event per crossing, none while standing or re-crossing within 4 m, another after leaving 4 m; second transition refused at once and allowed after the cooldown → as expected. With re-arming broken the test fails (8 events) | `world-interaction.spec.ts` K, K2 | [06-024](evidence/06-024-retest-2026-11-07-world-flows-and-limits.txt) §3 |
+| Safe points off the terrain or inside collision | pre-existing, not fixed ([10-02](../10-day-night/10-02-courtyard-report.md#found-and-not-fixed-pre-existing): four points; 90-04 §6 "met" on a flat-ground test) | **recovery fixed locally; world data unchanged; viewpoints still open** | Measured all 95 safe points on the runtime's terrain and collision: 5 above the ground by more than 1 m, 1 below, 2 inside the dam (L16). Then "Return to nearest safe point" from 1.5 m away for each of the 8 | Standing on the surface (within 0.05 m), capsule clear, not flying → 8/8. With the fix removed, 7 of 8 fail | `tests/e2e/world-safe-points.spec.ts` (the real pause-menu button); `WorldView.jumpTo(…, { land: true })`, `nearestSafePoint()` skips a blocked point | [06-024](evidence/06-024-retest-2026-11-07-world-flows-and-limits.txt) §1–2 |
+| Owned-works (20) and favorites (100) limits | listed in WORLD-04 as verified, with no test at the boundary ([90-01](../90-reference/90-01-implementation-status.md#rule-coverage)) | **verified automatically (local)** | Own servers on disposable data: 20 works, the 21st; archive and trash; an editor's own work; permanent deletion; two creates at once at 19; 100 favorites, the 101st, a repeat, another account, removal | 21st refused `409 LIMIT` with its message; archived or trashed still count; permanent deletion frees one; exactly one of two simultaneous creates succeeds; 101st favorite refused; a repeat is accepted; removal frees one → all as expected. With both limits off by one, all 3 tests fail | `tests/limits.test.ts` (in `pnpm test:unit`) | [06-024](evidence/06-024-retest-2026-11-07-world-flows-and-limits.txt) §4 |
+| Phone and tablet layout of the island (touch) | touch controls "met in emulation" at 390 × 844 only ([90-04](../90-reference/90-04-world-status.md) §5.2) | **met in emulation at 8 sizes; unverified on devices** | Coarse touch at 390 × 844, 844 × 390, 360 × 640, 667 × 375, 768 × 1024, 1024 × 768, 1024 × 1366, 1366 × 1024; a fine mouse at narrow and touch-capable sizes | Compact landmark label with an info panel; one Menu; controls fit, don't overlap, ≥ 44 px; rotation and two-finger input; the desktop model kept for a fine pointer → 20/20 | `tests/e2e/world-touch-layout.spec.ts`, `tests/world-touch-layout.test.ts` | [06-029](evidence/06-029-retest-2026-11-07-matrix-and-desktop.txt); [06-025](evidence/06-025-retest-2026-11-07-phone-390x844-touch.png), [06-026](evidence/06-026-retest-2026-11-07-phone-390x844-menu-signed-in.png), [06-027](evidence/06-027-retest-2026-11-07-tablet-1024x768-touch.png) |
+| Six-viewport matrix and desktop unchanged | not previously run as a matrix | **pass (local, emulated)** | 390 × 844, 844 × 390, 768 × 1024, 1024 × 768 (touch and mouse), 1366 × 768, 1920 × 1080; guest and signed in; `/readme/`, home and `/world/`, works, a workshop. Desktop: baseline `fa23e6a` build vs this build | No overflow, controls in view, all README links, the right HUD for the input, no page errors → 7/7. Desktop: 16 UI screenshots and 16 control-geometry dumps byte-identical | matrix spec and capture script (outside the repository) | [06-029](evidence/06-029-retest-2026-11-07-matrix-and-desktop.txt), [06-028](evidence/06-028-retest-2026-11-07-laptop-1024x768-mouse.png) |
+| Persistence, restart and collaboration | verified locally (above; [90-01](../90-reference/90-01-implementation-status.md#gate-log)) | **still verified locally; not re-checked on Fly** | Normal gate | `tests/restart.test.ts` (SIGKILL, SIGTERM, failed write) in 609/609 unit tests; `solo.spec.ts` (refresh and logout), `together.spec.ts` (two people) and `lifecycle.spec.ts` passed; integration 13/13 | `pnpm test:unit`, `pnpm test:integration`, `pnpm test:e2e` | [06-020](evidence/06-020-retest-2026-11-07-gate.txt) |
+| Multiplayer M02: a sender's Place button never becomes enabled at about the 21st–24th placement; the test times out and the rest of the serial M-suite doesn't run | related to the open Crit 9 finding F2, recorded as missed clicks ([05-02](../05-multiplayer/05-02-test-report.md), run 1 #24, run 2 #23, run 4 #24) | **open: pre-existing, cause not established** | Unmodified `crit9-multiplayer.spec.ts`, each run on its own fresh server; this tree and a clean `fa23e6a` build, alternating; then a diagnostic copy that records Place's state before each click | Expected 26 placements → this tree failed 3 of 10 runs (#24, #24, #21), `fa23e6a` 1 of 9 (#22); the server accepted every command that was sent. The diagnostic copy passed 10 of 10 with Place enabled before all 360 clicks. Too few runs to tell whether this tree changes the rate, so independence from it is not claimed; the workshop, server and shared code are byte-identical to `fa23e6a` | `crit9-multiplayer.spec.ts` M02 | [06-020](evidence/06-020-retest-2026-11-07-gate.txt) (M02 section) |
+| `world-protection.spec.ts` "a failed landmark asset…" intermittent | not recorded in the repository before this retest | **open: pre-existing, unresolved** | The whole spec file (7 tests) repeated during the phone/tablet work: 5 runs on the unchanged `fa23e6a` build and 5 on the changed build | Expected to pass every time → baseline failed this test in 2 of 5 runs, the changed build in 1 of 5; 12 isolated repeats of the test passed on both; passed in this gate. The comparison shows the failure predates these changes; it does not prove the changes have no effect on it | `world-protection.spec.ts` | [06-020](evidence/06-020-retest-2026-11-07-gate.txt) |
+| Desktop "View player works" does not scroll to the exhibition | not recorded in the repository before this retest | **open (kept: desktop behaviour must not change)** | Click on the desktop home, signed out and signed in | The URL becomes `#exhibits-h` but the page stays put, on `fa23e6a` too; the touch Menu's same button scrolls (it defers one frame) | `world-touch-layout.spec.ts` T8 (touch only) | [06-029](evidence/06-029-retest-2026-11-07-matrix-and-desktop.txt); *2026-11-08:* the author's manual check of the current local build found that it does scroll to the exhibition (browser and sign-in state not reported); automated headless Chromium on the same product source still doesn't, in 12 conditions, because the router's `scrollTo(0, 0)` runs right after the link's scroll; no code changed ([06-034](evidence/06-034-retest-2026-11-08-view-player-works.txt)); *2026-11-08, later:* **fixed locally**: the app router now owns the scroll and scrolls to a same-page anchor instead of to the top; new test L (both desktop sizes, signed out and in, reduced motion on and off, repeat click, Back and Forward) passes and fails on the old build; not deployed ([06-034](evidence/06-034-retest-2026-11-08-view-player-works.txt)) |
+
+### Normal gate, once, after the targeted checks
+
+`pnpm typecheck` passed. `pnpm test:unit`: 27 files, 609 tests passed. `pnpm check` against a scratch server: 7
+files, 54 tests passed. `pnpm check:evidence` passed. `pnpm test:integration`: 13/13. `pnpm test:e2e`: 83 passed,
+1 failed (M02, above), 5 did not run because the multiplayer suite is serial. Commands, peaks and the two
+working-tree identities are in [06-020](evidence/06-020-retest-2026-11-07-gate.txt).
+
+### Not shown by this retest
+
+- Anything on the deployed app. The pending live checks are listed in 06-020.
+- Physical phones or tablets, real GPUs, Safari or Firefox, real safe-area insets or browser toolbars.
+- Whether people find the app usable or the collaboration considerate.
+- Ground viewpoints above the terrain (L02, L06, L13, L16) and the L13/L16 entries
+  ([10-02](../10-day-night/10-02-courtyard-report.md#found-and-not-fixed-pre-existing)): "Go to a landmark" still arrives
+  flying at those points.
+- The named-version (30) and recovery-point (10) limits at their boundaries.
+
+## Retest addendum, 2026-11-08: multiplayer M02 and world-protection
+
+Added on 2026-11-08. The 2026-11-07 addendum above is unchanged; its M02 and world-protection rows record the state on
+that day (both open) and stay as written. This addendum records their diagnosis, fixes and retests. Same environment
+as the 2026-11-07 addendum; the tested tree is still **uncommitted and not deployed** (identity `bffd3efde05750d7`,
+listed in [06-033](evidence/06-033-retest-2026-11-08-gate.txt)). Product source is unchanged since 2026-11-07; both
+fixes are in tests.
+
+| Item | Status on 2026-11-07 | Status now | Cause | Fix | Regression check and evidence |
+| --- | --- | --- | --- | --- | --- |
+| Multiplayer M02: Place never becomes enabled at about the 21st–24th placement; the rest of the serial suite doesn't run | open, pre-existing, cause not established | **fixed locally (test defect)** | Every condition that disables Place was traced: the connection, lease, phase and command state were all normal. A held stick is added 0.1 u above the surface below it, and on the tall, still-settling stack a settling stick came to rest inside it. The per-frame check then marked it "✕ Intersecting; adjust position" and disabled Place, correctly; M05 specifies this. Nothing re-enables it without the person's input. The helper `placeVia` clicked Place and waited for it to be enabled. A second form: a click that lands just as the stick turns is refused before sending, and the helper returned no stick (M09 failed this way once). Recorded transitions: [06-031](evidence/06-031-retest-2026-11-08-m02-place-transitions.json). All 11 recorded occurrences were at placements 23–25, matching the open Crit 9 finding F2 ([05-02](../05-multiplayer/05-02-test-report.md)) | `tests/e2e/crit9-multiplayer.spec.ts` `placeVia`: when the draft shows exactly that refusal and no place command was sent, it does what the message asks: cancel and add again (at most 2 times, each recorded). Nothing force-enables Place, bypasses validation, changes a limit or retries blindly | New **M05b** (fresh work; a partner's stick lying flat under B's held stick): refusal persists after the world is still, a plain click times out, nothing is sent, then one re-add and a successful placement. With the old click restored, M05b hangs. Repeats planned before running: changed build 15/15 and `fa23e6a` build 5/5, all 9 tests each; M02 needed one re-add in 9 of the 20 runs. Detail: [06-030](evidence/06-030-retest-2026-11-08-m02-diagnosis.txt) |
+| The five tests M02 blocked: M05, M08, M09, M10, L03 | did not run in the 2026-11-07 gate | **pass (local)** | — | — | Ran after their serial prerequisites (M01, M03, M02) in all 20 planned runs and in the 2026-11-08 gate ([06-033](evidence/06-033-retest-2026-11-08-gate.txt)) |
+| `world-protection.spec.ts` "a failed landmark asset…" intermittent | open, pre-existing, unresolved | **fixed locally (test synchronisation)** | The notice appears when L03's third attempt fails (about 2 s after load), while the other far files, loaded two at a time, may still be arriving. The test read the ready count once at the notice. A probe measured 15 and 11 of 19 ready at the notice in 2 of 8 runs, and 19 about 105 ms later; L03 was requested exactly 3 times every run. The fallback itself works | `tests/e2e/world-protection.spec.ts`: after the notice, wait (bounded, up to 60 s) for exactly 19 ready landmarks; L03 not ready; L03 requested exactly 3 times; Start exploring works and L03 stays failed | Whole file 15/15. With a product mutation in which a failed landmark stops the rest loading, the test fails ("Expected 19, Received 3"). Detail: [06-032](evidence/06-032-retest-2026-11-08-world-protection.txt) |
+
+**Gate on the final tree (2026-11-08).** `pnpm typecheck` passed; `pnpm test:unit` 609/609; `pnpm check` 54/54;
+`pnpm check:evidence` passed; `pnpm test:integration` 13/13; `pnpm test:e2e` **90 passed, 0 failed; no top-level
+test skipped or left unrun**. Inside the reconnect test F3 (passed), method A was omitted on the host network by
+design, with its reason recorded; it passed in a loopback-only namespace
+([06-023](evidence/06-023-retest-2026-11-07-reconnect-netns.json)). Details are in
+[06-033](evidence/06-033-retest-2026-11-08-gate.txt). An additional full browser run for whole-suite ordering
+is recorded in the same file.
+
+**Still open.** Everything listed under "Not shown by this retest" in the 2026-11-07 addendum, and the desktop "View
+player works" scroll. Deployment of the README change, and every live check, are still pending.
+
+**Desktop "View player works" (reconciled 2026-11-08).** The author manually tested the current local build on
+2026-11-08 and found that clicking it on desktop scrolls to the exhibition section. That is local manual
+verification, not a deployed test; the browser, sign-in state and exact working tree were not reported. The same
+product source, checked automatically in headless Chromium at 1366 × 768 and 1920 × 1080, signed out (idle and
+exploring) and signed in, with and without reduced motion, still ended at the top of the page in all 12 conditions.
+The call log shows why: the link scrolls to the heading and, in the same click, the app's router calls
+`window.scrollTo(0, 0)`; headless Chromium applies the later call. Status: **verified working in the author's
+manual check; still not working under automated headless Chromium**. Reduced-motion users are expected to be
+affected in any browser, since both scrolls are then instant (inferred, not tested). No code was changed, and no
+fix is claimed ([06-034](evidence/06-034-retest-2026-11-08-view-player-works.txt)).
+
+**Desktop "View player works" fixed (2026-11-08, later the same day).** A narrowly scoped behaviour correction was
+authorised. The app router (`src/client/router.ts`, `navigate`) now owns the scroll for every in-app navigation: a
+hash on the current page scrolls its target into view (instantly with reduced motion), any other page starts at the
+top, and a link to the URL that is already current replaces the history entry instead of adding one. The desktop
+and touch links no longer scroll by themselves. A new test, `world-interaction.spec.ts` "L", covers both desktop
+sizes, signed out and in, and reduced motion on and off. It checks where the heading actually ends up, a repeat
+click, Back, Forward and a link to another page. It passes on this build and fails on the `fa23e6a` build. The touch
+Menu's link (T8) still reaches the exhibition, and the desktop screenshots and HUD geometry are byte-identical to the
+baseline. Final gate on the final tree (`2f2efa861930ee27`): unit 609/609, `pnpm check` 54/54, integration 13/13,
+browser **94 passed, 0 failed, no top-level test skipped or left unrun** (reconnect method A omitted on the host
+network by design). While verifying, the access "keyboard only" test was found focusing Add a stick before it was
+enabled, and was fixed to wait for it. Details are appended to
+[06-034](evidence/06-034-retest-2026-11-08-view-player-works.txt). Local only; not deployed.

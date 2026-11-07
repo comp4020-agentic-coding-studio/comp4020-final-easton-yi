@@ -317,6 +317,72 @@ test.describe("island interaction", () => {
     await expect(page.locator(".conn-open")).toBeVisible();
   });
 
+  test("K: a portal fires once per crossing; standing on or re-crossing its threshold doesn't re-enter until you've left 4 m", async ({ page }) => {
+    // Drives the real trigger in WorldView.updateProximity (crossing a portal's plane within its opening fires
+    // onPortal once and disarms it; it re-arms beyond 4 m) by placing the feet frame by frame from the manifest's
+    // portal pose. onPortal is wrapped to count crossings and to stop the real handler from navigating away, so
+    // the crossings themselves are what's measured.
+    await startExploring(page, "/world/");
+    await settle(page);
+    const fired = await page.evaluate(async () => {
+      type V = { manifest: { home: { portals: { id: string; position: number[]; yaw: number }[] } }; flight: { feet: number[]; vel: number[] }; events: { onPortal?: (id: string) => void }; invalidate(): void; getStatus(): { control: string } };
+      const v = (window as unknown as { __stillwoodWorld: { view: V } }).__stillwoodWorld.view;
+      const portal = v.manifest.home.portals.find((p) => p.id === "works")!;
+      const n = [Math.sin(portal.yaw), Math.cos(portal.yaw)];
+      const at = (side: number) => [portal.position[0]! + n[0]! * side, portal.position[1]!, portal.position[2]! + n[1]! * side];
+      const crossings: string[] = [];
+      v.events.onPortal = (id) => void crossings.push(id);
+      const frame = () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+      const put = async (side: number) => {
+        const f = at(side);
+        v.flight.feet[0] = f[0]!;
+        v.flight.feet[1] = f[1]!;
+        v.flight.feet[2] = f[2]!;
+        v.flight.vel[0] = v.flight.vel[1] = v.flight.vel[2] = 0;
+        v.invalidate();
+        await frame();
+        await frame();
+      };
+      const log: Record<string, number> = {};
+      await put(5); // approach side, outside the 4 m re-arm radius: armed
+      await put(0.3); // on the threshold plane, inside the opening: crosses
+      log.afterFirstCrossing = crossings.length;
+      for (const side of [0.1, -0.2, 0.4, -0.5, 0.2, 2, 3.5, 0.0]) await put(side); // stays within 4 m: never re-enters
+      log.afterLingering = crossings.length;
+      await put(6); // leave beyond 4 m: re-arms
+      await put(0.2); // cross again
+      log.afterReturn = crossings.length;
+      log.control = v.getStatus().control === "exploring" ? 1 : 0;
+      return { log, ids: crossings };
+    });
+    expect(fired.log.afterFirstCrossing, "one crossing fires the portal once").toBe(1);
+    expect(fired.log.afterLingering, "standing on and stepping back across the threshold within 4 m doesn't re-enter").toBe(1);
+    expect(fired.log.afterReturn, "after leaving beyond 4 m, a new crossing fires again").toBe(2);
+    expect(fired.ids).toEqual(["works", "works"]);
+    expect(fired.log.control, "the explorer is still exploring (no transition was started by the test)").toBe(1);
+  });
+
+  test("K2: the transition lock and cooldown refuse a second portal transition started immediately after the first", async ({ page }) => {
+    await startExploring(page, "/world/");
+    const r = await page.evaluate(() => {
+      const v = (window as unknown as { __stillwoodWorld: { view: { beginPortalTransition(): boolean; endPortalTransition(): void } } }).__stillwoodWorld.view;
+      const first = v.beginPortalTransition();
+      const whileLocked = v.beginPortalTransition();
+      v.endPortalTransition();
+      const duringCooldown = v.beginPortalTransition();
+      return { first, whileLocked, duringCooldown };
+    });
+    expect(r).toEqual({ first: true, whileLocked: false, duringCooldown: false });
+    await page.waitForTimeout(1600);
+    const later = await page.evaluate(() => {
+      const v = (window as unknown as { __stillwoodWorld: { view: { beginPortalTransition(): boolean; endPortalTransition(): void } } }).__stillwoodWorld.view;
+      const ok = v.beginPortalTransition();
+      v.endPortalTransition();
+      return ok;
+    });
+    expect(later, "after the 1.5 s cooldown a new transition may start").toBe(true);
+  });
+
   test("I: blur and a hidden tab drop held keys; returning brings no stuck movement, capture or jump", async ({ page }) => {
     await page.addInitScript(() => {
       let hidden = false;
@@ -351,6 +417,69 @@ test.describe("island interaction", () => {
   });
 });
 
+// "View player works" on the desktop home page (2026-11-08). Before, the link scrolled to the exhibition and, in the
+// same click, the app router's navigate() scrolled back to the top, so the page didn't move (headless Chromium, every
+// condition; docs/06-verification/evidence/06-034). The router now owns the scroll: a hash on the current page scrolls
+// to its target, a new page starts at the top. Checked by where the heading actually is, not only by the URL.
+const VPW_CASES = [
+  { w: 1366, h: 768, motion: "no-preference", signedIn: false },
+  { w: 1366, h: 768, motion: "reduce", signedIn: true },
+  { w: 1920, h: 1080, motion: "reduce", signedIn: false },
+  { w: 1920, h: 1080, motion: "no-preference", signedIn: true },
+] as const;
+for (const c of VPW_CASES) {
+  test.describe(`View player works on the desktop home page (${c.w}×${c.h}, ${c.signedIn ? "signed in" : "signed out"}, reduced motion ${c.motion === "reduce" ? "on" : "off"})`, () => {
+    test.setTimeout(120_000);
+    test.use({ viewport: { width: c.w, height: c.h }, reducedMotion: c.motion });
+    test("L: reaches the exhibition, repeat clicks add no history entry, Back and Forward return, other links start at the top", async ({ page }) => {
+      await page.addInitScript(() => localStorage.setItem("stillwood.test", "1"));
+      if (c.signedIn) await register(page, "Viewer");
+      await page.goto("/");
+      await expect(page.getByRole("button", { name: "Start exploring" })).toBeEnabled({ timeout: 60_000 });
+      const link = page.getByRole("navigation", { name: "Island portals" }).getByRole("link", { name: "View player works" });
+      const heading = page.getByRole("heading", { name: "Exhibition", exact: true });
+      const headingTop = (): Promise<number> => heading.evaluate((el) => el.getBoundingClientRect().top);
+      // where scrollIntoView should leave the page: the heading at the top, or as far as the page can scroll
+      const missFromTarget = (): Promise<number> =>
+        heading.evaluate((el) => {
+          const want = Math.min(el.getBoundingClientRect().top + scrollY, document.documentElement.scrollHeight - innerHeight);
+          return Math.abs(scrollY - want);
+        });
+      const at = { y: () => page.evaluate(() => scrollY), len: () => page.evaluate(() => history.length), url: () => page.evaluate(() => location.pathname + location.hash) };
+      expect(await at.y()).toBe(0);
+      expect(await headingTop()).toBeGreaterThan(c.h); // the exhibition starts below the fold
+      const len0 = await at.len();
+      await link.click();
+      // the page comes to rest with the heading at the top (or scrolled as far as it goes), visible; the URL records the anchor
+      await expect.poll(missFromTarget, { timeout: 5000 }).toBeLessThan(2);
+      await expect(heading).toBeInViewport({ ratio: 1 });
+      expect(await at.url()).toBe("/#exhibits-h");
+      expect(await at.len()).toBe(len0 + 1);
+      expect(await at.y()).toBeGreaterThan(0);
+      // a second click, from the top of the page where the link is: back to the exhibition, no duplicate history entry
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await link.click();
+      await expect.poll(missFromTarget, { timeout: 5000 }).toBeLessThan(2);
+      await expect(heading).toBeInViewport({ ratio: 1 });
+      expect(await at.len()).toBe(len0 + 1);
+      // Back: the home page without the anchor, at the top; Forward: the exhibition again
+      await page.goBack();
+      await expect.poll(at.url).toBe("/");
+      await expect.poll(at.y, { timeout: 5000 }).toBe(0);
+      await page.goForward();
+      await expect.poll(at.url).toBe("/#exhibits-h");
+      await expect.poll(missFromTarget, { timeout: 5000 }).toBeLessThan(2);
+      await expect(heading).toBeInViewport({ ratio: 1 });
+      // an in-app link to another page (through the same router) still starts that page at the top
+      await page.evaluate(() => window.scrollTo(0, 400));
+      const other = c.signedIn ? { name: "My works", url: /\/works\/$/ } : { name: "Sign in", url: /\/login\/\?next=/ };
+      await page.locator("header.site-header").getByRole("link", { name: other.name }).click();
+      await page.waitForURL(other.url);
+      expect(await at.y()).toBe(0);
+    });
+  });
+}
+
 test.describe("island interaction on an emulated phone (390×844, touch; not a physical device)", () => {
   test.setTimeout(120_000);
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2, userAgent: devices["Pixel 7"].userAgent });
@@ -358,17 +487,20 @@ test.describe("island interaction on an emulated phone (390×844, touch; not a p
     await page.addInitScript(() => localStorage.setItem("stillwood.test", "1"));
   });
 
-  test("J: speed buttons are tappable without steering; Up/Down still fly; the rail clears the touch controls", async ({ page }) => {
+  test("J: speed buttons are tappable without steering; Up/Down still fly; the speed control clears the touch controls", async ({ page }) => {
     await startExploring(page);
     await settle(page);
-    const speed = page.getByRole("group", { name: "Speed" });
+    // the phone layout (2026-11-07): a compact selector shows the current speed and opens Walk / Run / Fly
     const p0 = await pose(page);
+    await page.getByRole("button", { name: /^Speed: / }).tap();
+    const speed = page.getByRole("group", { name: "Speed" });
     await speed.getByRole("button", { name: /Fly/ }).tap();
-    await expect(speed.getByRole("button", { name: /Fly/ })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("button", { name: /^Speed: / })).toHaveAccessibleName("Speed: Fly");
+    expect((await stats(page)).speed).toBe("fly");
     expect(sameView(await pose(page), p0), "tapping a speed button doesn't turn the camera").toBe(true);
     expect(dist((await pose(page)).feet, p0.feet)).toBeLessThan(STILL);
-    // the speed rail, the Up/Down/Boost column and the move stick don't overlap, and stay inside the viewport
-    const rects = await page.evaluate(() => [".world-speed", ".world-fly", ".world-stick", ".world-controls"].map((s) => {
+    // the speed selector, the Up/Down/Boost row, the move stick and the Menu button don't overlap, and stay inside the viewport
+    const rects = await page.evaluate(() => [".world-t-mode", ".world-t-fly", ".world-stick", ".world-t-menu"].map((s) => {
       const r = document.querySelector(s)!.getBoundingClientRect();
       return { s, l: r.left, r: r.right, t: r.top, b: r.bottom };
     }));

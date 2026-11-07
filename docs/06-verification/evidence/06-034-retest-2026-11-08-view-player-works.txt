@@ -1,0 +1,87 @@
+Retest 2026-11-08 — desktop "View player works" on the home page: author's manual check and automated reconciliation
+
+== Author's observation (reported 2026-11-08)
+The author manually tested the current local build and found that clicking "View player works" on desktop scrolls
+to the exhibition section. Local manual verification; not a deployed-site test. The author's browser, sign-in state
+and exact working-tree identity were not reported and are not assumed here.
+
+== Earlier automated result (2026-11-07, phone/tablet task; kept)
+Headless Chromium, 1366x768, signed out, home page idle: after the click the URL became /#exhibits-h but scrollY
+stayed 0 (the heading 1213 px below the top), on the unchanged fa23e6a build and on the changed build.
+
+== Automated check on the current build, 2026-11-08
+Product source identical to the tree gated on 2026-11-08 (identity bffd3efde05750d7, 06-033); dist/ built from it.
+Headless Chromium (Playwright 1.63.0, SwiftShader), real mouse click on the link in the 'Island portals' navigation,
+scrollY sampled every 250 ms for 3 s. Spec outside the repository (vpw.spec.ts). 12 conditions:
+  {"label":"1366 no-preference signed-out idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1213,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1366 no-preference signed-out exploring","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1213,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1366 no-preference signed-in idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1188,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1366 reduce signed-out idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1213,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1366 reduce signed-out exploring","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1213,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1366 reduce signed-in idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1188,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1920 no-preference signed-out idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1374,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1920 no-preference signed-out exploring","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1374,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1920 no-preference signed-in idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1349,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1920 reduce signed-out idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1374,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1920 reduce signed-out exploring","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1374,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+  {"label":"1920 reduce signed-in idle","before":0,"url":"/#exhibits-h","scrollY":0,"headingTop":1349,"headingVisible":false,"scrollYOver3s":[0,0,0,0,0,0,0,0,0,0,0,0]}
+Result: in every condition the URL became /#exhibits-h and the page did not move (scrollY 0 throughout).
+
+== Why (call order, order.spec.ts outside the repository)
+  motion=no-preference: calls scrollIntoView(exhibits-h) then scrollTo([0, 0]); scrollY per frame: all [0] over 90 frames
+  motion=reduce: calls scrollIntoView(exhibits-h) then scrollTo([0, 0]); scrollY per frame: all [0] over 60 frames
+The link's handler (src/client/world/WorldStage.tsx, 'View player works') calls scrollIntoView on #exhibits-h; the
+same click then reaches the app's router handler (src/client/router.ts onLinkClick -> navigate), which pushes
+/#exhibits-h and calls window.scrollTo(0, 0). Both happen in the same millisecond. Headless Chromium applies the
+later call, so the page stays at the top. A browser that lets the earlier smooth scroll continue would end at the
+exhibition, which would be consistent with the author's observation; that is an explanation, not a tested fact.
+With reduced motion both scrolls are instant, so the later scrollTo(0, 0) is expected to win in any browser; this
+is inferred from the code and the headless result, not tested in a real browser.
+
+== Status
+Verified working by the author's manual local check (conditions as reported above). Still not working in automated
+headless Chromium in all 12 tested conditions. No code was changed for this; no fix is claimed. The touch layout's
+Menu button, which defers its scroll by one frame, reaches the exhibition (world-touch-layout.spec.ts T8).
+
+== Fix and retest, appended 2026-11-08 (everything above is unchanged)
+Authorised narrowly scoped behaviour correction. One owner for the scroll: the app router.
+  src/client/router.ts navigate(): for a hash on the current page (same path and query) it scrolls the target into
+    view (smooth, or instant with prefers-reduced-motion) instead of window.scrollTo(0, 0); any other in-app
+    navigation still starts the new page at the top; a link to the URL that is already current replaces the history
+    entry instead of adding a duplicate (as a native anchor does); a malformed hash escape falls back to the top.
+  src/client/world/WorldStage.tsx: the desktop link and the touch Menu's link no longer prevent the navigation or
+    scroll by themselves (the touch one used to defer a frame); they only leave fullscreen (home) or remember the
+    pose (from /world/). TouchHud.tsx: prop type only.
+No delays or timers were added.
+
+Regression test: tests/e2e/world-interaction.spec.ts, 'L' in four cases - 1366x768 signed out/motion on, 1366x768
+signed in/reduced motion, 1920x1080 signed out/reduced motion, 1920x1080 signed in/motion on. Each checks: the page
+starts at the top with the heading below the fold; after the click the page rests where scrollIntoView should leave
+it (heading at the top, or as far as the page can scroll) with the heading fully in view, URL /#exhibits-h, one new
+history entry; a second click returns there without another entry; Back gives / at the top; Forward the
+exhibition again; an in-app link to another page starts at the top.
+  Fixed build: 4/4 passed. Old behaviour (same test against the clean fa23e6a build): 4/4 failed at the target
+  check, the page 800,775,649,624 px short of the target.
+Mobile: world-touch-layout T8 (touch Menu 'View player works' reaches the exhibition) and the 8-size touch layout
+  matrix passed in every affected-suite run.
+Desktop layout: 16 UI screenshots and 16 HUD geometry dumps at 1366x768 and 1920x1080 byte-identical to the fa23e6a
+  build (32/32).
+Affected suites (world-touch-layout, world-interaction, world-route, world-protection, world-keyboard, access), set
+  before running: the first run had 1 failure in world-interaction E (yaw off by 3.016 rad under headless pointer
+  lock); E then passed 8/8 alone and in every later batch; not otherwise diagnosed. A further 3 runs: access
+  'keyboard only' failed in 2 - its trace shows Add a stick disabled at the focus() call and enabled 8 ms later at
+  Enter (focus on a disabled button does nothing). Test fixed: wait for Add to be enabled, then check it has focus.
+  After that, on the final build: access alone 8/8; the six-file batch 3/3 valid runs (56/56 each). One batch run
+  was invalid: the supervisor logged nothing for 2120 s (the host was suspended) and it was rerun.
+
+Final gate on the final tree (identity 2f2efa861930ee27, 2026-11-08):
+  pnpm typecheck passed; pnpm test:unit 609/609; pnpm check 54/54; pnpm check:evidence passed;
+  pnpm test:integration 13/13; pnpm test:e2e 94 passed, 0 failed, no top-level test skipped or left unrun
+  (90 earlier tests + the four L cases; reconnect method A omitted on the host network by design, B 5/5).
+  The first attempt at integration and e2e was invalid: no supervisor samples for 16396 s and 5704 s (host
+  suspended), stopped by timeout with no test result; both were rerun on the same tree.
+
+After the gate only spec/README.md text changed (a coverage-table row naming test L), so the final working-tree
+identity is 9ae5d87cc502a971; src/ and tests/ are as gated.
+
+Status: fixed locally (automated, headless Chromium, conditions above). Not deployed.

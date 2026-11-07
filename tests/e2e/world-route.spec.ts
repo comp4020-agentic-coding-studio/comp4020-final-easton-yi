@@ -30,8 +30,8 @@ async function route(page: Page, phone: boolean): Promise<void> {
   await start.click();
   await expect.poll(() => control(page)).toBe("exploring");
 
-  // 2. go to the building through the pause menu's landmark list (keyboard: Esc; touch: the Pause button)
-  if (phone) await page.getByRole("button", { name: "Pause" }).click();
+  // 2. go to the building through the pause menu's landmark list (keyboard: Esc; touch: the Menu button, which pauses)
+  if (phone) await page.getByRole("button", { name: /^Menu/ }).click();
   else await page.keyboard.press("Escape");
   await page.getByLabel("Go to a landmark").selectOption(TOWER.id);
   await expect(page.getByText(`At ${TOWER.title}.`)).toBeVisible({ timeout: 60_000 });
@@ -86,7 +86,7 @@ async function route(page: Page, phone: boolean): Promise<void> {
   expect(Number(s.renders)).toBeGreaterThan(0);
 
   // 4. recover: the pause menu's safe point puts the explorer back on the ground near here
-  if (phone) await page.getByRole("button", { name: "Pause" }).click();
+  if (phone) await page.getByRole("button", { name: /^Menu/ }).click();
   else await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Return to nearest safe point" }).click();
   await expect(page.getByText("Returned to the nearest safe point.")).toBeVisible({ timeout: 60_000 });

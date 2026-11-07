@@ -1,4 +1,4 @@
-// Summarises docs/evidence/crit-9-local-multiplayer/<run-id>/timing-samples.csv.
+// Summarises <run evidence dir>/timing-samples.csv (test-results/crit9/<run-id>/ by default; see run.sh).
 //   node scripts/crit9/summarize-timing.ts <run evidence dir>
 // Percentiles are nearest-rank (p = sorted[ceil(p * n) - 1]). Missing receiver
 // observations are counted, never dropped or replaced with a latency.
